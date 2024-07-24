@@ -1,0 +1,52 @@
+.navbar {
+  width: calc(100% - 250px); /* Default width for expanded sidebar */
+  height: 60px; /* Fixed height */
+  color: #fff; /* Text color */
+  position: fixed; /* Fixed positioning */
+  top: 0; /* Align to the top */
+  left: 250px; /* Position next to the expanded sidebar */
+  /* Optional shadow */
+  transition: left 0.3s ease, width 0.3s ease; /* Smooth transition */
+  background-color: white; /* Background color */
+}
+
+.search-input {
+  margin-left: 50px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+
+  position: relative;
+}
+
+.search-icon {
+  color: #aaa;
+
+  height: 44px;
+}
+
+.navbar-input {
+  width: 100%;
+  padding-left: 35px;
+  height: 100%;
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: 400;
+  border: 1px solid #7e8c9c;
+}
+
+input::placeholder {
+  color: rgba(158, 158, 158, 1);
+  font-size: 18px;
+  opacity: 1;
+}
+
+/* Adjust navbar for collapsed sidebar */
+.navbar.collapsed {
+  width: calc(100% - 80px); /* Width for collapsed sidebar */
+  left: 80px; /* Position next to the collapsed sidebar */
+}
+
+.navbar-item:hover {
+  color: #ddd;
+}

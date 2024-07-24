@@ -1,0 +1,33 @@
+.layout {
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(214, 214, 214, 1);
+  position: relative;
+  display: flex;
+  margin: 0px;
+  padding: 0px;
+  box-sizing: border-box;
+  background-color: #ffffff;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.content {
+  position: absolute;
+  /* background-color: aqua; */
+  padding: 2rem 3rem;
+  top: 60px;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  width: calc(100% - 250px);
+  height: calc(100% - 60px);
+}
+
+.content.collapsed {
+  position: absolute;
+  width: calc(100% - 80px);
+  right: 0;
+}
