@@ -11,7 +11,7 @@
 }
 
 .search-input {
-  margin-left: 50px;
+  /* margin-left: 50px; */
   height: 100%;
   display: flex;
   align-items: center;
@@ -28,7 +28,7 @@
 .navbar-input {
   width: 100%;
   padding-left: 35px;
-  height: 100%;
+  /* height: 100%; */
   border-radius: 12px;
   font-size: 18px;
   font-weight: 400;
@@ -41,12 +41,30 @@ input::placeholder {
   opacity: 1;
 }
 
-/* Adjust navbar for collapsed sidebar */
 .navbar.collapsed {
-  width: calc(100% - 80px); /* Width for collapsed sidebar */
-  left: 80px; /* Position next to the collapsed sidebar */
+  width: calc(100% - 80px);
+  left: 80px;
 }
 
 .navbar-item:hover {
   color: #ddd;
+}
+
+.profile-bar {
+  /* overflow-y: scroll; */
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 20rem;
+  min-height: 100vh;
+  height: 100%;
+  background-color: white;
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+  transform: translateX(100%);
+  transition: transform 0.5s ease;
+  z-index: 1000;
+}
+
+.profile-bar.open {
+  transform: translateX(0);
 }

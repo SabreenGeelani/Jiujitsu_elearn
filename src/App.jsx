@@ -5,6 +5,8 @@ import { VerifyEmail } from "./Pages/veryEmail/VerifyEmail";
 import { Layout } from "./Components/Layout/Layout";
 import { Toaster } from "react-hot-toast";
 import Login from "./Pages/Login/Login";
+import CourseCreation from "./Pages/CourseCreation/CourseCreation";
+import AddLesson from "./Pages/AddLesson/AddLesson";
 
 function App() {
   return (
@@ -16,6 +18,8 @@ function App() {
             <Route path="/" exact element={<Login />} />
             <Route path="/signUp" element={<SignUp />} />
             <Route path="/verifyEmail" element={<VerifyEmail />} />
+            <Route path="/courseCreation" element={<CourseCreation />} />
+            <Route path="/addLesson" element={<AddLesson />} />
           </Routes>
         </Layout>
       </BrowserRouter>

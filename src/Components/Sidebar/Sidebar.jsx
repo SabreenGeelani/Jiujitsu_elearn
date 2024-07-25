@@ -1,16 +1,13 @@
-import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faHome,
   faBook,
-  faPen,
   faEnvelope,
-  faFolder,
   faLifeRing,
   faCog,
   faSignOutAlt,
 } from "@fortawesome/free-solid-svg-icons";
-import { CiMenuBurger } from "react-icons/ci";
+
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Sidebar.css";
 import { LiaBarsSolid } from "react-icons/lia";

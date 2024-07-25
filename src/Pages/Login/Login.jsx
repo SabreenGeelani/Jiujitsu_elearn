@@ -6,25 +6,30 @@ import { MdOutlineEmail } from "react-icons/md";
 import { IoKeyOutline } from "react-icons/io5";
 import { FcGoogle } from "react-icons/fc";
 
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { FaApple, FaEye, FaEyeSlash } from "react-icons/fa";
 import axios from "axios";
-// import { useNavigate } from "react-router-dom";
-
-// import axios from "axios";
-// import { BASE_URI } from "../../Config/url";
-// import toast from "react-hot-toast";
+import { BASE_URI } from "../../Config/url";
+import { PulseLoader } from "react-spinners";
+import toast from "react-hot-toast";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
-  const [userData, setUserData] = useState({
+  const [isLoding, setIsLoding] = useState(false);
+  const [data, setData] = useState({
     email: "",
     password: "",
   });
+  const navigate = useNavigate();
 
   const handleCheckboxChange = (event) => {
     setRememberMe(event.target.checked);
+    {
+      rememberMe
+        ? localStorage.setItem("rememberMee", "rememberMee")
+        : localStorage.removeItem("rememberMee");
+    }
   };
 
   const handleForgotPasswordClick = () => {
@@ -36,21 +41,35 @@ export default function Login() {
   };
 
   const handleChange = (e) => {
-    setUserData({ ...userData, [e.target.name]: e.target.value });
+    setData({ ...data, [e.target.name]: e.target.value });
   };
   const handleSubmit = (e) => {
     e.preventDefault();
+    setIsLoding(true);
     axios
-      .post("", {
-        userData,
-      })
+      .post(`${BASE_URI}/api/v1/auth/login`, data)
       .then((resp) => {
-        console.log(resp.data);
+        localStorage.setItem("user", resp.data.Data);
+        localStorage.setItem("userType", resp.data.Data.user_type);
+        localStorage.setItem("token", resp.data.token);
+        setData({
+          email: "",
+          password: "",
+        });
+        toast.success("Logged In Successfully!");
+        navigate("/courseCreation");
+        setIsLoding(false);
       })
       .catch((err) => {
-        console.log(err);
+        console.log(err?.response?.data?.message);
+        setIsLoding(false);
+        toast.error(`Error: ${err?.response?.data?.message}`);
       });
   };
+
+  if (localStorage.getItem("rememberMee")) {
+    return <Navigate to="/courseCreation" />;
+  }
   return (
     <div className="container-fluid signin-container ">
       <div className="row w-100 h-100">
@@ -130,10 +149,11 @@ export default function Login() {
                 <input
                   type="email"
                   id="email"
+                  name="email"
                   className="form-control"
                   placeholder="Enter Email"
                   aria-label="Email"
-                  value={userData.email}
+                  value={data.email}
                   onChange={handleChange}
                   required
                 />
@@ -150,10 +170,11 @@ export default function Login() {
                 <input
                   type={showPassword ? "text" : "password"}
                   id="password"
+                  name="password"
                   className="form-control border-end-0"
                   placeholder="Enter Password"
                   aria-label="Password"
-                  value={userData.password}
+                  value={data.password}
                   onChange={handleChange}
                   required
                 />
@@ -196,7 +217,9 @@ export default function Login() {
               </a>
             </div>
 
-            <button className="signup-now w-100">Sign In</button>
+            <button className="signup-now w-100">
+              {isLoding ? <PulseLoader size={8} color="white" /> : "Sign In"}
+            </button>
           </form>
 
           <div className="text-center">
