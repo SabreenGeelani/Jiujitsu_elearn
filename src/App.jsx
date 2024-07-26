@@ -7,7 +7,8 @@ import { Toaster } from "react-hot-toast";
 import Login from "./Pages/Login/Login";
 import CourseCreation from "./Pages/CourseCreation/CourseCreation";
 import AddLesson from "./Pages/AddLesson/AddLesson";
-
+import Courses from "./Pages/Courses/Courses";
+import CourseView from "./Pages/Course overview/CourseView";
 function App() {
   return (
     <>
@@ -18,6 +19,8 @@ function App() {
             <Route path="/" exact element={<Login />} />
             <Route path="/signUp" element={<SignUp />} />
             <Route path="/verifyEmail" element={<VerifyEmail />} />
+            <Route path="/courses" element={<Courses />} />
+            <Route path="/courseView" element={<CourseView />} />
             <Route path="/courseCreation" element={<CourseCreation />} />
             <Route path="/addLesson" element={<AddLesson />} />
           </Routes>

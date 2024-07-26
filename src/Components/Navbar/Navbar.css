@@ -1,17 +1,16 @@
 .navbar {
-  width: calc(100% - 250px); /* Default width for expanded sidebar */
-  height: 60px; /* Fixed height */
-  color: #fff; /* Text color */
-  position: fixed; /* Fixed positioning */
-  top: 0; /* Align to the top */
-  left: 250px; /* Position next to the expanded sidebar */
-  /* Optional shadow */
-  transition: left 0.3s ease, width 0.3s ease; /* Smooth transition */
-  background-color: white; /* Background color */
+  width: calc(100% - 250px);
+  height: 60px;
+  color: #fff;
+  position: fixed;
+  top: 0;
+  left: 250px;
+
+  transition: left 0.3s ease, width 0.3s ease;
+  background-color: white;
 }
 
 .search-input {
-  /* margin-left: 50px; */
   height: 100%;
   display: flex;
   align-items: center;
@@ -51,7 +50,7 @@ input::placeholder {
 }
 
 .profile-bar {
-  /* overflow-y: scroll; */
+  overflow-y: scroll;
   position: fixed;
   top: 0;
   right: 0;

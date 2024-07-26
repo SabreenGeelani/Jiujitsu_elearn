@@ -27,12 +27,12 @@ const users = [
     designation: "UX Designer",
     image: "src/assets/istockphoto-841971598-1024x1024.jpg",
   },
-  // {
-  //   id: 4,
-  //   name: "Alice Johnson",
-  //   designation: "UX Designer",
-  //   image: "src/assets/istockphoto-841971598-1024x1024.jpg", // Replace with your actual image path
-  // },
+  {
+    id: 4,
+    name: "Alice Johnson",
+    designation: "UX Designer",
+    image: "src/assets/istockphoto-841971598-1024x1024.jpg", // Replace with your actual image path
+  },
 ];
 export const Navbar = ({ collapsed }) => {
   const searchInputRef = useRef(null);

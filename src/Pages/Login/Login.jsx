@@ -57,7 +57,7 @@ export default function Login() {
           password: "",
         });
         toast.success("Logged In Successfully!");
-        navigate("/courseCreation");
+        navigate("/courses");
         setIsLoding(false);
       })
       .catch((err) => {
@@ -68,7 +68,7 @@ export default function Login() {
   };
 
   if (localStorage.getItem("rememberMee")) {
-    return <Navigate to="/courseCreation" />;
+    return <Navigate to="/courses" />;
   }
   return (
     <div className="container-fluid signin-container ">
