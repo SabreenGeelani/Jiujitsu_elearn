@@ -7,7 +7,8 @@ import {
     faSquarePlus
 } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
-import BASE_URI from "../../../uri"
+
+import { BASE_URI } from "../../Config/url";
 const Card = ({ onClick }) => (
   <div className="card-bottom-courses" onClick={onClick}>
     <img src={cardImage} alt="Course image" />
