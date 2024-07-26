@@ -8,7 +8,7 @@ import { faAngleDown, faStar } from "@fortawesome/free-solid-svg-icons";
 const CourseView = () => {
   const [buttonPick, setButtonPick] = useState("Overview");
   const [openDetails, setOpenDetails] = useState({});
-
+  const [openDetailsLeft , setOpenDetailsLeft] = useState({});
   const handleButtonToggle = (event) => {
     const text = event.currentTarget.querySelector("h5").textContent;
     setButtonPick(text);
@@ -22,6 +22,13 @@ const CourseView = () => {
     }));
   };
 
+  const handleLeftToggle = (index) => {
+    setOpenDetailsLeft(prevState => ({
+      ...prevState,
+      [index]: !prevState[index]
+    }));
+  };
+  
   return (
     <>
       <div className="wrapper-courseview">
@@ -157,7 +164,11 @@ const CourseView = () => {
                 </>
               )}
 
-              {buttonPick === "Reviews" && (
+
+              {
+                buttonPick === 'Reviews' &&
+                
+
                 <div className="ratings-courseview">
                   <div className="left-ratings-courseview">
                     <h6>Average Reviews</h6>
@@ -240,21 +251,19 @@ const CourseView = () => {
               <h6>Lecture (15) Total (15.3hr)</h6>
             </div>
 
-            <div className="right-bottom-options">
-              {[0, 1, 3, 4, 5, 6, 7].map((index) => (
-                <details
-                  key={index}
-                  open={!!openDetails[index]}
-                  onToggle={() => handleToggle(index)}
-                >
-                  <summary>
-                    <FontAwesomeIcon
-                      icon={faAngleDown}
-                      className={openDetails[index] ? "up-icon" : "down-icon"}
-                    />
-                    <h5>Section 1 | Intro</h5>
-                    <h6>2 Videos | 24mins</h6>
-                  </summary>
+
+          <div className="right-bottom-options">
+          {[0, 1, 3, 4, 5, 6 , 7].map((index) => (
+            <details key={index} open={!!openDetailsLeft[index]} onToggle={() => handleLeftToggle(index)}>  
+              <summary>
+              <FontAwesomeIcon
+                        icon={faAngleDown}
+                        className={openDetailsLeft[index] ? "up-icon" : "down-icon"}
+                      />
+              <h5>Section 1 | Intro</h5>
+              <h6>2 Videos | 24mins</h6>
+              </summary>
+
 
                   <div>
                     <input type="checkbox" />

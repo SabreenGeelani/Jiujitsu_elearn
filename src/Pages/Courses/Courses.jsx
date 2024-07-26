@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate } from "react-router-dom";
 import { faSquarePlus } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
+
 import { BASE_URI } from "../../Config/url";
 const Card = ({ onClick }) => (
   <div className="card-bottom-courses" onClick={onClick}>

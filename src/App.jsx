@@ -16,13 +16,16 @@ function App() {
         <Toaster position="top-right" />
         <Layout>
           <Routes>
+
             <Route path="/" exact element={<Login />} />
             <Route path="/signUp" element={<SignUp />} />
             <Route path="/verifyEmail" element={<VerifyEmail />} />
             <Route path="/courses" element={<Courses />} />
+
             <Route path="/courseView" element={<CourseView />} />
             <Route path="/courseCreation" element={<CourseCreation />} />
             <Route path="/addLesson" element={<AddLesson />} />
+
           </Routes>
         </Layout>
       </BrowserRouter>

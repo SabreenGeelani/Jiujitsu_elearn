@@ -1,3 +1,7 @@
+.wrapper-courseview{
+    width: 100%;
+    height: 100%;
+}
 .top-courseview{
     height: 10vh;
     /* background-color: black; */
@@ -6,7 +10,7 @@
     /* margin-top: 5vh; */
     justify-content: space-between;
     align-items: center;
-    padding: 0 3vw 0 3.5vw;
+    padding: 0 1vw 0 0vw;
 }
 .top-courseview h4{
     font-weight: 700;
@@ -28,10 +32,10 @@
 
 .bottom-courseview{
    
-    height: 80vh;
+    height: max-content;
     display: flex;
     justify-content: space-between;
-    padding: 0 5vh 0 10vh;
+    /* padding: 0 5vh 0 10vh; */
 
 }
 .left-bottom-courseview{
@@ -50,9 +54,11 @@
     border-radius: 0.30vw;
     box-shadow: 0 0 9px rgba(0, 0, 0, 0.2);
     height: max-content;
-    padding: 2vh;
+    padding: 1vh;
     width: 30%;
+   
 }
+
 .video-container-courseview{
     background-color: white;
     height: 35vh;
@@ -184,15 +190,23 @@
 }
 
 .course-details-courseview details {
-    border-bottom: 1px solid gray;
-    margin-top: 2vh;
+    border-bottom: 1px solid #C9D1D5;
+    padding-bottom: 1.5vh;
+    margin-top: 1.5vh;
     list-style-type: none;
+    
 }
 
 .course-details-courseview details summary {
+    
     list-style: none;
+
     position: relative;
     cursor: pointer;
+}
+.course-details-courseview details summary p{
+    margin-top: 2vh;
+    
 }
 
 .course-details-courseview details summary .up-icon {
@@ -259,19 +273,21 @@
     margin-top: 1vh;
 }
 .right-ratings-courseview{
-   
     width: 75%;
     height: 100%;
     padding-left: 1vw;
 }
 .right-ratings-courseview div{
+    height: max-content;
     display: flex;
     gap: 1vw;
-    align-items: end;
+    align-items: center;
     justify-content: start;
 }
 .right-ratings-courseview div h6{
     width: 1.5vw;
+    height: max-content;
+    margin: 0;
 }
 .right-ratings-courseview div span {
     display: flex;
@@ -280,7 +296,7 @@
     margin: 0;
     width: 25%;
     align-items: center;
-    padding-top: 1vh;
+    /* padding-top: 1vh; */
 }
 .right-ratings-courseview h6:first-child{
     font-weight: 500;
@@ -326,7 +342,7 @@
 
 .heading-bottom-courseview{
     border-bottom: 1.5px solid #C9D1D5;
-    height: 15%;
+    height: 10vh;
     width: 100%;
     display: flex;
     flex-direction: column;
