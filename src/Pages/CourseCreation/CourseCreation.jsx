@@ -1,51 +1,47 @@
-import { useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import "./CourseCreation.css";
 import { RiGalleryUploadFill } from "react-icons/ri";
+import { BASE_URI } from "../../Config/url";
+import useFetch from "../../hooks/useFetch";
 export default function CourseCreation() {
-  const [text, setText] = useState("");
+  const [courseData, setCourseData] = useState({
+    title: "",
+    description: "",
+    category_id: "",
+    status: "",
+    price: "",
+    discount: "",
+    thumbnail: null,
+    tag_ids: [],
+  });
+  const editorRef = useRef(null);
+  const token = localStorage.getItem("token");
+  const tagsUrl = `${BASE_URI}/api/v1/tags`;
+  const categoriesUrl = `${BASE_URI}/api/v1/category`;
+  const fetchOptions = {
+    headers: {
+      Authorization: "Bearer " + token,
+    },
+  };
 
-  const applyStyle = (style) => {
-    const textarea = document.getElementById("courseDescription");
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const selectedText = textarea.value.substring(start, end);
-    let newText = "";
-    switch (style) {
-      case "bold":
-        newText =
-          textarea.value.substring(0, start) +
-          "<b>" +
-          selectedText +
-          "</b>" +
-          textarea.value.substring(end);
-        break;
-      case "italic":
-        newText =
-          textarea.value.substring(0, start) +
-          "<i>" +
-          selectedText +
-          "</i>" +
-          textarea.value.substring(end);
-        break;
-      case "underline":
-        newText =
-          textarea.value.substring(0, start) +
-          "<u>" +
-          selectedText +
-          "</u>" +
-          textarea.value.substring(end);
-        break;
-      default:
-        break;
-    }
-    setText(newText);
+  const { data } = useFetch(tagsUrl, fetchOptions);
+  const tags = useMemo(() => data?.data || [], [data]);
+
+  const { data: categoriesData } = useFetch(categoriesUrl, fetchOptions);
+  const categories = useMemo(
+    () => categoriesData?.data || [],
+    [categoriesData]
+  );
+
+  const applyStyle = (command) => {
+    document.execCommand(command, false, null);
   };
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = (e) => {
-        setText(e.target.result);
+        editorRef.current.innerHTML = e.target.result;
       };
       reader.readAsText(file);
     }
@@ -54,7 +50,7 @@ export default function CourseCreation() {
     <div className="w-100">
       <header className="d-flex align-items-center justify-content-between py-3">
         <h3 className="fw-bold">Course Creation</h3>
-        <button className="fs-small signup-now py-2 px-3 fw-lightBold mb-0 h-auto">
+        <button className=" signup-now py-2 px-3 fw-lightBold mb-0 h-auto">
           Cancel
         </button>
       </header>
@@ -66,6 +62,8 @@ export default function CourseCreation() {
             </label>
             <input
               type="text"
+              name="title"
+              value={courseData.title}
               placeholder="Enter Title"
               className="px-5 py-2-half-5 border-secondary-subtle border rounded-2 w-100 input-custom"
             />
@@ -116,50 +114,68 @@ export default function CourseCreation() {
                 <u className="fs-4">U</u>
               </button>
             </div>
-            <textarea
+            <div
               id="courseDescription"
+              name="description"
+              value={courseData.description}
+              ref={editorRef}
               className="px-5 py-2-half-5 border-secondary-subtle border rounded-bottom-2 w-100"
-              style={{ height: "13rem" }}
-              value={text}
-              onChange={(e) => setText(e.target.value)}
-            ></textarea>
+              style={{ height: "13rem", overflowY: "auto" }}
+              contentEditable
+            ></div>
           </div>
           <div className="mb-3">
             <label htmlFor="" className="d-block mb-1 fs-5 fw-light">
               Course Category <span className="text-danger">*</span>
             </label>
-            <select className="px-5 py-2-half-5 border-secondary-subtle border rounded-2 w-100">
+            <select
+              className="px-5 py-2-half-5 border-secondary-subtle border rounded-2 w-100"
+              name="category_id"
+              value={courseData.category_id}
+            >
               <option value="" disabled>
                 Select
               </option>
-              <option value="Category1">Category 1</option>
-              <option value="Category1">Category 1</option>
-              <option value="Category1">Category 1</option>
+              {categories.map((category) => (
+                <option value={category.id} key={category.id}>
+                  {category.name}
+                </option>
+              ))}
             </select>
           </div>
           <div className="mb-3">
             <label htmlFor="" className="d-block mb-1 fs-5 fw-light">
               Course Status <span className="text-danger">*</span>
             </label>
-            <select className="px-5 py-2-half-5 border-secondary-subtle border rounded-2 w-100">
+            <select
+              className="px-5 py-2-half-5 border-secondary-subtle border rounded-2 w-100"
+              name="status"
+              value={courseData.status}
+            >
               <option value="" disabled>
                 Select
               </option>
-              <option value="Category1">Active</option>
-              <option value="Category1">In Active</option>
+              <option value="active">Active</option>
+              <option value="inActive">In Active</option>
             </select>
           </div>
           <div className="mb-3">
             <label htmlFor="" className="d-block mb-1 fs-5 fw-light">
               Select Tags <span className="text-danger">*</span>
             </label>
-            <select className="px-5 py-2-half-5 border-secondary-subtle border rounded-2 w-100">
+            <select
+              className="px-5 py-2-half-5 border-secondary-subtle border rounded-2 w-100"
+              name="tag_ids"
+              value={courseData.tag_ids}
+            >
               <option value="" disabled>
                 Select
               </option>
-              <option value="Category1">Tag 1</option>
-              <option value="Category1">Tag 1</option>
-              <option value="Category1">Tag 1</option>
+              {tags.map((tag) => (
+                <option value={tag.id} key={tag.id}>
+                  {tag.name}
+                </option>
+              ))}
             </select>
           </div>
           <div className="mb-3">
@@ -169,6 +185,8 @@ export default function CourseCreation() {
             <div className="input-group">
               <input
                 type="text"
+                name="thumbnail"
+                value={courseData.thumbnail}
                 placeholder="Select or Drag & Drop"
                 className="form-control px-5 py-2-half-5 border-secondary-subtle border border-end-0 rounded-start-2  input-custom"
               />
@@ -192,8 +210,9 @@ export default function CourseCreation() {
                 </label>
                 <input
                   type="text"
+                  name="price"
+                  value={courseData.price}
                   placeholder="Enter Price"
-                  // id="email"
                   className="form-control px-5 py-2-half-5 input-custom"
                   required
                 />
@@ -209,6 +228,8 @@ export default function CourseCreation() {
                 </label>
                 <input
                   type="text"
+                  name="discount"
+                  value={courseData.discount}
                   placeholder="Enter Discount"
                   className="form-control px-5 py-2-half-5 input-custom"
                   required
@@ -220,7 +241,10 @@ export default function CourseCreation() {
             <button className=" signup-now py-2 px-3 fw-light mb-0 h-auto">
               Cancel
             </button>
-            <button className=" signup-now py-2 px-3 fw-light mb-0 h-auto">
+            <button
+              type="submit"
+              className=" signup-now py-2 px-3 fw-light mb-0 h-auto"
+            >
               Add Course
             </button>
           </div>
