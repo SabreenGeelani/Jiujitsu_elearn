@@ -1,0 +1,199 @@
+.top-courses{
+    height: 10vh;
+    
+    width: 100%;
+    display: flex;
+    margin-top: 0;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 3vw 0 3.5vw;
+}
+.top-courses h4{
+    font-weight: 700;
+}
+.top-button{
+    background: linear-gradient(97.89deg, #0C243C 0%, #7E8C9C 95.36%);
+    height: 60%;
+    width: 11%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 0.26vw;
+    color: white;
+    cursor: pointer;
+}
+.top-button h6{
+    font-weight: 400;
+}
+.categories-userCourses{
+    /* background-color: blue; */
+    height: 7vh;
+    width: 95%;
+    border-bottom: 1px solid #7E8C9C;
+    margin-left: 2vw;
+    display: flex;
+    gap: 2vw;
+}
+.categories-userCourses .button-categories-userCourses{
+    height: 100%;
+    width: max-content;
+    padding: 0 0.7vw 0 0.7vw;
+    color: white;
+    background: linear-gradient(360deg, #FFFFFF 0%, #0C243C 100%);
+    border-top-right-radius:0.8vw ;
+    border-top-left-radius: 0.8vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.5s ease-in-out;
+}
+
+.categories-userCourses .not-button-categories-userCourses{
+    height: 100%;
+    width: max-content;
+    padding: 0 0.7vw 0 0.7vw;
+    color: grey;
+    /* background: linear-gradient(360deg, #FFFFFF 0%, #0C243C 100%); */
+    border-top-right-radius:0.8vw ;
+    border-top-left-radius: 0.8vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.5s ease-in-out;
+}
+.categories-userCourses div h4{
+    font-size: 1.3vw;
+    font-weight: 400;
+}
+.bottom-courses{
+    padding: 0 2vw 0 2vw;
+    margin-top: 2vh;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5vw; /* Adjust the gap between items */
+    margin-bottom: 4vh;
+}
+.card-bottom-courses{
+    height: 50vh;
+    width: 17vw;
+    background-color: white;
+    border-radius: 0.50vw;
+    padding: 3%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+.card-bottom-courses:hover {
+    transform: translateY(-10px); 
+ 
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+.card-bottom-courses img{
+    height: 50%;
+    width: 100%;
+    border-radius: 0.50vw;
+}
+.middle-sec-card-courses{
+    height: 10%;
+    
+    display: flex;
+    justify-content: space-between;
+    margin-top: 3%;
+}
+.middle-sec-card-courses div{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5vw;
+}
+.addCourse-card-courses{
+    height: 100%;
+    width: 35%;
+    background: linear-gradient(97.89deg, #0C243C 0%, #7E8C9C 95.36%);
+    border-radius: 0.26vw;
+    color: white;
+}
+.card-bottom-courses h6{
+    font-weight: 300;
+    font-size: 1vw;
+}
+
+.pricing-card-courses h5:first-child{
+    text-decoration: none;
+    font-size: 0.8vw;
+    color: #7E8C9C;
+}
+.card-bottom-courses p{
+    font-size: 0.9vw;
+    font-weight: 300;
+}
+.card-bottom-courses h5{
+    font-size: 1.2vw;
+}
+.card-bottom-courses h4{
+    font-size: 0.9vw;
+    font-weight: 400;
+    width: 80%;
+}
+
+.no-courses-courses{
+    
+    height: 40vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 2vh;
+}
+.no-courses-courses div{
+    background: linear-gradient(95.64deg, #0C243C 0.92%, #7E8C9C 70.85%);
+    height: 100%;
+    width: 90%;
+    border-radius: 1.67vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1vw;
+    color: white;
+}
+.add-icon-courses{
+    height: 25%;
+    cursor: pointer;
+}
+.no-courses-courses div h5{
+    font-weight: 100;
+}
+.no-courses-courses div h1{
+    font-weight: 400;
+}
+.bottom-card-userCourses{
+    height: 14%;
+    /* background-color: blue; */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 1vh;
+}
+.bottom-card-userCourses span{
+    display: flex;
+    gap: 0.2vw;
+}
+.bottom-card-userCourses span h5:first-child{
+    text-decoration: line-through;
+    /* font-size: 0.8vw; */
+    color: #7E8C9C;
+}
+.bottom-card-userCourses div{
+    background: linear-gradient(97.89deg, #0C243C 0%, #7E8C9C 95.36%);
+    height: 80%;
+    width: 40%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 0.26vw;
+    color: white;
+    cursor: pointer;  
+}
+
