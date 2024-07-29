@@ -4,15 +4,22 @@ import videoPlayer from "../../assets/videoPlayer.png";
 import profile from "../../assets/profile.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDown, faStar } from "@fortawesome/free-solid-svg-icons";
+import { useParams } from "react-router-dom";
+import useFetch from "../../hooks/useFetch";
+import { BASE_URI } from "../../Config/url";
 
 const CourseView = () => {
+  const {id} = useParams();
+  
+  // console.log(id);
   const [buttonPick, setButtonPick] = useState("Overview");
   const [openDetails, setOpenDetails] = useState({});
   const [openDetailsLeft , setOpenDetailsLeft] = useState({});
+  const [Data, setData]= useState([]);
   const handleButtonToggle = (event) => {
     const text = event.currentTarget.querySelector("h5").textContent;
     setButtonPick(text);
-    console.log(text);
+    // console.log(text);
   };
 
   const handleToggle = (index) => {
@@ -28,6 +35,17 @@ const CourseView = () => {
       [index]: !prevState[index]
     }));
   };
+
+  const url = `${BASE_URI}/api/v1/courses/${id}`
+  const token = localStorage.getItem("token");
+  const { data, isLoading, error, refetch } = useFetch(url, {
+    headers: {
+        Authorization : "Bearer " + token
+    }
+ });
+ 
+//  setData(data.data[0]);
+//  console.log(data.data[0])
   
   return (
     <>
@@ -45,7 +63,7 @@ const CourseView = () => {
               <img src={videoPlayer} alt="video" />
             </div>
             <span>
-              <h5>UI basic Guidelines :</h5>
+              <h5>UI design mastery :</h5>
               <h6>Beginner’s Guide to becoming a professional frontend</h6>
             </span>
             <div className="videoCreator-courseview">
@@ -165,7 +183,7 @@ const CourseView = () => {
               )}
 
 
-              {
+              {(
                 buttonPick === 'Reviews' &&
                 
 

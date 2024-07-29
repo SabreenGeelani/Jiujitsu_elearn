@@ -9,6 +9,8 @@ import CourseCreation from "./Pages/CourseCreation/CourseCreation";
 import AddLesson from "./Pages/AddLesson/AddLesson";
 import Courses from "./Pages/Courses/Courses";
 import CourseView from "./Pages/Course overview/CourseView";
+import UserCourses from "./Pages/UserCourses/UserCourses";
+
 function App() {
   return (
     <>
@@ -21,11 +23,11 @@ function App() {
             <Route path="/signUp" element={<SignUp />} />
             <Route path="/verifyEmail" element={<VerifyEmail />} />
             <Route path="/courses" element={<Courses />} />
-
-            <Route path="/courseView" element={<CourseView />} />
+            <Route path="/userCourses" element={<UserCourses/>}/>
+            <Route path="/courseView/:id" element={<CourseView />} />
             <Route path="/courseCreation" element={<CourseCreation />} />
             <Route path="/addLesson" element={<AddLesson />} />
-
+            
           </Routes>
         </Layout>
       </BrowserRouter>

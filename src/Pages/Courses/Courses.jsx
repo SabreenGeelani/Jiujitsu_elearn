@@ -1,52 +1,67 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import "./Courses.css";
 import cardImage from "../../assets/coursesCard.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate } from "react-router-dom";
 import { faSquarePlus } from "@fortawesome/free-solid-svg-icons";
-import axios from "axios";
-
+import useFetch from "../../hooks/useFetch";
 import { BASE_URI } from "../../Config/url";
-const Card = ({ onClick }) => (
-  <div className="card-bottom-courses" onClick={onClick}>
-    <img src={cardImage} alt="Course image" />
+
+const Card = ({id, onClick, title, description, price, discount, thumbnail, name, category}) => (
+  <div className="card-bottom-courses" onClick={()=> onClick(id)}>
+    <img src={cardImage || thumbnail} alt="Course image"/>
     <div className="middle-sec-card-courses">
       <div className="addCourse-card-courses">
-        <h6>Frontend</h6>
+        <h6>{category}</h6>
       </div>
       <div className="pricing-card-courses">
-        <h5>$14.99</h5>
-        <h5>$10.99</h5>
+        <h5>${discount}</h5>
+        <h5>${price}</h5>
       </div>
     </div>
-    <p>Basit Bashir, Designer at Raybit...</p>
-    <h5>UI basic Guidelines</h5>
-    <h4>Beginner’s Guide to becoming a professional frontend developer</h4>
+    <p>{name}, Designer at Raybit...</p>
+    <h5>{title}</h5>
+    <h4>{description}</h4>
   </div>
 );
 
 const Courses = () => {
   const navigate = useNavigate();
   const [course, setcourse] = useState(true);
+  const url = `${BASE_URI}/api/v1/courses/expertCourses`
+  const token = localStorage.getItem("token");
+  const { data, isLoading, error, refetch } = useFetch(url, {
+    headers: {
+        Authorization : "Bearer " + token
+    }
+ });
 
-  const handleCardClick = () => {
-    navigate("/courseView");
+
+//  if(data.data === ){
+//     setcourse(false)
+//  }
+ const coursesData = useMemo(()=> data?.data || [],[data]);
+ 
+  const handleCardClick = (id) => {
+    navigate(`/courseView/${id}`);
   };
-
-  const cards = Array.from({ length: 8 }, (_, index) => (
-    <Card key={index} onClick={handleCardClick} />
+  
+  const cards = coursesData.map((course, index) => (
+    <Card
+      key={index}
+      onClick={handleCardClick}
+      id={course.id}
+      title={course.title}
+      description={course.description}
+      price={course.price} 
+      discount={course.discount}
+      thumbnail={course.thumbnail}
+      category={course.category}
+      name={course.name}
+    />
   ));
-  const getCourses = async () => {
-    const response = await axios({
-      method: "GET",
-      url: `${BASE_URI}/api/v1/courses`,
-    });
-    console.log(response);
-  };
 
-  useEffect(() => {
-    getCourses();
-  }, getCourses);
+
 
   return (
     <div className="wrapper-courses">
