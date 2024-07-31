@@ -10,6 +10,7 @@ import AddLesson from "./Pages/AddLesson/AddLesson";
 import Courses from "./Pages/Courses/Courses";
 import CourseView from "./Pages/Course overview/CourseView";
 import UserCourses from "./Pages/UserCourses/UserCourses";
+import UserCourseOverview from "./Pages/UserCourseOverview/UserCourseOverview";
 
 function App() {
   return (
@@ -27,7 +28,7 @@ function App() {
             <Route path="/courseView/:id" element={<CourseView />} />
             <Route path="/courseCreation" element={<CourseCreation />} />
             <Route path="/addLesson" element={<AddLesson />} />
-            
+            <Route path="/userCourseView" element={<UserCourseOverview/>} />
           </Routes>
         </Layout>
       </BrowserRouter>
