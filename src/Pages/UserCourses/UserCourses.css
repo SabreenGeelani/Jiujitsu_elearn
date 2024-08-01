@@ -6,7 +6,7 @@
     margin-top: 0;
     justify-content: space-between;
     align-items: center;
-    padding: 0 3vw 0 3.5vw;
+    padding: 0 0vw 0 0vw;
 }
 .top-courses h4{
     font-weight: 700;
@@ -28,16 +28,16 @@
 .categories-userCourses{
     /* background-color: blue; */
     height: 7vh;
-    width: 95%;
+    width: max-content;
     border-bottom: 1px solid #7E8C9C;
-    margin-left: 2vw;
+    /* margin-left: 2vw; */
     display: flex;
     gap: 2vw;
 }
 .categories-userCourses .button-categories-userCourses{
     height: 100%;
     width: max-content;
-    padding: 0 0.7vw 0 0.7vw;
+    padding: 0 0.8vw 0 0.8vw;
     color: white;
     background: linear-gradient(360deg, #FFFFFF 0%, #0C243C 100%);
     border-top-right-radius:0.8vw ;
@@ -52,7 +52,7 @@
 .categories-userCourses .not-button-categories-userCourses{
     height: 100%;
     width: max-content;
-    padding: 0 0.7vw 0 0.7vw;
+    padding: 0 0.8vw 0 0.8vw;
     color: grey;
     /* background: linear-gradient(360deg, #FFFFFF 0%, #0C243C 100%); */
     border-top-right-radius:0.8vw ;
@@ -67,15 +67,15 @@
     font-size: 1.3vw;
     font-weight: 400;
 }
-.bottom-courses{
-    padding: 0 2vw 0 2vw;
+.bottom-userCourses{
+    /* padding: 0 2vw 0 2vw; */
     margin-top: 2vh;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 1.5vw; /* Adjust the gap between items */
     margin-bottom: 4vh;
 }
-.card-bottom-courses{
+.card-bottom-userCourses{
     height: 50vh;
     width: 17vw;
     background-color: white;
@@ -85,54 +85,53 @@
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     cursor: pointer;
 }
-.card-bottom-courses:hover {
-    transform: translateY(-10px); 
- 
+.card-bottom-userCourses:hover {
+    transform: translateY(-10px);
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
-.card-bottom-courses img{
+.card-bottom-userCourses img{
     height: 50%;
     width: 100%;
     border-radius: 0.50vw;
 }
-.middle-sec-card-courses{
+.middle-sec-card-userCourses{
     height: 10%;
     
     display: flex;
     justify-content: space-between;
     margin-top: 3%;
 }
-.middle-sec-card-courses div{
+.middle-sec-card-userCourses div{
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 0.5vw;
 }
-.addCourse-card-courses{
+.addCourse-card-userCourses{
     height: 100%;
     width: 35%;
     background: linear-gradient(97.89deg, #0C243C 0%, #7E8C9C 95.36%);
     border-radius: 0.26vw;
     color: white;
 }
-.card-bottom-courses h6{
+.card-bottom-userCourses h6{
     font-weight: 300;
     font-size: 1vw;
 }
 
-.pricing-card-courses h5:first-child{
+.pricing-card-userCourses h5:first-child{
     text-decoration: none;
     font-size: 0.8vw;
     color: #7E8C9C;
 }
-.card-bottom-courses p{
+.card-bottom-userCourses p{
     font-size: 0.9vw;
     font-weight: 300;
 }
-.card-bottom-courses h5{
+.card-bottom-userCourses h5{
     font-size: 1.2vw;
 }
-.card-bottom-courses h4{
+.card-bottom-userCourses h4{
     font-size: 0.9vw;
     font-weight: 400;
     width: 80%;
@@ -168,7 +167,7 @@
 .no-courses-courses div h1{
     font-weight: 400;
 }
-.bottom-card-userCourses{
+.bottom-card-useruserCourses{
     height: 14%;
     /* background-color: blue; */
     display: flex;
@@ -176,16 +175,16 @@
     justify-content: space-between;
     margin-top: 1vh;
 }
-.bottom-card-userCourses span{
+.bottom-card-useruserCourses span{
     display: flex;
     gap: 0.2vw;
 }
-.bottom-card-userCourses span h5:first-child{
+.bottom-card-useruserCourses span h5:first-child{
     text-decoration: line-through;
     /* font-size: 0.8vw; */
     color: #7E8C9C;
 }
-.bottom-card-userCourses div{
+.bottom-card-useruserCourses div{
     background: linear-gradient(97.89deg, #0C243C 0%, #7E8C9C 95.36%);
     height: 80%;
     width: 40%;
@@ -196,4 +195,3 @@
     color: white;
     cursor: pointer;  
 }
-

@@ -1,28 +1,28 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import "./UserCourses.css";
 import cardImage from "../../assets/coursesCard.png";
+import useFetch from "../../hooks/useFetch";
+import { BASE_URI } from "../../Config/url";
 
-const Card = () => (
-  <div className="card-bottom-courses">
+const Card = ({ category, description, expert, price, discount, tags, thumbnail }) => (
+  <div className="card-bottom-userCourses">
     <img src={cardImage} alt="Course image" />
-    <div className="middle-sec-card-courses">
-      <div className="addCourse-card-courses">
-        <h6>Frontend</h6>
+    <div className="middle-sec-card-userCourses">
+      <div className="addCourse-card-userCourses">
+        <h6>{category}</h6>
       </div>
-      <div className="pricing-card-courses">
-        <h5>Tag1 Tag2 Tag3</h5>
-        {/* <h5>$10.99</h5> */}
+      <div className="pricing-card-userCourses">
+        <h5>{tags.join(" ")}</h5>
       </div>
     </div>
-    <p>Basit Bashir, Designer at Raybit...</p>
-    <h5>UI basic Guidelines</h5>
-    <h4>Beginner’s Guide to becoming a professional frontend developer</h4>
-    <div className="bottom-card-userCourses">
-    <span>
-    <h5>$14.99</h5>
-    <h5>$10.99</h5>
-    </span>
-    <div><h6>Add to Cart</h6></div>
+    <p>{expert}</p>
+    <h4>{description.split(" ").slice(0, 10).join(" ")}...</h4>
+    <div className="bottom-card-useruserCourses">
+      <span>
+        <h5>{`$${(price * (1 - discount / 100)).toFixed(2)}`}</h5>
+        <h5>{`$${price}`}</h5>
+      </span>
+      <div><h6>Add to Cart</h6></div>
     </div>
   </div>
 );
@@ -46,7 +46,17 @@ const UserCourses = () => {
     setSelectedCategory(category);
   };
 
-  const cards = Array.from({ length: 8 }, (_, index) => <Card key={index} />);
+  const url = `${BASE_URI}/api/v1/courses`
+  const token = localStorage.getItem("token");
+  const { data, isLoading, error, refetch } = useFetch(url, {
+    headers: {
+        Authorization : "Bearer " + token
+    }
+ });
+
+const coursesData = useMemo(()=> data?.data || [],[data]);
+console.log(coursesData)
+  // const cards = Array.from({ length: 8 }, (_, index) => <Card key={index} />);
 
   return (
     <div className="wrapper-courses">
@@ -76,8 +86,19 @@ const UserCourses = () => {
           </div>
         ))}
       </div>
-      <div className="bottom-courses">
-        {cards}
+      <div className="bottom-userCourses">
+      {coursesData.map(course => (
+          <Card
+            key={course.id}
+            category={course.category}
+            description={course.description}
+            expert={course.expert}
+            price={course.price}
+            discount={course.discount}
+            tags={course.tags}
+            thumbnail={course.thumbnail}
+          />
+        ))}
       </div>
     </div>
   );

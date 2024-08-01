@@ -54,7 +54,6 @@
 }
 .middle-sec-card-courses{
     height: 10%;
-    
     display: flex;
     justify-content: space-between;
     margin-top: 3%;
@@ -95,9 +94,7 @@
     font-size: 1vw;
     font-weight: 400;
 }
-
 .no-courses-courses{
-    
     height: 40vh;
     width: 100%;
     display: flex;
@@ -115,6 +112,7 @@
     justify-content: center;
     gap: 1vw;
     color: white;
+    padding: 0vw 12vw 0vw 12vw;
 }
 .add-icon-courses{
     height: 25%;
@@ -122,6 +120,7 @@
 }
 .no-courses-courses div h5{
     font-weight: 100;
+    text-align: center;
 }
 .no-courses-courses div h1{
     font-weight: 400;
