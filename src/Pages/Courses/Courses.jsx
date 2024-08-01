@@ -21,13 +21,17 @@ const Card = ({id, onClick, title, description, price, discount, thumbnail, name
     </div>
     <p>{name}, Designer at Raybit...</p>
     <h5>{title}</h5>
-    <h4>{description}</h4>
+    <h4>{description?.split(' ').slice(0, 8).join(' ') + '...'}</h4>
   </div>
 );
 
 const Courses = () => {
   const navigate = useNavigate();
   const [course, setcourse] = useState(true);
+  
+
+
+
   const url = `${BASE_URI}/api/v1/courses/expertCourses`
   const token = localStorage.getItem("token");
   const { data, isLoading, error, refetch } = useFetch(url, {
@@ -40,8 +44,17 @@ const Courses = () => {
 //  if(data.data === ){
 //     setcourse(false)
 //  }
- const coursesData = useMemo(()=> data?.data || [],[data]);
+
+//  error && console.log(error.response.data.message);
  
+ 
+//   if (error.response.data.message === "No courses found"){
+//   return setcourse(false);
+//  }
+// console.log(error)
+
+const coursesData = useMemo(()=> data?.data || [],[data]);
+// console.log(coursesData)
   const handleCardClick = (id) => {
     navigate(`/courseView/${id}`);
   };
@@ -71,7 +84,7 @@ const Courses = () => {
           <h6>Add Course</h6>
         </div>
       </div>
-      {course ? (
+      {error?.response?.data?.message !== "No courses found"  ? (
         <div className="bottom-courses">{cards}</div>
       ) : (
         <div className="no-courses-courses">
