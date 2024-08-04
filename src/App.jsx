@@ -11,6 +11,7 @@ import Courses from "./Pages/Courses/Courses";
 import CourseView from "./Pages/Course overview/CourseView";
 import UserCourses from "./Pages/UserCourses/UserCourses";
 import UserCourseOverview from "./Pages/UserCourseOverview/UserCourseOverview";
+import UserCart from "./Pages/UserCart/UserCart";
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
             <Route path="/courseCreation" element={<CourseCreation />} />
             <Route path="/addLesson" element={<AddLesson />} />
             <Route path="/userCourseView" element={<UserCourseOverview/>} />
+            <Route path="/userCart" element={<UserCart/>} />
           </Routes>
         </Layout>
       </BrowserRouter>
