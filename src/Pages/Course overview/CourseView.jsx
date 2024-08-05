@@ -1,17 +1,29 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import "./CourseView.css";
 import videoPlayer from "../../assets/videoPlayer.png";
 import profile from "../../assets/profile.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDown, faStar } from "@fortawesome/free-solid-svg-icons";
+
+import { useParams } from "react-router-dom";
+import useFetch from "../../hooks/useFetch";
+import { BASE_URI } from "../../Config/url";
+
+
 const CourseView = () => {
+  const { id } = useParams();
+
+  // console.log(id);
   const [buttonPick, setButtonPick] = useState("Overview");
   const [openDetails, setOpenDetails] = useState({});
   const [openDetailsLeft, setOpenDetailsLeft] = useState({});
+
+  const [Data, setData] = useState(null);
+
   const handleButtonToggle = (event) => {
     const text = event.currentTarget.querySelector("h5").textContent;
     setButtonPick(text);
-    console.log(text);
+    // console.log(text);
   };
   const handleToggle = (index) => {
     setOpenDetails((prevState) => ({
@@ -25,6 +37,39 @@ const CourseView = () => {
       [index]: !prevState[index],
     }));
   };
+
+
+  const url = `${BASE_URI}/api/v1/courses/courseOverview/${id}`;
+  const token = localStorage.getItem("token");
+  const { data, isLoading, error, refetch } = useFetch(url, {
+    headers: {
+      Authorization: "Bearer " + token,
+    },
+  });
+  //  setData(data.data[0]);
+  //  console.log(data);
+  const courseData = useMemo(() => data?.data || [data]);
+  console.log(courseData);
+
+  const url2 = `${BASE_URI}/api/v1/courses/${id}`;
+  // const token2 = localStorage.getItem("token");
+  const {
+    data: data2,
+    isLoading2,
+    error2,
+    refetch2,
+  } = useFetch(url2, {
+    headers: {
+      Authorization: "Bearer " + token,
+    },
+  });
+
+  const courseData2 = useMemo(() => data2?.data || [data2]);
+
+  //  setData(data2);
+  console.log(courseData2[0]);
+
+
   return (
     <>
       <div className="wrapper-courseview">
@@ -40,12 +85,12 @@ const CourseView = () => {
               <img src={videoPlayer} alt="video" />
             </div>
             <span>
-              <h5>UI basic Guidelines :</h5>
-              <h6>Beginner’s Guide to becoming a professional frontend</h6>
+              <h5>{courseData2[0]?.title} :</h5>
+              <h6>{courseData2[0]?.description?.split(' ').slice(0, 7).join(' ') + '...'}</h6>
             </span>
             <div className="videoCreator-courseview">
               <img src={profile} alt="profile" />
-              <h6>Basit Bashir</h6>
+              <h6>{courseData2[0]?.name}</h6>
               <h5>|</h5>
               <h6>Raybit Tech</h6>
             </div>
@@ -119,17 +164,11 @@ const CourseView = () => {
               {buttonPick === "Overview" && (
                 <>
                   <h5>Course Title:</h5>
-                  <h6>
-                    Mastering Frontend Development: From Basics to Advanced
-                  </h6>
+                  <h6>{courseData2[0]?.title}</h6>
+                  <h5>Course Duration:</h5>
+                  <h6>{courseData2[0]?.total_duration} hrs</h6>
                   <h5>Course Title:</h5>
-                  <h6>
-                    Mastering Frontend Development: From Basics to Advanced
-                  </h6>
-                  <h5>Course Title:</h5>
-                  <h6>
-                    Mastering Frontend Development: From Basics to Advanced
-                  </h6>
+                  <h6>{courseData2[0]?.description}</h6>
                 </>
               )}
               {buttonPick === "FAQ" && (
@@ -157,6 +196,7 @@ const CourseView = () => {
                   ))}
                 </>
               )}
+
               {buttonPick === "Reviews" && (
                 <div className="ratings-courseview">
                   <div className="left-ratings-courseview">
@@ -237,32 +277,44 @@ const CourseView = () => {
               <h5>Course Content</h5>
               <h6>Lecture (15) Total (15.3hr)</h6>
             </div>
+
+
             <div className="right-bottom-options">
-              {[0, 1, 3, 4, 5, 6, 7].map((index) => (
-                <details
-                  key={index}
-                  open={!!openDetailsLeft[index]}
-                  onToggle={() => handleLeftToggle(index)}
-                >
-                  <summary>
-                    <FontAwesomeIcon
-                      icon={faAngleDown}
-                      className={
-                        openDetailsLeft[index] ? "up-icon" : "down-icon"
-                      }
-                    />
-                    <h5>Section 1 | Intro</h5>
-                    <h6>2 Videos | 24mins</h6>
-                  </summary>
-                  <div>
-                    <input type="checkbox" />
-                    <span>
-                      <h6>Getting Started</h6>
-                      <h6>1 Video | 14mins</h6>
-                    </span>
-                  </div>
-                </details>
-              ))}
+              
+                {courseData?.map((chapter, chapterIndex) => (
+                  <details
+                    key={chapter.chapter_id}
+                    open={!!openDetailsLeft[chapterIndex]}
+                    onToggle={() => handleLeftToggle(chapterIndex)}
+                  >
+                    <summary>
+                      <FontAwesomeIcon
+                        icon={faAngleDown}
+                        className={
+                          openDetailsLeft[chapterIndex]
+                            ? "up-icon"
+                            : "down-icon"
+                        }
+                      />
+                      <h5>{`Section ${chapter.chapter_no} | ${chapter.chapterTitle}`}</h5>
+                      <h6>{`${chapter.totalLessons} Videos | ${chapter.totalDuration} mins`}</h6>
+                    </summary>
+
+                    {chapter.lessons.map((lesson, lessonIndex) => (
+                      <div key={lesson.lesson_no}>
+                        <input type="checkbox" />
+                        <span>
+                          <h6>{lesson.lessonTitle}</h6>
+                          <h6>{`1 Video | ${lesson.duration} mins`}</h6>
+                        </span>
+                      </div>
+                    ))}
+                  </details>
+                ))
+             
+               
+}
+
             </div>
           </div>
         </div>

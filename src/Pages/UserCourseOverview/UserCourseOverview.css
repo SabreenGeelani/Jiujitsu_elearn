@@ -1,0 +1,515 @@
+.wrapper-userCourseview{
+    width: 100%;
+    height: max-content;
+    margin-bottom: 5vh;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 1vw;
+}
+.top-userCourseview{
+    width: 100%;
+    height: 25vh;
+    background: linear-gradient(92.01deg, #0C243C 0%, #7E8C9C 100%);
+    border-top-right-radius: 1vw;
+    border-top-left-radius: 1vw;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    gap: 1vh;
+    justify-content: center;
+    padding-left: 2vw;
+}
+.top-userCourseview h3{
+    font-size: 1.7vw;
+}
+.top-userCourseview h5{
+    font-size: 1vw;
+    font-weight: 400;
+}
+.top-userCourseview h6{
+    font-weight: 200;
+    font-size: 1.1vw;
+    color: #FFFFFF;
+    opacity: 0.8;
+}
+.top-userCourseview h6 .staricon{
+    font-size: 0.9vw;
+    color:#FFE500;
+    text-align:center;
+}
+.mid-userCourseview{
+    width: 100%;
+    height: 120vh;
+    /* background-color: greenyellow; */
+    display: flex;
+}
+.left-mid-userCourseview{
+    width: 60%;
+    height: 100%;
+    /* background-color: aqua; */
+    border-right: #7e8c9c86 1.5px solid;
+    border-bottom: #7e8c9c86 1.5px solid;
+    padding-left: 1vw;
+    padding-top: 1vh;
+    
+}
+.left-top-mid-userCourseview{
+    width: 97%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6vh;
+    
+}
+.left-top-mid-userCourseview h3{
+    font-size: 1.8vw;
+}
+.left-top-mid-userCourseview h5{
+    font-size: 1vw;
+    font-weight: 400;
+    line-height: 3.5vh;
+}
+.left-top-mid-userCourseview h4{
+    font-size: 1vw;
+}
+.left-top-mid-userCourseview h6{
+    font-size: 1vw;
+    font-weight: 400;
+}
+.left-top-mid-userCourseview ul li{
+    font-size: 1vw;
+}
+.left-bottom-mid-userCourseview{
+    /* background-color: blue; */
+    padding-top: 2vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 2.3vh;
+}
+.left-bottom-mid-userCourseview div{
+    overflow-y: auto;
+    height: 55vh;
+    /* background-color: #FFE500; */
+}
+.left-bottom-mid-userCourseview div details {
+    border: 1px solid #7E8C9C;
+    /* padding: 1vh 0vh 1vh 0vh; */
+    margin-top: 1.5vh;
+    list-style-type: none;
+    width: 95%;
+    border-radius: 0.5vw;
+}
+.left-bottom-mid-userCourseview div details summary h6{
+    display: flex;
+    gap: 1vw;
+    padding-left: 0.5vw;
+}
+.left-bottom-mid-userCourseview div details div{
+    display: flex;
+    align-items: center;
+    /* background-color: #7E8C9C; */
+    width: 100%;
+    height: 6vh;
+    border-top: 1px solid #7E8C9C;
+    justify-content: space-between;
+    padding: 0 2vw 0 1vw;
+    transition: all 0.5s ease-in-out;
+}
+.left-bottom-mid-userCourseview div details div h6{
+    font-weight: 400;
+    font-size: 1.1vw;
+    display: flex;
+    align-items: center;
+    gap: 2vw;
+}
+
+.left-bottom-mid-userCourseview div details summary {
+    
+    list-style: none;
+    position: relative;
+    cursor: pointer;
+    padding: 1.5vh;
+}
+.left-bottom-mid-userCourseview div details summary div{
+    margin-top: 2vh;
+    
+}
+.left-bottom-mid-userCourseview div details summary .up-icon {
+    position: absolute;
+    right: 10%;
+    transition: transform 0.3s ease;
+}
+.left-bottom-mid-userCourseview div details summary .up-icon {
+    right: 10%;
+    transform: rotate(180deg); /* Rotates the icon when details is open */
+}
+.left-bottom-mid-userCourseview div details summary .down-icon {
+    position: absolute;
+    right: 10%;
+    transition: transform 0.3s ease;
+}
+.left-bottom-mid-userCourseview div details summary::-webkit-details-marker {
+    display: none;
+}
+.right-mid-userCourseview{
+    width: 40%;
+    height: 100%;
+    /* background-color: aquamarine; */
+    position: relative;
+}
+.right-mid-userCourseview .tumbnail-userCourseview{
+    position: absolute;
+    height: 27vh;
+    border-radius: 1vw;
+    top: -10vh;
+    left: 2.5vw;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+.pricing-right-mid-userCourseview{
+    /* background-color: #FFE500; */
+    margin-top: 17vh;
+    height: 10vh;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 4vw 0 3vw;
+}
+.pricing-right-mid-userCourseview span{
+    display: flex;
+    gap: 0.5vw;
+}
+.pricing-right-mid-userCourseview span h5{
+    font-size: 1.3vw;
+    font-weight: 400;
+}
+.pricing-right-mid-userCourseview span h5:first-child{
+    color: #7e8c9cb9;
+    text-decoration: line-through;
+}
+.pricing-right-mid-userCourseview div{
+    background: linear-gradient(97.89deg, #0C243C 0%, #7E8C9C 95.36%);
+    height: 60%;
+    width: 8vw;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 0.3vw;
+    cursor: pointer;
+}
+.details-right-mid-userCourseview{
+    height: 27%;
+    width: 75%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 0.5vw;
+    margin-left: 3vw;
+    display: flex;
+    flex-direction: column;
+    gap: 3vh;
+    justify-content: center;
+    padding-left: 1.5vw;
+    margin-top: 1vh;
+}
+.details-right-mid-userCourseview span{
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    gap: 0.7vw;
+    width: 90%;
+}
+.details-right-mid-userCourseview span h5{
+    font-size: 1.3vw;
+    font-weight: 500;
+}
+.details-right-mid-userCourseview span h6{
+    font-size: 1vw;
+    font-weight: 400;
+}
+.courseby-right-mid-userCourseview{
+    height: 10vh;
+    width: 100%;
+    /* background-color: aquamarine; */
+    padding-left: 3vw;
+    margin-top: 1vh;
+}
+.courseby-right-mid-userCourseview span{
+    /* background-color: blue; */
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 1vw;
+    /* padding-left: 1vw; */
+}
+.courseby-right-mid-userCourseview span img{
+    height: 55%;
+    width: 10%;
+    border-radius: 2vw;
+}
+.ratings-right-mid-userCourseview{
+    /* background-color: #ff0000; */
+    height: 48.5vh;
+    padding-top: 4vh;
+    padding-left: 1vw;
+    padding-right: 1vw;
+}
+.ratings-right-mid-userCourseview .map-ratings-right-mid-userCourseview{
+    overflow-y: auto;
+    height: 90%;
+}
+.ratings-right-mid-userCourseview div div{
+    display: flex;
+    border-bottom: 1px solid #7E8C9C;
+    padding-left: 1vw;
+    height: 15vh;
+    margin-top: 1vh;
+    
+}
+.ratings-right-mid-userCourseview h5:first-child{
+    margin-left: 2vw;
+}
+.ratings-right-mid-userCourseview div div div:first-child img{
+    height: 2.5vw;
+    width: 2.5vw;
+    border-radius: 3vw;
+}
+.ratings-right-mid-userCourseview div div div:first-child{
+    display: block;
+    border: none;
+    width: 15vw;
+    height: 14vh;
+    /* background-color: yellow; */
+}
+.ratings-right-mid-userCourseview div div div:first-child h5{
+    font-size: 1.2vw;
+    font-weight: 400;
+}
+.ratings-right-mid-userCourseview div div div:first-child p{
+    font-size: 1vw;
+    font-weight: 1vw;
+}
+.ratings-right-mid-userCourseview div div div:last-child{
+    border: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8vh;
+    padding-top: 2vh;
+    width: 20vw;
+}
+.ratings-right-mid-userCourseview div div div:last-child span{
+    display: flex;
+    gap: 0.2vw;
+}
+.ratings-right-mid-userCourseview div div div:last-child p{
+    font-size: 1vw;
+
+}
+.bottom-userCourseview{
+    width: 100%;
+    height: 70vh;
+    /* background-color: blue; */
+    padding: 4vh 1vw 1vh 1vw;
+    border-bottom-right-radius: 1vw;
+    border-bottom-left-radius: 1vw;
+}
+.bottom-userCourseview span{
+    display: flex;
+    align-items: center;
+    gap: 1vw;
+}
+.bottom-userCourseview span h3{
+    font-size: 1.6vw;
+    font-weight: 400;
+    
+}
+.bottom-userCourseview span div {
+    height: 1.3vh;
+    width: 8vw; 
+    background-color: transparent; 
+    border-radius: 0.2vw;
+    position: relative;
+    text-align: center; /* Center text inside the div */
+    z-index: 900;
+    transform: rotate(-1deg);
+    margin-bottom: 3vh;
+    
+}
+.bottom-userCourseview span div p{
+    font-weight: 700;
+    color:white;
+    position: absolute;
+    z-index: 1000;
+    transform: rotate(1deg);
+}
+.bottom-userCourseview span div::before, .bottom-userCourseview span div::after , .bottom-userCourseview span span::after{
+    content: "";
+    position: absolute;
+    height: 1.3vh;
+    width: 8.2vw;
+    /* background-color: blue; */
+    border-radius: 0.2vw;
+    top: 0;
+    left: 0;
+    /* z-index: 900; */
+}
+
+ .bottom-userCourseview span div::before {
+ 
+    left: -3%;
+    background: #0C243C;
+
+    top: 100%;
+    z-index: 900;
+} 
+.bottom-userCourseview span span::after{
+    content: "";
+    background: #0C243C;
+
+    height: 1.3vh;
+    width: 8vw; 
+    position: absolute;
+    transform: rotate(0deg);
+    top: 10%;
+    left: -8%;
+    border-radius: 0.2vw;
+    z-index: 800;
+}
+
+.bottom-userCourseview span div::after {
+    top: 190%;
+    left: -5%;  
+    background: #0C243C;
+    z-index: 900;
+}
+.cards-userCourseview{
+    padding: 0 2vw 0 2vw;
+    margin-top: 2vh;
+    display: flex;
+    height: 100%;
+    gap: 1.5vw; /* Adjust the gap between items */
+    margin-bottom: 4vh;
+    overflow-x: auto;
+    width: 100%;
+    /* background-color: blue; */
+}
+.cards-userCourseview::-webkit-scrollbar {
+    display: none; /* Safari and Chrome */
+}
+.card-bottom-userCourseview{
+    height: 55vh;
+    min-width: 17vw;
+    background-color: white;
+    border-radius: 0.50vw;
+    padding: 0.5vw;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+.card-bottom-userCourseview:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+.card-bottom-userCourseview img{    
+    height: 50%;
+    width: 100%;
+    border-radius: 0.50vw;
+}
+.middle-sec-card-userCourseview{
+    height: 10%;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 3%;
+}
+.middle-sec-card-userCourseview div{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5vw;
+}
+.addCourse-card-userCourseview{
+    height: 100%;
+    width: 35%;
+    background: linear-gradient(97.89deg, #0C243C 0%, #7E8C9C 95.36%);
+    border-radius: 0.26vw;
+    color: white;
+}
+.card-bottom-userCourseview h6{
+    font-weight: 300;
+    font-size: 1vw;
+}
+
+.pricing-card-userCourseview h5:first-child{
+    text-decoration: none;
+    font-size: 0.8vw;
+    color: #7E8C9C;
+}
+.card-bottom-userCourseview p{
+    font-size: 0.9vw;
+    font-weight: 300;
+}
+.card-bottom-userCourseview h5{
+    font-size: 1.2vw;
+}
+.card-bottom-userCourseview h4{
+    font-size: 0.9vw;
+    font-weight: 400;
+    width: 80%;
+}
+
+.no-userCourseview-userCourseview{
+    
+    height: 40vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 2vh;
+}
+.no-userCourseview-userCourseview div{
+    background: linear-gradient(95.64deg, #0C243C 0.92%, #7E8C9C 70.85%);
+    height: 100%;
+    width: 90%;
+    border-radius: 1.67vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1vw;
+    color: white;
+}
+.add-icon-userCourseview{
+    height: 25%;
+    cursor: pointer;
+}
+.no-userCourseview-userCourseview div h5{
+    font-weight: 100;
+}
+.no-userCourseview-userCourseview div h1{
+    font-weight: 400;
+}
+.bottom-card-useruserCourseview{
+    height: 14%;
+    /* background-color: blue; */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 1vh;
+}
+.bottom-card-useruserCourseview span{
+    display: flex;
+    gap: 0.2vw;
+}
+.bottom-card-useruserCourseview span h5:first-child{
+    text-decoration: line-through;
+    /* font-size: 0.8vw; */
+    color: #7E8C9C;
+}
+.bottom-card-useruserCourseview div{
+    background: linear-gradient(97.89deg, #0C243C 0%, #7E8C9C 95.36%);
+    height: 80%;
+    width: 40%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 0.26vw;
+    color: white;
+    cursor: pointer;  
+}
