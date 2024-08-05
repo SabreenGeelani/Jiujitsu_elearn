@@ -17,6 +17,7 @@ import Settings from "./Pages/Settings/Settings";
 import UserCourses from "./Pages/UserCourses/UserCourses";
 import UserCourseOverview from "./Pages/UserCourseOverview/UserCourseOverview";
 import UserCart from "./Pages/UserCart/UserCart";
+import Checkout from "./Pages/Checkout/Checkout";
 
 function App() {
   return (
@@ -33,13 +34,19 @@ function App() {
             <Route path="/courseView/:id" element={<CourseView />} />
             <Route path="/courseCreation" element={<CourseCreation />} />
 
+            
+            <Route path="/userCourseView/:id" element={<UserCourseOverview/>} />
+            <Route path="/userCart" element={<UserCart/>} />
+            <Route path="/checkout" element={<Checkout/>} />
+
+
             <Route path="/addLesson/:id" element={<AddLesson />} />
             <Route path="/messages" element={<Messages />} />
             <Route path="/purchase" element={<PurchaseHistory />} />
             <Route path="/settings" element={<Settings />} />
 
-            <Route path="/userCourseView" element={<UserCourseOverview/>} />
-            <Route path="/userCart" element={<UserCart/>} />
+          
+
 
           </Routes>
         </Layout>
