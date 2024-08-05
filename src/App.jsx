@@ -9,6 +9,11 @@ import CourseCreation from "./Pages/CourseCreation/CourseCreation";
 import AddLesson from "./Pages/AddLesson/AddLesson";
 import Courses from "./Pages/Courses/Courses";
 import CourseView from "./Pages/Course overview/CourseView";
+
+import Messages from "./Pages/UserModule/Messages/Messages";
+import PurchaseHistory from "./Pages/PurchaseHistory/PurchaseHistory";
+import Settings from "./Pages/Settings/Settings";
+
 import UserCourses from "./Pages/UserCourses/UserCourses";
 import UserCourseOverview from "./Pages/UserCourseOverview/UserCourseOverview";
 import UserCart from "./Pages/UserCart/UserCart";
@@ -20,7 +25,6 @@ function App() {
         <Toaster position="top-right" />
         <Layout>
           <Routes>
-
             <Route path="/" exact element={<Login />} />
             <Route path="/signUp" element={<SignUp />} />
             <Route path="/verifyEmail" element={<VerifyEmail />} />
@@ -28,9 +32,15 @@ function App() {
             <Route path="/userCourses" element={<UserCourses/>}/>
             <Route path="/courseView/:id" element={<CourseView />} />
             <Route path="/courseCreation" element={<CourseCreation />} />
-            <Route path="/addLesson" element={<AddLesson />} />
+
+            <Route path="/addLesson/:id" element={<AddLesson />} />
+            <Route path="/messages" element={<Messages />} />
+            <Route path="/purchase" element={<PurchaseHistory />} />
+            <Route path="/settings" element={<Settings />} />
+
             <Route path="/userCourseView" element={<UserCourseOverview/>} />
             <Route path="/userCart" element={<UserCart/>} />
+
           </Routes>
         </Layout>
       </BrowserRouter>

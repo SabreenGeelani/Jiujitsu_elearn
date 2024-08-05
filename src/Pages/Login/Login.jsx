@@ -91,7 +91,7 @@ export default function Login() {
         <div className="signUp-form col-md-5 w-50 p-4">
           <div className="signup-start mt-0">
             <h2 className="mt-3">Sign In</h2>
-            <p>Start your Inspiring journey now!</p>
+            <p className="mb-4">Start your Inspiring journey now!</p>
           </div>
           <div className="signup-auth">
             <button
