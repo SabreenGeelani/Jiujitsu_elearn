@@ -12,6 +12,7 @@ import CourseView from "./Pages/Course overview/CourseView";
 import UserCourses from "./Pages/UserCourses/UserCourses";
 import UserCourseOverview from "./Pages/UserCourseOverview/UserCourseOverview";
 import UserCart from "./Pages/UserCart/UserCart";
+import Checkout from "./Pages/Checkout/Checkout";
 
 function App() {
   return (
@@ -20,7 +21,6 @@ function App() {
         <Toaster position="top-right" />
         <Layout>
           <Routes>
-
             <Route path="/" exact element={<Login />} />
             <Route path="/signUp" element={<SignUp />} />
             <Route path="/verifyEmail" element={<VerifyEmail />} />
@@ -29,8 +29,9 @@ function App() {
             <Route path="/courseView/:id" element={<CourseView />} />
             <Route path="/courseCreation" element={<CourseCreation />} />
             <Route path="/addLesson" element={<AddLesson />} />
-            <Route path="/userCourseView" element={<UserCourseOverview/>} />
+            <Route path="/userCourseView/:id" element={<UserCourseOverview/>} />
             <Route path="/userCart" element={<UserCart/>} />
+            <Route path="/checkout" element={<Checkout/>} />
           </Routes>
         </Layout>
       </BrowserRouter>

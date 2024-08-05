@@ -40,7 +40,7 @@ const Courses = () => {
     }
  });
 
-
+console.log(data || error)
 //  if(data.data === ){
 //     setcourse(false)
 //  }
@@ -84,7 +84,7 @@ const coursesData = useMemo(()=> data?.data || [],[data]);
           <h6>Add Course</h6>
         </div>
       </div>
-      {error?.response?.data?.message !== "No courses found"  ? (
+      {error?.response?.data?.message !== "no courses found"  ? (
         <div className="bottom-courses">{cards}</div>
       ) : (
         <div className="no-courses-courses">
