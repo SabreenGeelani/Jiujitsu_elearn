@@ -15,7 +15,7 @@
 .content {
   position: absolute;
   /* background-color: aqua; */
-  padding: 2rem 3rem;
+  padding: 1rem 3rem;
   top: 60px;
   right: 0;
   display: flex;

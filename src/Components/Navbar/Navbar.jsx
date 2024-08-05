@@ -7,6 +7,7 @@ import { BiSolidChevronRightSquare } from "react-icons/bi";
 import { IoIosAddCircleOutline, IoMdNotifications } from "react-icons/io";
 import { MdMessage } from "react-icons/md";
 import { PiFolderUserFill } from "react-icons/pi";
+import logo from "../../assets/istockphoto-841971598-1024x1024.jpg";
 
 const users = [
   {
@@ -77,7 +78,7 @@ export const Navbar = ({ collapsed }) => {
       {role && (
         <div onClick={handleProfileClick} style={{ cursor: "pointer" }}>
           <img
-            src="src/assets/istockphoto-841971598-1024x1024.jpg"
+            src={logo}
             alt=""
             className="rounded-circle"
             style={{
@@ -106,7 +107,7 @@ export const Navbar = ({ collapsed }) => {
         </div>
         <main className="text-center">
           <img
-            src="src/assets/istockphoto-841971598-1024x1024.jpg"
+            src={logo}
             alt=""
             className="rounded-circle mb-3"
             style={{
