@@ -1,13 +1,14 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./Navbar.css";
 import { CiSearch } from "react-icons/ci";
 import { CiFilter } from "react-icons/ci";
-
 import { BiSolidChevronRightSquare } from "react-icons/bi";
 import { IoIosAddCircleOutline, IoMdNotifications } from "react-icons/io";
 import { MdMessage } from "react-icons/md";
 import { PiFolderUserFill } from "react-icons/pi";
-import logo from "../../assets/istockphoto-841971598-1024x1024.jpg";
+import { FaCircleUser } from "react-icons/fa6";
+import { BsFillCartFill } from "react-icons/bs";
+import { Link } from "react-router-dom";
 
 const users = [
   {
@@ -35,10 +36,26 @@ const users = [
     image: "src/assets/istockphoto-841971598-1024x1024.jpg", // Replace with your actual image path
   },
 ];
+
 export const Navbar = ({ collapsed }) => {
   const searchInputRef = useRef(null);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const role = "expert";
+  const [user, setUser] = useState(() =>
+    JSON.parse(localStorage.getItem("user"))
+  );
+  const [token, setToken] = useState(localStorage.getItem("token"));
+  const userType = localStorage.getItem("userType");
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      setUser(JSON.parse(localStorage.getItem("user")));
+      setToken(localStorage.getItem("token"));
+    };
+
+    // Force re-render by checking for changes
+    const intervalId = setInterval(handleStorageChange, 1000);
+    return () => clearInterval(intervalId);
+  }, []);
 
   const handleIconClick = () => {
     searchInputRef.current.focus();
@@ -51,10 +68,10 @@ export const Navbar = ({ collapsed }) => {
   return (
     <nav
       className={`navbar navbar-expand-lg d-flex align-items-center ps-6 pe-5 ${
-        role === "expert" ? "justify-content-between" : "justify-content-center"
+        token ? "justify-content-between" : "justify-content-center"
       } ${collapsed ? "collapsed" : ""}`}
     >
-      <div className="d-flex gap-3 align-items-center w-60">
+      <div className="d-flex gap-3 align-items-center w-75">
         <div className="search-input input-group w-75">
           <label
             className="input-group-text search-icon border-end-0"
@@ -72,22 +89,31 @@ export const Navbar = ({ collapsed }) => {
             className="navbar-input form-control border-start-0 ps-0"
           />
         </div>
-        <CiFilter className="text-black fs-2 ms-3" />
-      </div>
 
-      {role && (
+        <CiFilter className="primary-color fs-2 ms-3 cursor-pionter" />
+      </div>
+      {userType === "user" && (
+        <Link to="/userCart">
+          <BsFillCartFill className="primary-color fs-2 ms-5 cursor-pionter" />
+        </Link>
+      )}
+      {token && (
         <div onClick={handleProfileClick} style={{ cursor: "pointer" }}>
-          <img
-            src={logo}
-            alt=""
-            className="rounded-circle"
-            style={{
-              height: "3rem",
-              width: "3rem",
-              objectFit: "cover",
-              border: "4px solid black",
-            }}
-          />
+          {user?.profile_picture === "" ? (
+            <FaCircleUser className="fs-2" />
+          ) : (
+            <img
+              src={user?.profile_picture}
+              alt="Profile"
+              className="rounded-circle"
+              style={{
+                height: "3rem",
+                width: "3rem",
+                objectFit: "cover",
+                border: "4px solid black",
+              }}
+            />
+          )}
         </div>
       )}
 
@@ -107,7 +133,7 @@ export const Navbar = ({ collapsed }) => {
         </div>
         <main className="text-center">
           <img
-            src={logo}
+            src={user?.profile_picture}
             alt=""
             className="rounded-circle mb-3"
             style={{
@@ -117,7 +143,9 @@ export const Navbar = ({ collapsed }) => {
               border: "4px solid black",
             }}
           />
-          <h4 className="fw-lightBold mb-1">Good Morning Basit</h4>
+          <h4 className="fw-lightBold mb-1 text-capitalize">
+            Good Morning {user?.name.split(" ")[0]}
+          </h4>
           <p
             className="text-center lightgray-color fs-small mb-3"
             style={{ lineHeight: "14.52px" }}

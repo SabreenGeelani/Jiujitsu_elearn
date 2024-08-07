@@ -49,7 +49,8 @@ export default function Login() {
     axios
       .post(`${BASE_URI}/api/v1/auth/login`, data)
       .then((resp) => {
-        localStorage.setItem("user", resp.data.Data);
+        console.log(resp.data.Data);
+        localStorage.setItem("user", JSON.stringify(resp.data.Data));
         localStorage.setItem("userType", resp.data.Data.user_type);
         localStorage.setItem("token", resp.data.token);
         setData({
@@ -57,7 +58,12 @@ export default function Login() {
           password: "",
         });
         toast.success("Logged In Successfully!");
-        navigate("/courses");
+        if (resp.data.Data.user_type === "expert") {
+          navigate("/courses");
+        } else if (resp.data.Data.user_type === "user") {
+          navigate("/userCourses");
+        }
+
         setIsLoding(false);
       })
       .catch((err) => {
@@ -67,8 +73,12 @@ export default function Login() {
       });
   };
 
-  if (localStorage.getItem("rememberMee")) {
-    return <Navigate to="/courses" />;
+  if (localStorage.getItem("rememberMe")) {
+    if (localStorage.getItem("userType") === "expert") {
+      return <Navigate to="/courses" />;
+    } else if (localStorage.getItem("userType") === "user") {
+      return <Navigate to="/userCourses" />;
+    }
   }
   return (
     <div className="container-fluid signin-container ">
@@ -94,25 +104,11 @@ export default function Login() {
             <p className="mb-4">Start your Inspiring journey now!</p>
           </div>
           <div className="signup-auth">
-            <button
-              type="button"
-              className="bttns google-signup border border-black"
-              style={{
-                background: "none",
-                color: "black",
-              }}
-            >
+            <button type="button" className="bttns google-signup">
               <FcGoogle className="googleIcon" />
               Signup with Google
             </button>
-            <button
-              type="button"
-              className="bttns  border border-black"
-              style={{
-                background: "none",
-                color: "black",
-              }}
-            >
+            <button type="button" className="bttns">
               <FaApple className="appleIcon" />
               Signup with Apple
             </button>

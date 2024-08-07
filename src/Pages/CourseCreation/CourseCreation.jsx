@@ -7,6 +7,7 @@ import useFetch from "../../hooks/useFetch";
 import axios from "axios";
 import toast from "react-hot-toast";
 import Modal from "../../Components/Modal/Modal";
+import { Link } from "react-router-dom";
 
 export default function CourseCreation() {
   const [courseData, setCourseData] = useState({
@@ -113,7 +114,9 @@ export default function CourseCreation() {
       <header className="d-flex align-items-center justify-content-between py-3">
         <h3 className="fw-bold">Course Creation</h3>
         <button className="signup-now py-2 px-3 fw-lightBold mb-0 h-auto">
-          Cancel
+          <Link to="/courses" className="text-decoration-none text-white">
+            Cancel
+          </Link>
         </button>
       </header>
       <main className="custom-box px-5 py-5">
