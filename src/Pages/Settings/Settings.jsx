@@ -129,7 +129,12 @@ export default function Settings() {
   };
 
   const handleNextAction = () => {
+    setIsModalDelete(false);
     setFinalDelete(true);
+    localStorage.removeItem("user");
+    localStorage.removeItem("userType");
+    localStorage.removeItem("token");
+    localStorage.removeItem("rememberMe");
   };
 
   const handleEditNameClick = () => {
