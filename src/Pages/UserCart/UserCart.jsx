@@ -28,7 +28,7 @@ const UserCart = () => {
           </div>
           <div className="mid-left-right-usercart">
               <h6>$10.99 <FontAwesomeIcon icon={faTag} className='tag-usercart'/></h6>
-              <h6>$15.99</h6>
+              <span><p>$15.99</p></span>
               <div><p>-</p><p>1</p><p>+</p></div>
           </div>
         </div>

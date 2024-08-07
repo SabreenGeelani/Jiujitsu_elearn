@@ -1,11 +1,12 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import "./UserCourses.css";
 import cardImage from "../../assets/coursesCard.png";
 import useFetch from "../../hooks/useFetch";
 import { BASE_URI } from "../../Config/url";
+import { useNavigate } from "react-router-dom";
 
-const Card = ({ category, description, expert, price, discount, tags, thumbnail }) => (
-  <div className="card-bottom-userCourses">
+const Card = ({ id, category, description, expert, price, discount, tags, thumbnail, onClick }) => (
+  <div className="card-bottom-userCourses" onClick={()=> onClick(id)}>
     <img src={cardImage} alt="Course image" />
     <div className="middle-sec-card-userCourses">
       <div className="addCourse-card-userCourses">
@@ -28,38 +29,64 @@ const Card = ({ category, description, expert, price, discount, tags, thumbnail 
 );
 
 const UserCourses = () => {
-  const [selectedCategory, setSelectedCategory] = useState("Frontend");
+  const navigate = useNavigate();
+  const token = localStorage.getItem("token"); 
 
-  const categories = [
-    "Frontend",
-    "Web Development",
-    "UI / UX",
-    "Basics AI",
-    "JAVA",
-    "Pyton",
-    "React",
-    "Full Stack",
-    "SQL"
-  ];
+  // const categories = [
+  //   "Frontend",
+  //   "Web Development",
+  //   "UI / UX",
+  //   "Basics AI",
+  //   "JAVA",
+  //   "Pyton",
+  //   "React",
+  //   "Full Stack",
+  //   "SQL"
+  // ];
 
-  const handleCategoryClick = (category) => {
-    setSelectedCategory(category);
-  };
+  
 
-  const url = `${BASE_URI}/api/v1/courses`
-  const token = localStorage.getItem("token");
-  const { data, isLoading, error, refetch } = useFetch(url, {
-    headers: {
-        Authorization : "Bearer " + token
-    }
- });
+ 
+   
+const [initialCategory, setInitialCategory] = useState("")
+const url2 = `${BASE_URI}/api/v1/category/`
+// const token2 = localStorage.getItem("token");
+const { data:data2, isLoading2, error2, refetch2 } = useFetch(url2, {
+  headers: {
+      Authorization : "Bearer " + token
+  }
+});
+// console.log(data2)
+const categories = useMemo(()=> data2?.data || [],[data2]);
+useEffect(() => {
+  setInitialCategory(categories[0]?.name)
+},[])
+// console.log(categories[0]?.name);
 
+const [selectedCategory, setSelectedCategory] = useState(initialCategory);
+
+
+const handleCategoryClick = (category) => {
+  // console.log(category)
+  setSelectedCategory(category);
+  
+};
+let url = `${BASE_URI}/api/v1/courses/userDashboard/courses?category=${selectedCategory}`
+
+const { data, isLoading, error, refetch } = useFetch(url, {
+  headers: {
+      Authorization : "Bearer " + token
+  }
+});
+console.log(error && error)
 const coursesData = useMemo(()=> data?.data || [],[data]);
-console.log(coursesData)
-  // const cards = Array.from({ length: 8 }, (_, index) => <Card key={index} />);
 
+
+const handleNavigate = (id)=>{
+  navigate(`/userCourseView/${id}`)
+}
   return (
-    <div className="wrapper-courses">
+    <div className="wrapper-courses w-100">
       <div className="top-courses">
         <h4>Courses</h4>
         {/* <div className="top-button">
@@ -69,9 +96,9 @@ console.log(coursesData)
       <div className="categories-userCourses">
         {categories.map((category) => (
           <div
-            key={category}
-            className={ selectedCategory === category ? "button-categories-userCourses":"not-button-categories-userCourses"}
-            onClick={() => handleCategoryClick(category)}
+            key={category.id}
+            className={ selectedCategory === category.name ? "button-categories-userCourses":"not-button-categories-userCourses"}
+            onClick={() => handleCategoryClick(category.name)}
             // style={{
             //   backgroundColor: selectedCategory === category ? 'blue' : 'gray',
             //   color: 'white',
@@ -82,23 +109,28 @@ console.log(coursesData)
             //   cursor: 'pointer',
             // }}
           >
-            <h4>{category}</h4>
+            <h4>{category.name}</h4>
           </div>
         ))}
       </div>
       <div className="bottom-userCourses">
-      {coursesData.map(course => (
-          <Card
-            key={course.id}
-            category={course.category}
-            description={course.description}
-            expert={course.expert}
-            price={course.price}
-            discount={course.discount}
-            tags={course.tags}
-            thumbnail={course.thumbnail}
-          />
-        ))}
+      {error?.response?.data?.message === "No courses found" ? <h1>No courses found</h1>:
+      coursesData.map(course => (
+        <Card
+          key={course.id}
+          id={course.id}
+          category={course.category}
+          description={course.description}
+          expert={course.expert}
+          price={course.price}
+          discount={course.discount}
+          tags={course.tags}
+          thumbnail={course.thumbnail}
+          onClick={handleNavigate}
+        />
+      ))
+      
+      }
       </div>
     </div>
   );

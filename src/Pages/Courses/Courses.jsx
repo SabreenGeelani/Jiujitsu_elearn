@@ -47,11 +47,12 @@ const Courses = () => {
     },
   });
 
-  //  if(data.data === ){
-  //     setcourse(false)
-  //  }
 
-  //  error && console.log(error.response.data.message);
+console.log(data || error)
+//  if(data.data === ){
+//     setcourse(false)
+//  }
+
 
   //   if (error.response.data.message === "No courses found"){
   //   return setcourse(false);
@@ -94,7 +95,9 @@ const Courses = () => {
           </h6>
         </div>
       </div>
-      {error?.response?.data?.message !== "no courses found" ? (
+
+      {error?.response?.data?.message !== "no courses found"  ? (
+
         <div className="bottom-courses">{cards}</div>
       ) : (
         <div className="no-courses-courses">

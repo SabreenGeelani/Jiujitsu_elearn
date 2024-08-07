@@ -1,51 +1,53 @@
-.top-courses {
-  height: 10vh;
-  width: 100%;
-  display: flex;
-  margin-top: 0;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 0vw 0 0vw;
+
+.top-courses{
+    height: 10vh;
+    width: 100%;
+    display: flex;
+    margin-top: 0;
+    justify-content: start;
+    align-items: center;
+    padding: 0 0vw 0 0vw;
 }
-.top-courses h4 {
-  font-weight: 700;
+.top-courses h4{
+    font-weight: 700;
 }
-.top-button {
-  background: linear-gradient(97.89deg, #0c243c 0%, #7e8c9c 95.36%);
-  height: 60%;
-  width: 11%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 0.26vw;
-  color: white;
-  cursor: pointer;
+.top-button{
+    background: linear-gradient(97.89deg, #0C243C 0%, #7E8C9C 95.36%);
+    height: 60%;
+    width: 11%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 0.26vw;
+    color: white;
+    cursor: pointer;
 }
-.top-button h6 {
-  font-weight: 400;
+.top-button h6{
+    font-weight: 400;
 }
-.categories-userCourses {
-  /* background-color: blue; */
-  height: 7vh;
-  width: max-content;
-  border-bottom: 1px solid #7e8c9c;
-  /* margin-left: 2vw; */
-  display: flex;
-  gap: 2vw;
+.categories-userCourses{
+    /* background-color: blue; */
+    height: 7vh;
+    width: 100%;
+    border-bottom: 1px solid #7E8C9C;
+    /* margin-left: 2vw; */
+    display: flex;
+    gap: 2vw;
 }
-.categories-userCourses .button-categories-userCourses {
-  height: 100%;
-  width: max-content;
-  padding: 0 0.8vw 0 0.8vw;
-  color: white;
-  background: linear-gradient(360deg, #ffffff 0%, #0c243c 100%);
-  border-top-right-radius: 0.8vw;
-  border-top-left-radius: 0.8vw;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.5s ease-in-out;
+.categories-userCourses .button-categories-userCourses{
+    height: 100%;
+    width: max-content;
+    padding: 0 0.8vw 0 0.8vw;
+    color: white;
+    background: linear-gradient(360deg, #FFFFFF 0%, #0C243C 100%);
+    border-top-right-radius:0.8vw ;
+    border-top-left-radius: 0.8vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.5s ease-in-out;
+
 }
 
 .categories-userCourses .not-button-categories-userCourses {
