@@ -1,5 +1,12 @@
 
-.top-courses{
+#userCoursesLoader{
+    /* transform: rotate(90deg); */
+    position: absolute;
+    left: 50%;
+    top: 40%;
+}
+.top-userCourses{
+
     height: 10vh;
     width: 100%;
     display: flex;
@@ -8,7 +15,7 @@
     align-items: center;
     padding: 0 0vw 0 0vw;
 }
-.top-courses h4{
+.top-userCourses h4{
     font-weight: 700;
 }
 .top-button{

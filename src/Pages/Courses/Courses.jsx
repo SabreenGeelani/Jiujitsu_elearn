@@ -7,19 +7,10 @@ import { faSquarePlus } from "@fortawesome/free-solid-svg-icons";
 import useFetch from "../../hooks/useFetch";
 import { BASE_URI } from "../../Config/url";
 
-const Card = ({
-  id,
-  onClick,
-  title,
-  description,
-  price,
-  discount,
-  thumbnail,
-  name,
-  category,
-}) => (
-  <div className="card-bottom-courses" onClick={() => onClick(id)}>
-    <img src={cardImage || thumbnail} alt="Course image" />
+import { SyncLoader } from "react-spinners";
+const Card = ({id, onClick, title, description, price, discount, thumbnail, name, category}) => (
+  <div className="card-bottom-courses" onClick={()=> onClick(id)}>
+    <img src={cardImage || thumbnail} alt="Course image"/>
     <div className="middle-sec-card-courses">
       <div className="addCourse-card-courses">
         <h6>{category}</h6>
@@ -81,7 +72,10 @@ console.log(data || error)
   ));
 
   return (
-    <div className="wrapper-courses">
+    <>
+    
+    
+    {isLoading? <SyncLoader id="spinner-usercourseview" size={8} color="black"/> : <div className="wrapper-courses">
       <div className="top-courses">
         <h4>Courses</h4>
         <div className="top-button">
@@ -119,7 +113,9 @@ console.log(data || error)
           </div>
         </div>
       )}
-    </div>
+    </div>}
+    </>
+    
   );
 };
 
