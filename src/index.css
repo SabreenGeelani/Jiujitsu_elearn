@@ -78,3 +78,6 @@ input::placeholder {
   background: linear-gradient(92.36deg, #0c243c 0%, #7e8c9c 98.67%);
   color: white;
 }
+.hover-underline:hover {
+  text-decoration: underline;
+}

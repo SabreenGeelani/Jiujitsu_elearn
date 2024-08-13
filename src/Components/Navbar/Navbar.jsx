@@ -52,7 +52,6 @@ export const Navbar = ({ collapsed }) => {
       setToken(localStorage.getItem("token"));
     };
 
-    // Force re-render by checking for changes
     const intervalId = setInterval(handleStorageChange, 1000);
     return () => clearInterval(intervalId);
   }, []);
