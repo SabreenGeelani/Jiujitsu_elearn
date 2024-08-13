@@ -2,10 +2,11 @@ import { useEffect, useMemo, useState } from "react";
 import "./Courses.css";
 import cardImage from "../../assets/coursesCard.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { faSquarePlus } from "@fortawesome/free-solid-svg-icons";
 import useFetch from "../../hooks/useFetch";
 import { BASE_URI } from "../../Config/url";
+
 import { SyncLoader } from "react-spinners";
 const Card = ({id, onClick, title, description, price, discount, thumbnail, name, category}) => (
   <div className="card-bottom-courses" onClick={()=> onClick(id)}>
@@ -21,44 +22,40 @@ const Card = ({id, onClick, title, description, price, discount, thumbnail, name
     </div>
     <p>{name}, Designer at Raybit...</p>
     <h5>{title}</h5>
-    <h4>{description?.split(' ').slice(0, 8).join(' ') + '...'}</h4>
+    <h4>{description?.split(" ").slice(0, 8).join(" ") + "..."}</h4>
   </div>
 );
 
 const Courses = () => {
   const navigate = useNavigate();
   const [course, setcourse] = useState(true);
-  
 
-
-
-  const url = `${BASE_URI}/api/v1/courses/expertCourses`
+  const url = `${BASE_URI}/api/v1/courses/expertCourses`;
   const token = localStorage.getItem("token");
   const { data, isLoading, error, refetch } = useFetch(url, {
     headers: {
-        Authorization : "Bearer " + token
-    }
- });
+      Authorization: "Bearer " + token,
+    },
+  });
+
 
 console.log(data || error)
 //  if(data.data === ){
 //     setcourse(false)
 //  }
 
-//  error && console.log(error.response.data.message);
- 
- 
-//   if (error.response.data.message === "No courses found"){
-//   return setcourse(false);
-//  }
-// console.log(error)
 
-const coursesData = useMemo(()=> data?.data || [],[data]);
-// console.log(coursesData)
+  //   if (error.response.data.message === "No courses found"){
+  //   return setcourse(false);
+  //  }
+  // console.log(error)
+
+  const coursesData = useMemo(() => data?.data || [], [data]);
+  // console.log(coursesData)
   const handleCardClick = (id) => {
     navigate(`/courseView/${id}`);
   };
-  
+
   const cards = coursesData.map((course, index) => (
     <Card
       key={index}
@@ -66,15 +63,13 @@ const coursesData = useMemo(()=> data?.data || [],[data]);
       id={course.id}
       title={course.title}
       description={course.description}
-      price={course.price} 
+      price={course.price}
       discount={course.discount}
       thumbnail={course.thumbnail}
       category={course.category}
       name={course.name}
     />
   ));
-
-
 
   return (
     <>
@@ -84,10 +79,19 @@ const coursesData = useMemo(()=> data?.data || [],[data]);
       <div className="top-courses">
         <h4>Courses</h4>
         <div className="top-button">
-          <h6>Add Course</h6>
+          <h6>
+            <Link
+              to="/courseCreation"
+              className="text-decoration-none text-white"
+            >
+              Add Course{" "}
+            </Link>
+          </h6>
         </div>
       </div>
+
       {error?.response?.data?.message !== "no courses found"  ? (
+
         <div className="bottom-courses">{cards}</div>
       ) : (
         <div className="no-courses-courses">
@@ -97,7 +101,15 @@ const coursesData = useMemo(()=> data?.data || [],[data]);
               Get started by uploading your first course and inspire athletes
               around the world!
             </h5>
-            <FontAwesomeIcon icon={faSquarePlus} className="add-icon-courses" />
+            <Link
+              to="/courseCreation"
+              className="text-decoration-none text-white"
+            >
+              <FontAwesomeIcon
+                icon={faSquarePlus}
+                className="add-icon-courses"
+              />
+            </Link>
           </div>
         </div>
       )}
