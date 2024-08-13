@@ -5,6 +5,10 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     border-radius: 1vw;
 }
+#spinner-usercourseview{
+    position: absolute;
+    top: 40%;
+}
 .top-userCourseview{
     width: 100%;
     height: 25vh;
