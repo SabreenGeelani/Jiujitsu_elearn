@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import React,{ useMemo, useState } from "react";
 import "./CourseView.css";
 import videoPlayer from "../../assets/videoPlayer.png";
 import profile from "../../assets/profile.png";

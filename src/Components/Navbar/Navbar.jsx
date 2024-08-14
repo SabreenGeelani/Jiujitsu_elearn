@@ -9,7 +9,6 @@ import { PiFolderUserFill } from "react-icons/pi";
 import { FaCircleUser } from "react-icons/fa6";
 import { BsFillCartFill } from "react-icons/bs";
 import { Link } from "react-router-dom";
-
 const users = [
   {
     id: 1,
@@ -36,7 +35,6 @@ const users = [
     image: "src/assets/istockphoto-841971598-1024x1024.jpg", // Replace with your actual image path
   },
 ];
-
 export const Navbar = ({ collapsed }) => {
   const searchInputRef = useRef(null);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -45,7 +43,6 @@ export const Navbar = ({ collapsed }) => {
   );
   const [token, setToken] = useState(localStorage.getItem("token"));
   const userType = localStorage.getItem("userType");
-
   useEffect(() => {
     const handleStorageChange = () => {
       setUser(JSON.parse(localStorage.getItem("user")));
@@ -55,15 +52,12 @@ export const Navbar = ({ collapsed }) => {
     const intervalId = setInterval(handleStorageChange, 1000);
     return () => clearInterval(intervalId);
   }, []);
-
   const handleIconClick = () => {
     searchInputRef.current.focus();
   };
-
   const handleProfileClick = () => {
     setIsProfileOpen(!isProfileOpen);
   };
-
   return (
     <nav
       className={`navbar navbar-expand-lg d-flex align-items-center ps-6 pe-5 ${
@@ -88,7 +82,6 @@ export const Navbar = ({ collapsed }) => {
             className="navbar-input form-control border-start-0 ps-0"
           />
         </div>
-
         <CiFilter className="primary-color fs-2 ms-3 cursor-pionter" />
       </div>
       {userType === "user" && (
@@ -115,7 +108,6 @@ export const Navbar = ({ collapsed }) => {
           )}
         </div>
       )}
-
       <div
         className={`profile-bar rounded-4 text-black px-4 py-4 ${
           isProfileOpen ? "open" : ""
@@ -171,9 +163,7 @@ export const Navbar = ({ collapsed }) => {
               <PiFolderUserFill className="fs-4 primary-color" />
             </p>
           </div>
-
           <div style={{ height: "8rem" }}></div>
-
           <div>
             <div className="d-flex align-items-center justify-content-between mb-3">
               <h4 className="fw-lightBold mb-0">Other Experts</h4>
