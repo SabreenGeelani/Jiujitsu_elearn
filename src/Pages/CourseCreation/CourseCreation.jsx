@@ -8,6 +8,8 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import Modal from "../../Components/Modal/Modal";
 import { Link } from "react-router-dom";
+import ReactQuill from "react-quill";
+import DOMPurify from "dompurify";
 
 export default function CourseCreation() {
   const [courseData, setCourseData] = useState({
@@ -46,14 +48,19 @@ export default function CourseCreation() {
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-    setCourseData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
-
-  const applyStyle = (command) => {
-    document.execCommand(command, false, null);
+    if (name === "tag_ids") {
+      setCourseData((prevData) => ({
+        ...prevData,
+        tag_ids: [...event.target.selectedOptions].map(
+          (option) => option.value
+        ),
+      }));
+    } else {
+      setCourseData((prevData) => ({
+        ...prevData,
+        [name]: value,
+      }));
+    }
   };
 
   const handleFileUpload = (event) => {
@@ -61,8 +68,13 @@ export default function CourseCreation() {
     if (file) {
       const reader = new FileReader();
       reader.onload = (e) => {
-        editorRef.current.innerHTML = e.target.result;
+        toast.success("File uploaded successfully!");
+        setCourseData((prevData) => ({
+          ...prevData,
+          description: e.target.result,
+        }));
       };
+      reader.onerror = () => toast.error("Failed to read file.");
       reader.readAsText(file);
     }
   };
@@ -80,22 +92,52 @@ export default function CourseCreation() {
     [setCourseData]
   );
 
-  const { getRootProps } = useDropzone({
+  const { getRootProps, getInputProps } = useDropzone({
     onDrop,
     multiple: false,
   });
+
+  const handleEditorChange = (content) => {
+    const sanitizedContent = DOMPurify.sanitize(content); // Sanitize HTML
+    setCourseData((prevData) => ({
+      ...prevData,
+      description: sanitizedContent,
+    }));
+  };
 
   const closeModal = () => {
     setIsModal(false);
   };
 
+  const handleCancel = () => {
+    setCourseData({
+      title: "",
+      description: "",
+      category_id: "",
+      status: "",
+      price: "",
+      discount: "",
+      thumbnail: null,
+      tag_ids: [],
+    });
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    const formData = new FormData();
+    Object.keys(courseData).forEach((key) => {
+      if (key === "tag_ids") {
+        formData.append(key, JSON.stringify(courseData[key])); // if it's an array
+      } else {
+        formData.append(key, courseData[key]);
+      }
+    });
+
     axios
-      .post(`${BASE_URI}/api/v1/courses`, courseData, {
+      .post(`${BASE_URI}/api/v1/courses`, formData, {
         headers: {
-          Authorization: "Bearer " + token,
+          Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
         },
       })
@@ -105,6 +147,7 @@ export default function CourseCreation() {
         setIsModal(true);
       })
       .catch((error) => {
+        console.log(error);
         toast.error(error.response.data.message);
       });
   };
@@ -137,10 +180,10 @@ export default function CourseCreation() {
           <div className="mb-3">
             <div className="d-flex justify-content-between ">
               <label
-                htmlFor="courseDescription"
+                htmlFor="text_content"
                 className="d-block mb-1 fs-5 fw-light"
               >
-                Course Description <span className="text-danger">*</span>
+                Lesson Description <span className="text-danger">*</span>
               </label>
               <div className="cursor-pointer">
                 <input
@@ -156,44 +199,38 @@ export default function CourseCreation() {
                 </label>
               </div>
             </div>
-            <div className="border-top border-start border-end border-secondary-subtle rounded-top-2 px-4 py-2">
-              <button
-                type="button"
-                className="btn btn-light me-2"
-                onClick={() => applyStyle("bold")}
-              >
-                <strong className="fs-4">B</strong>
-              </button>
-              <button
-                type="button"
-                className="btn btn-light me-2"
-                onClick={() => applyStyle("italic")}
-              >
-                <em className="fs-4">I</em>
-              </button>
-              <button
-                type="button"
-                className="btn btn-light"
-                onClick={() => applyStyle("underline")}
-              >
-                <u className="fs-4">U</u>
-              </button>
+            <div className="border border-secondary-subtle rounded">
+              <ReactQuill
+                value={courseData.description}
+                name="description"
+                onChange={handleEditorChange}
+                ref={editorRef}
+                theme="snow"
+                modules={{
+                  toolbar: [
+                    [{ header: "1" }, { header: "2" }, { font: [] }],
+                    [{ list: "ordered" }, { list: "bullet" }],
+                    ["bold", "italic", "underline"],
+                    [{ color: [] }, { background: [] }],
+                    [{ align: [] }],
+                    ["clean"],
+                  ],
+                }}
+                formats={[
+                  "header",
+                  "font",
+                  "list",
+                  "bullet",
+                  "bold",
+                  "italic",
+                  "underline",
+                  "color",
+                  "background",
+                  "align",
+                ]}
+                style={{ height: "13rem", overflowY: "auto" }}
+              />
             </div>
-            <div
-              id="courseDescription"
-              name="description"
-              ref={editorRef}
-              value={courseData.description}
-              onInput={(e) =>
-                setCourseData((prevData) => ({
-                  ...prevData,
-                  description: e.target.innerText,
-                }))
-              }
-              className="px-5 py-2-half-5 border-secondary-subtle border rounded-bottom-2 w-100"
-              style={{ height: "13rem", overflowY: "auto" }}
-              contentEditable
-            ></div>
           </div>
           <div className="mb-3">
             <label htmlFor="category_id" className="d-block mb-1 fs-5 fw-light">
@@ -240,14 +277,7 @@ export default function CourseCreation() {
               className="px-5 py-2-half-5 border-secondary-subtle border rounded-2 w-100"
               name="tag_ids"
               value={courseData.tag_ids}
-              onChange={(e) =>
-                setCourseData({
-                  ...courseData,
-                  tag_ids: [...e.target.selectedOptions].map(
-                    (option) => option.value
-                  ),
-                })
-              }
+              onChange={handleChange}
               multiple
             >
               <option
@@ -258,96 +288,92 @@ export default function CourseCreation() {
                 Select
               </option>
               {tags.map((tag) => (
-                <option
-                  value={tag.id}
-                  key={tag.id}
-                  className="border  px-2 py-2 text-center"
-                >
+                <option value={tag.id} key={tag.id}>
                   {tag.name}
                 </option>
               ))}
             </select>
           </div>
           <div className="mb-3">
-            <label htmlFor="thumbnail" className="d-block mb-1 fs-5 fw-light">
-              Add Thumbnail <span className="text-danger">*</span>
+            <label htmlFor="price" className="d-block mb-1 fs-5 fw-light">
+              Price <span className="text-danger">*</span>
             </label>
-            <div {...getRootProps()} className="input-group">
-              <input
-                type="text"
-                name="thumbnail"
-                placeholder="Select or Drag & Drop"
-                className="form-control px-5 py-2-half-5 border-secondary-subtle border border-end-0 rounded-start-2  input-custom"
-              />
-              <button
-                type="button"
-                className="input-group-text border-start-0 bg-white border-secondary-subtle"
-              >
-                <RiGalleryUploadFill className="fs-5 neutral-color" />
-              </button>
+            <input
+              type="number"
+              name="price"
+              value={courseData.price}
+              onChange={handleChange}
+              placeholder="Enter Price"
+              className="px-5 py-2-half-5 border-secondary-subtle border rounded-2 w-100 input-custom"
+            />
+          </div>
+          <div className="mb-3">
+            <label htmlFor="discount" className="d-block mb-1 fs-5 fw-light">
+              Discount (%)
+            </label>
+            <input
+              type="number"
+              name="discount"
+              value={courseData.discount}
+              onChange={handleChange}
+              placeholder="Enter Discount"
+              className="px-5 py-2-half-5 border-secondary-subtle border rounded-2 w-100 input-custom"
+            />
+          </div>
+          <div className="mb-3">
+            <label htmlFor="thumbnail" className="d-block mb-1 fs-5 fw-light">
+              Upload Thumbnail
+            </label>
+            <div
+              {...getRootProps({
+                className:
+                  "border border-secondary-subtle rounded px-3 py-2 d-flex justify-content-center align-items-center",
+                style: { height: "200px", cursor: "pointer" },
+              })}
+            >
+              <input {...getInputProps()} />
+              <RiGalleryUploadFill className="fs-5 me-2" />
+              <span>
+                {courseData.thumbnail
+                  ? courseData.thumbnail.name
+                  : "Drag & drop thumbnail here, or click to select one"}
+              </span>
             </div>
           </div>
-          <div className="mb-5 d-flex align-item-center gap-4">
-            <div className="w-50">
-              <label htmlFor="price" className="d-block mb-1 fs-5 fw-light">
-                Price <span className="text-danger">*</span>
-              </label>
-              <div className="input-group">
-                <label htmlFor="price" className="input-group-text">
-                  ₹
-                </label>
-                <input
-                  type="text"
-                  name="price"
-                  value={courseData.price}
-                  onChange={handleChange}
-                  placeholder="Enter Price"
-                  className="form-control px-5 py-2-half-5 input-custom"
-                  required
-                />
-              </div>
-            </div>
-            <div className="w-50">
-              <label htmlFor="discount" className="d-block mb-1 fs-5 fw-light">
-                Discount <span className="text-danger">*</span>
-              </label>
-              <div className="input-group">
-                <label htmlFor="discount" className="input-group-text">
-                  %
-                </label>
-                <input
-                  type="text"
-                  name="discount"
-                  value={courseData.discount}
-                  onChange={handleChange}
-                  placeholder="Enter Discount"
-                  className="form-control px-5 py-2-half-5 input-custom"
-                  required
-                />
-              </div>
-            </div>
-          </div>
-          <div className="d-flex align-items-center justify-content-between">
-            <button className="signup-now py-2 px-3 fw-light mb-0 h-auto">
-              Cancel
-            </button>
+
+          <div className="d-flex justify-content-between align-items-center">
             <button
               type="submit"
               className="signup-now py-2 px-3 fw-light mb-0 h-auto"
             >
-              Add Course
+              Submit
+            </button>
+            <button
+              type="button"
+              onClick={handleCancel}
+              className="signup-now py-2 px-3 fw-light mb-0 h-auto"
+            >
+              Cancel
             </button>
           </div>
         </form>
       </main>
-      <Modal
-        show={isModal}
-        onClose={closeModal}
-        path={`/addLesson/${courseId}`}
-        btnName="Continue"
-      >
-        Your course has been successfully added!
-      </Modal>
+      {isModal && (
+        <Modal onClose={closeModal}>
+          <div className="p-4 text-center">
+            <h5>Course Created Successfully!</h5>
+            <p>Course ID: {courseId}</p>
+            <button className="signup-now py-2 px-3 fw-light mb-0 h-auto">
+              <Link
+                to={`/course/${courseId}`}
+                className="text-decoration-none text-white"
+              >
+                View Course
+              </Link>
+            </button>
+          </div>
+        </Modal>
+      )}
     </div>
   );
 }

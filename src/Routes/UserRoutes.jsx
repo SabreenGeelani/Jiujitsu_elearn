@@ -9,7 +9,8 @@ import Settings from "../Pages/Settings/Settings";
 const UserRoutes = () => (
   <Routes>
     <Route path="/userCourses" element={<UserCourses />} />
-    <Route path="/userCourseView" element={<UserCourseOverview />} />
+    <Route path="/userCourseView/:id" element={<UserCourseOverview />} />
+
     <Route path="/userCart" element={<UserCart />} />
     <Route path="/purchaseHistory" element={<PurchaseHistory />} />
     <Route path="/messages" element={<Messages />} />
