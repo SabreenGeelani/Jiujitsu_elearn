@@ -1,18 +1,14 @@
 import { useState } from "react";
-
 import learnImg from "../../assets/learnImg.avif";
-
 import { MdOutlineEmail } from "react-icons/md";
 import { IoKeyOutline } from "react-icons/io5";
 import { FcGoogle } from "react-icons/fc";
-
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { FaApple, FaEye, FaEyeSlash } from "react-icons/fa";
 import axios from "axios";
 import { BASE_URI } from "../../Config/url";
 import { PulseLoader } from "react-spinners";
 import toast from "react-hot-toast";
-
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
@@ -22,7 +18,6 @@ export default function Login() {
     password: "",
   });
   const navigate = useNavigate();
-
   const handleCheckboxChange = (event) => {
     setRememberMe(event.target.checked);
     {
@@ -31,15 +26,12 @@ export default function Login() {
         : localStorage.removeItem("rememberMee");
     }
   };
-
   const handleForgotPasswordClick = () => {
     console.log("Forgot Password clicked");
   };
-
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
-
   const handleChange = (e) => {
     setData({ ...data, [e.target.name]: e.target.value });
   };
@@ -63,7 +55,6 @@ export default function Login() {
         } else if (resp.data.Data.user_type === "user") {
           navigate("/userCourses");
         }
-
         setIsLoding(false);
       })
       .catch((err) => {
@@ -72,7 +63,6 @@ export default function Login() {
         toast.error(`Error: ${err?.response?.data?.message}`);
       });
   };
-
   if (localStorage.getItem("rememberMe")) {
     if (localStorage.getItem("userType") === "expert") {
       return <Navigate to="/courses" />;
@@ -80,7 +70,7 @@ export default function Login() {
       return <Navigate to="/userCourses" />;
     }
   }
-  return (
+return (
     <div className="container-fluid signin-container ">
       <div className="row w-100 h-100">
         <div className="signup-image w-50">
@@ -132,7 +122,6 @@ export default function Login() {
               className="mb-0"
             ></p>
           </div>
-
           <form action="signIn" onSubmit={handleSubmit}>
             <div className="mb-3">
               <label htmlFor="email" className="form-label fw-bold fs-small">
@@ -187,7 +176,6 @@ export default function Login() {
                 </button>
               </div>
             </div>
-
             <div className="d-flex justify-content-between align-items-center mb-5">
               <div className="form-check">
                 <input
@@ -212,12 +200,10 @@ export default function Login() {
                 Forgot Password?
               </a>
             </div>
-
             <button className="signup-now w-100">
               {isLoding ? <PulseLoader size={8} color="white" /> : "Sign In"}
             </button>
           </form>
-
           <div className="text-center">
             <p className="fs-small">
               Don’t have account yet?
