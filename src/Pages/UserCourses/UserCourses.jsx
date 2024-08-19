@@ -30,7 +30,7 @@ const Card = ({
 
   return (
     <div className="card-bottom-userCourses" onClick={() => onClick(id)}>
-      <img src={cardImage} alt="Course image" />
+      <img src={thumbnail} alt="Course image" style={{ objectFit: "cover" }} />
       <div className="middle-sec-card-userCourses">
         <div className="addCourse-card-userCourses">
           <h6>{category}</h6>
@@ -40,16 +40,17 @@ const Card = ({
         </div>
       </div>
       <p>{expert}</p>
-      <h4>
-        {description
-          ? description.split(" ").slice(0, 10).join(" ")
-          : "No description found"}
-        ...
-      </h4>
+      <h4
+        dangerouslySetInnerHTML={{
+          __html: description
+            ? description.split(" ").slice(0, 10).join(" ") + "..."
+            : "No description found",
+        }}
+      ></h4>
       <div className="bottom-card-useruserCourses">
         <span>
-          <h5>{`$${(price * (1 - discount / 100)).toFixed(2)}`}</h5>
           <h5>{`$${price}`}</h5>
+          <h5>{`$${(price * (1 - discount / 100)).toFixed(2)}`}</h5>
         </span>
         <div onClick={handleAddToCart}>
           {isLoading ? (

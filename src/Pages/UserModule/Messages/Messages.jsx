@@ -1,8 +1,12 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { CiSearch } from "react-icons/ci";
 import logo from "../../../assets/istockphoto-841971598-1024x1024.jpg";
 import "./Messages.css";
 import { RxDotsVertical } from "react-icons/rx";
+import useFetch from "../../../hooks/useFetch";
+import { BASE_URI } from "../../../Config/url";
+import axios from "axios";
+import { FaUserCircle } from "react-icons/fa";
 
 const initialMessages = [
   {
@@ -104,6 +108,26 @@ const Messages = () => {
   const [inputValue, setInputValue] = useState("");
   const [popupVisible, setPopupVisible] = useState(false);
   const popupRef = useRef(null);
+  const token = localStorage.getItem("token");
+  const chatListUrl = `${BASE_URI}/api/v1/chat`;
+
+  const fetchOptions = {
+    headers: {
+      Authorization: "Bearer " + token,
+    },
+  };
+
+  const { data } = useFetch(chatListUrl, fetchOptions);
+  const chatList = useMemo(() => data?.data || [], [data]);
+  console.log(chatList);
+
+  const handleOpenChat = (recieverId) => {
+    axios
+      .get(`${BASE_URI}/api/v1/chat/chatMessages/${recieverId}`, fetchOptions)
+      .then((resp) => {
+        console.log(resp.data);
+      });
+  };
 
   const handleSendMessage = (e) => {
     e.preventDefault();
@@ -152,7 +176,7 @@ const Messages = () => {
         <h3 className="pb-4">Messages</h3>
         <p className="mb-3 fs-4 fw-light">You have 0 unread messages</p>
       </header>
-      <main className="d-flex">
+      <main className="d-flex" style={{ minHeight: "calc(100vh - 14rem)" }}>
         <section className="px-2 py-2 w-50 border-end pe-4">
           <div className="d-flex align-items-center gap-5 mb-3">
             <select
@@ -185,36 +209,40 @@ const Messages = () => {
           </div>
 
           <div className="px-1 py-3 chat-list">
-            {messages.map((message, index) => (
+            {chatList.map((message) => (
               <div
                 key={message.id}
                 className=" d-flex align-items-center gap-5 py-1 border-bottom cursor-pointer"
-                onClick={() => setSelectedChat(index)}
+                onClick={() => handleOpenChat(message.id)}
               >
                 <div>
-                  <img
-                    src={message.profileImage}
-                    alt=""
-                    className="rounded-circle mb-1"
-                    style={{
-                      width: "3rem",
-                      height: "3rem",
-                      objectFit: "cover",
-                    }}
-                  />
+                  {message.profile_picture ? (
+                    <img
+                      src={message.profile_picture}
+                      alt=""
+                      className="rounded-circle mb-1"
+                      style={{
+                        width: "3rem",
+                        height: "3rem",
+                        objectFit: "cover",
+                      }}
+                    />
+                  ) : (
+                    <FaUserCircle className="fs-1" />
+                  )}
 
                   <div className="favorite text-center">
-                    {message.isFavorite ? "⭐" : "☆"}
+                    {message.is_favorite === 1 ? "⭐" : "☆"}
                   </div>
                 </div>
                 <div className="message-info w-100">
                   <div className="d-flex align-items-center justify-content-between mb-1">
-                    <h5 className="fw-light">{message.profileName}</h5>
+                    <h5 className="fw-light">{message.name}</h5>
                     <p className="mb-0 fw-light">
-                      {getTimeDifference(message.lastMessageTime)}
+                      {getTimeDifference(message.updated_at)}
                     </p>
                   </div>
-                  <p className="fw-light">{message.lastMessage}</p>
+                  <p className="fw-light">{message.message}</p>
                 </div>
               </div>
             ))}

@@ -135,7 +135,7 @@ export const Navbar = ({ collapsed }) => {
             }}
           />
           <h4 className="fw-lightBold mb-1 text-capitalize">
-            Good Morning {user?.name.split(" ")[0]}
+            Good Morning {user?.name?.split(" ")[0]}
           </h4>
           <p
             className="text-center lightgray-color fs-small mb-3"

@@ -8,7 +8,7 @@ import {
   faArrowRight,
 } from "@fortawesome/free-solid-svg-icons";
 import { AiFillStar, AiOutlineStar } from "react-icons/ai";
-import { FaYoutube } from "react-icons/fa";
+import { FaUserCircle, FaYoutube } from "react-icons/fa";
 import thumbnail from ".././../assets/thumbnail-userCourseview.jpeg";
 import courseby from ".././../assets/userCourseview-profile.png";
 import cardImage from "../../assets/coursesCard.png";
@@ -79,14 +79,16 @@ const UserCourseOverview = () => {
         <div className="wrapper-userCourseview">
           <div className="top-userCourseview">
             <h3>{courseData?.course?.title || "No title available"}</h3>
-            <h6>
-              {courseData?.course?.description
-                ? courseData.course.description
-                    .split(" ")
-                    .slice(0, 8)
-                    .join(" ") + "..."
-                : "No description available"}
-            </h6>
+            <h6
+              dangerouslySetInnerHTML={{
+                __html: courseData?.course?.description
+                  ? courseData.course.description
+                      .split(" ")
+                      .slice(0, 8)
+                      .join(" ") + "..."
+                  : "No description available",
+              }}
+            ></h6>
             <h5>{courseData?.course?.tags || "No tags available"}</h5>
             <h6>
               {courseData?.review?.totalReviews || 0} reviews (
@@ -99,7 +101,13 @@ const UserCourseOverview = () => {
             <div className="left-mid-userCourseview">
               <div className="left-top-mid-userCourseview">
                 <h3>Description</h3>
-                {courseData?.course?.description || "No description available"}
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html:
+                      courseData?.course?.description ||
+                      "No description available",
+                  }}
+                ></div>
                 <h4 className="cursor-pointer hover-underline">
                   Watch 3 Free Lessons to get insights of what to Learn{" "}
                   <FontAwesomeIcon icon={faArrowRight} />
@@ -199,7 +207,14 @@ const UserCourseOverview = () => {
               <div className="courseby-right-mid-userCourseview">
                 <h5>Course by:</h5>
                 <span>
-                  <img src={courseby} alt="profile image" />{" "}
+                  {courseData?.course?.profile_picture ? (
+                    <img
+                      src={courseData?.course?.profile_picture}
+                      alt="profile image"
+                    />
+                  ) : (
+                    <FaUserCircle className="fs-1" />
+                  )}
                   <h6>{courseData?.course?.name || "No author information"}</h6>
                 </span>
               </div>
@@ -210,10 +225,14 @@ const UserCourseOverview = () => {
                     courseData.review.userReviews.map((review, index) => (
                       <div key={index}>
                         <div>
-                          <img
-                            src={review.profile_picture || courseby}
-                            alt="profile image"
-                          />
+                          {review.profile_picture ? (
+                            <img
+                              src={review.profile_picture}
+                              alt="profile image"
+                            />
+                          ) : (
+                            <FaUserCircle className="fs-1" />
+                          )}
                           <h5>{review.name || "No name available"}</h5>
                           <p>
                             {review.review_date

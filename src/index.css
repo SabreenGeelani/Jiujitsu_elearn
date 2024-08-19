@@ -68,6 +68,9 @@ input::placeholder {
 .py-1-and-08rem {
   padding-block: 1.8rem;
 }
+.border-dotted {
+  border: 2px dashed gray;
+}
 
 .custom-box {
   border-radius: 10px;
