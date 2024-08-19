@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Custom Carousel</title>
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        background-color: #f0f0f0;
+        font-family: Arial, sans-serif;
+      }
+
+      .slider-container {
+        width: 80%;
+        max-width: 1000px;
+        position: relative;
+        text-align: center;
+      }
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: relative;
+        margin-bottom: 20px;
+      }
+
+      h2 {
+        flex: 1;
+        text-align: center;
+        margin: 0;
+        color: #333;
+        font-size: 24px;
+      }
+
+      .chevron {
+        background: linear-gradient(45deg, #6c5b7b, #c06c84);
+        color: white;
+        border: none;
+        padding: 10px;
+        cursor: pointer;
+        z-index: 3;
+        font-size: 1.5em;
+        border-radius: 50%;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      }
+
+      .slider {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        width: 100%;
+        height: 400px;
+        overflow: hidden;
+      }
+
+      .slide {
+        width: 60%;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0.8);
+        opacity: 0.5;
+        background-color: #fff;
+        border-radius: 15px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        padding: 20px;
+        transition: none;
+        z-index: 1;
+      }
+
+      .slide.active {
+        transform: translate(-50%, -50%) rotate(-5deg) scale(1);
+        opacity: 1;
+        z-index: 2;
+        transition: transform 0.8s ease, opacity 0.8s ease;
+      }
+
+      .slide.left {
+        transform: translate(-150%, -50%) scale(0.8);
+      }
+
+      .slide.right {
+        transform: translate(50%, -50%) scale(0.8);
+      }
+
+      .radio-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 10px;
+      }
+
+      .radio-button {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background-color: #ccc;
+        cursor: pointer;
+      }
+
+      .radio-button.active {
+        background-color: #6c5b7b;
+      }
+
+      h3 {
+        color: #c06c84;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="slider-container">
+      <div class="header">
+        <button class="chevron chevron-left">&#8249;</button>
+        <h2>WHAT OUR PARTICIPANTS SAY...</h2>
+        <button class="chevron chevron-right">&#8250;</button>
+      </div>
+      <div class="radio-buttons">
+        <div class="radio-button active" data-index="0"></div>
+        <div class="radio-button" data-index="1"></div>
+        <div class="radio-button" data-index="2"></div>
+      </div>
+      <div class="slider">
+        <div class="slide active">
+          <div>
+            <h3>Anti-racism Trustee day</h3>
+            <blockquote>
+              A great day! A sensitive subject well facilitated making
+              participants feel at ease...
+            </blockquote>
+          </div>
+        </div>
+        <div class="slide right">
+          <div>
+            <h3>Staff Mentoring Programme</h3>
+            <blockquote>
+              The mentoring programme helped me to develop effective
+              communication skills...
+            </blockquote>
+          </div>
+        </div>
+        <div class="slide left">
+          <div>
+            <h3>Board Excellence Programme</h3>
+            <blockquote>
+              I'm a lot more confident in my abilities now, than I was 18 months
+              ago...
+            </blockquote>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let currentIndex = 0;
+      const slides = document.querySelectorAll(".slide");
+      const radioButtons = document.querySelectorAll(".radio-button");
+
+      function updateSlides() {
+        slides.forEach((slide, index) => {
+          slide.classList.remove("active", "left", "right");
+
+          if (index === currentIndex) {
+            slide.classList.add("active");
+          } else if (
+            index ===
+            (currentIndex - 1 + slides.length) % slides.length
+          ) {
+            slide.classList.add("left");
+          } else if (index === (currentIndex + 1) % slides.length) {
+            slide.classList.add("right");
+          }
+        });
+
+        radioButtons.forEach((button, index) => {
+          button.classList.toggle("active", index === currentIndex);
+        });
+      }
+
+      function nextSlide() {
+        currentIndex = (currentIndex + 1) % slides.length;
+        updateSlides();
+      }
+
+      function prevSlide() {
+        currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+        updateSlides();
+      }
+
+      document
+        .querySelector(".chevron-right")
+        .addEventListener("click", nextSlide);
+      document
+        .querySelector(".chevron-left")
+        .addEventListener("click", prevSlide);
+
+      radioButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          currentIndex = parseInt(button.getAttribute("data-index"));
+          updateSlides();
+        });
+      });
+
+      updateSlides(); // Initialize slider
+    </script>
+  </body>
+</html>

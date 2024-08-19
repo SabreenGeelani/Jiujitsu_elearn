@@ -124,30 +124,32 @@ export default function CourseCreation() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    console.log(courseData);
 
-    const formData = new FormData();
-    Object.keys(courseData).forEach((key) => {
-      if (key === "tag_ids") {
-        formData.append(key, JSON.stringify(courseData[key])); // if it's an array
-      } else {
-        formData.append(key, courseData[key]);
-      }
-    });
+    // const formData = new FormData();
+    // Object.keys(courseData).forEach((key) => {
+    //   if (key === "tag_ids") {
+    //     formData.append(key, JSON.stringify(courseData[key]));
+    //   } else {
+    //     formData.append(key, courseData[key]);
+    //   }
+    // });
 
     axios
-      .post(`${BASE_URI}/api/v1/courses`, formData, {
+      .post(`${BASE_URI}/api/v1/courses`, courseData, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
         },
       })
       .then((response) => {
-        console.log(response.data);
+        // console.log(response.data);
         setCourseId(response.data.data.course_id);
         setIsModal(true);
+        // console.log(isModal);
       })
       .catch((error) => {
-        console.log(error);
+        // console.log(error);
         toast.error(error.response.data.message);
       });
   };
@@ -277,7 +279,14 @@ export default function CourseCreation() {
               className="px-5 py-2-half-5 border-secondary-subtle border rounded-2 w-100"
               name="tag_ids"
               value={courseData.tag_ids}
-              onChange={handleChange}
+              onChange={(e) =>
+                setCourseData({
+                  ...courseData,
+                  tag_ids: [...e.target.selectedOptions].map(
+                    (option) => option.value
+                  ),
+                })
+              }
               multiple
             >
               <option
@@ -288,56 +297,87 @@ export default function CourseCreation() {
                 Select
               </option>
               {tags.map((tag) => (
-                <option value={tag.id} key={tag.id}>
+                <option
+                  value={tag.id}
+                  key={tag.id}
+                  className="border  px-2 py-2 text-center"
+                >
                   {tag.name}
                 </option>
               ))}
             </select>
           </div>
-          <div className="mb-3">
-            <label htmlFor="price" className="d-block mb-1 fs-5 fw-light">
-              Price <span className="text-danger">*</span>
-            </label>
-            <input
-              type="number"
-              name="price"
-              value={courseData.price}
-              onChange={handleChange}
-              placeholder="Enter Price"
-              className="px-5 py-2-half-5 border-secondary-subtle border rounded-2 w-100 input-custom"
-            />
-          </div>
-          <div className="mb-3">
-            <label htmlFor="discount" className="d-block mb-1 fs-5 fw-light">
-              Discount (%)
-            </label>
-            <input
-              type="number"
-              name="discount"
-              value={courseData.discount}
-              onChange={handleChange}
-              placeholder="Enter Discount"
-              className="px-5 py-2-half-5 border-secondary-subtle border rounded-2 w-100 input-custom"
-            />
-          </div>
+
           <div className="mb-3">
             <label htmlFor="thumbnail" className="d-block mb-1 fs-5 fw-light">
-              Upload Thumbnail
+              Add Thumbnail <span className="text-danger">*</span>
             </label>
-            <div
-              {...getRootProps({
-                className:
-                  "border border-secondary-subtle rounded px-3 py-2 d-flex justify-content-center align-items-center",
-                style: { height: "200px", cursor: "pointer" },
-              })}
-            >
-              <input {...getInputProps()} />
-              <RiGalleryUploadFill className="fs-5 me-2" />
-              <span>
-                {courseData.thumbnail
-                  ? courseData.thumbnail.name
-                  : "Drag & drop thumbnail here, or click to select one"}
-              </span>
+            <div {...getRootProps()} className="input-group">
+              <input
+                type="text"
+                name="thumbnail"
+                placeholder={
+                  courseData.thumbnail
+                    ? courseData.thumbnail.name
+                    : "Select or Drag & Drop"
+                }
+                className="form-control px-5 py-2-half-5 border-secondary-subtle border border-end-0 rounded-start-2 input-custom"
+                readOnly
+              />
+              <button
+                type="button"
+                className="input-group-text border-start-0 bg-white border-secondary-subtle"
+              >
+                <RiGalleryUploadFill className="fs-5 neutral-color" />
+              </button>
+              <input
+                {...getInputProps({
+                  style: { display: "none" },
+                })}
+              />
+            </div>
+            <div className="mb-5 d-flex align-item-center gap-4">
+              <div className="w-50">
+                <label htmlFor="price" className="d-block mb-1 fs-5 fw-light">
+                  Price <span className="text-danger">*</span>
+                </label>
+                <div className="input-group">
+                  <label htmlFor="price" className="input-group-text">
+                    ₹
+                  </label>
+                  <input
+                    type="text"
+                    name="price"
+                    value={courseData.price}
+                    onChange={handleChange}
+                    placeholder="Enter Price"
+                    className="form-control px-5 py-2-half-5 input-custom"
+                    required
+                  />
+                </div>
+              </div>
+              <div className="w-50">
+                <label
+                  htmlFor="discount"
+                  className="d-block mb-1 fs-5 fw-light"
+                >
+                  Discount <span className="text-danger">*</span>
+                </label>
+                <div className="input-group">
+                  <label htmlFor="discount" className="input-group-text">
+                    %
+                  </label>
+                  <input
+                    type="text"
+                    name="discount"
+                    value={courseData.discount}
+                    onChange={handleChange}
+                    placeholder="Enter Discount"
+                    className="form-control px-5 py-2-half-5 input-custom"
+                    required
+                  />
+                </div>
+              </div>
             </div>
           </div>
 
@@ -359,18 +399,13 @@ export default function CourseCreation() {
         </form>
       </main>
       {isModal && (
-        <Modal onClose={closeModal}>
+        <Modal
+          onClose={closeModal}
+          btnName="Continue"
+          path={`/addLesson/${courseId}`}
+        >
           <div className="p-4 text-center">
-            <h5>Course Created Successfully!</h5>
-            <p>Course ID: {courseId}</p>
-            <button className="signup-now py-2 px-3 fw-light mb-0 h-auto">
-              <Link
-                to={`/course/${courseId}`}
-                className="text-decoration-none text-white"
-              >
-                View Course
-              </Link>
-            </button>
+            <h5>Your Course has been successfully created!</h5>
           </div>
         </Modal>
       )}

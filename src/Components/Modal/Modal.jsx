@@ -11,9 +11,9 @@ const Modal = ({
   heading,
   handleClickAction,
 }) => {
-  if (!show) {
-    return null;
-  }
+  // if (!show) {
+  //   return null;
+  // }
 
   return (
     <>
