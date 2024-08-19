@@ -6,7 +6,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { faSquarePlus } from "@fortawesome/free-solid-svg-icons";
 import useFetch from "../../hooks/useFetch";
 import { BASE_URI } from "../../Config/url";
-
 import { SyncLoader } from "react-spinners";
 const Card = ({id, onClick, title, description, price, discount, thumbnail, name, category}) => (
   <div className="card-bottom-courses" onClick={()=> onClick(id)}>
