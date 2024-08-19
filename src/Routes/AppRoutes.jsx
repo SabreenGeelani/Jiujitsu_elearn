@@ -4,13 +4,16 @@ import { SignUp } from "../Pages/SignUppage/SignUp";
 import { VerifyEmail } from "../Pages/veryEmail/VerifyEmail";
 import ExpertRoutes from "./ExpertRoutes";
 import UserRoutes from "./UserRoutes";
+import Checkout from "../Pages/Checkout/Checkout";
 const role = localStorage.getItem("userType");
 const AppRoutes = () => (
   <Routes>
     <Route path="/" element={<Login />} />
     <Route path="/signUp" element={<SignUp />} />
     <Route path="/verifyEmail" element={<VerifyEmail />} />
-    
+
+    <Route path="checkout" element={<Checkout />} />
+
     {role === "expert" && <Route path="*" element={<ExpertRoutes />} />}
     {role === "user" && <Route path="*" element={<UserRoutes />} />}
   </Routes>

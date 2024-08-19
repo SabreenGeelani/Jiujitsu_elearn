@@ -7,21 +7,35 @@ import { faSquarePlus } from "@fortawesome/free-solid-svg-icons";
 import useFetch from "../../hooks/useFetch";
 import { BASE_URI } from "../../Config/url";
 import { SyncLoader } from "react-spinners";
-const Card = ({id, onClick, title, description, price, discount, thumbnail, name, category}) => (
-  <div className="card-bottom-courses" onClick={()=> onClick(id)}>
-    <img src={cardImage || thumbnail} alt="Course image"/>
+const Card = ({
+  id,
+  onClick,
+  title,
+  description,
+  price,
+  discount,
+  thumbnail,
+  name,
+  category,
+}) => (
+  <div className="card-bottom-courses" onClick={() => onClick(id)}>
+    <img src={cardImage || thumbnail} alt="Course image" />
     <div className="middle-sec-card-courses">
       <div className="addCourse-card-courses">
         <h6>{category}</h6>
       </div>
       <div className="pricing-card-courses">
-        <h5>${discount}</h5>
         <h5>${price}</h5>
+        <h5>${discount}</h5>
       </div>
     </div>
     <p>{name}, Designer at Raybit...</p>
     <h5>{title}</h5>
-    <h4>{description?.split(" ").slice(0, 8).join(" ") + "..."}</h4>
+    <h4
+      dangerouslySetInnerHTML={{
+        __html: description?.split(" ").slice(0, 8).join(" ") + "...",
+      }}
+    ></h4>
   </div>
 );
 
@@ -37,12 +51,10 @@ const Courses = () => {
     },
   });
 
-
-console.log(data || error)
-//  if(data.data === ){
-//     setcourse(false)
-//  }
-
+  console.log(data || error);
+  //  if(data.data === ){
+  //     setcourse(false)
+  //  }
 
   //   if (error.response.data.message === "No courses found"){
   //   return setcourse(false);
@@ -72,49 +84,49 @@ console.log(data || error)
 
   return (
     <>
-    
-    
-    {isLoading? <SyncLoader id="spinner-usercourseview" size={8} color="black"/> : <div className="wrapper-courses">
-      <div className="top-courses">
-        <h4>Courses</h4>
-        <div className="top-button">
-          <h6>
-            <Link
-              to="/courseCreation"
-              className="text-decoration-none text-white"
-            >
-              Add Course{" "}
-            </Link>
-          </h6>
-        </div>
-      </div>
-
-      {error?.response?.data?.message !== "no courses found"  ? (
-
-        <div className="bottom-courses">{cards}</div>
+      {isLoading ? (
+        <SyncLoader id="spinner-usercourseview" size={8} color="black" />
       ) : (
-        <div className="no-courses-courses">
-          <div>
-            <h1>No Course uploaded yet</h1>
-            <h5>
-              Get started by uploading your first course and inspire athletes
-              around the world!
-            </h5>
-            <Link
-              to="/courseCreation"
-              className="text-decoration-none text-white"
-            >
-              <FontAwesomeIcon
-                icon={faSquarePlus}
-                className="add-icon-courses"
-              />
-            </Link>
+        <div className="wrapper-courses">
+          <div className="top-courses">
+            <h4>Courses</h4>
+            <div className="top-button">
+              <h6>
+                <Link
+                  to="/courseCreation"
+                  className="text-decoration-none text-white"
+                >
+                  Add Course{" "}
+                </Link>
+              </h6>
+            </div>
           </div>
+
+          {error?.response?.data?.message !== "no courses found" ? (
+            <div className="bottom-courses">{cards}</div>
+          ) : (
+            <div className="no-courses-courses">
+              <div>
+                <h1>No Course uploaded yet</h1>
+                <h5>
+                  Get started by uploading your first course and inspire
+                  athletes around the world!
+                </h5>
+                <Link
+                  to="/courseCreation"
+                  className="text-decoration-none text-white"
+                >
+                  <FontAwesomeIcon
+                    icon={faSquarePlus}
+                    className="add-icon-courses"
+                  />
+                </Link>
+              </div>
+            </div>
+          )}
         </div>
       )}
-    </div>}
     </>
-    
   );
 };
 
