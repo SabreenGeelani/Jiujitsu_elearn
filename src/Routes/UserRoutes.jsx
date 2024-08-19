@@ -5,6 +5,7 @@ import UserCart from "../Pages/UserCart/UserCart";
 import PurchaseHistory from "../Pages/PurchaseHistory/PurchaseHistory";
 import Messages from "../Pages/UserModule/Messages/Messages";
 import Settings from "../Pages/Settings/Settings";
+import MyLearning from "../Pages/MyLearning/MyLearning";
 
 const UserRoutes = () => (
   <Routes>
@@ -15,6 +16,7 @@ const UserRoutes = () => (
     <Route path="/purchaseHistory" element={<PurchaseHistory />} />
     <Route path="/messages" element={<Messages />} />
     <Route path="/settings" element={<Settings />} />
+    <Route path="/myLearning" element={<MyLearning/>} />
   </Routes>
 );
 

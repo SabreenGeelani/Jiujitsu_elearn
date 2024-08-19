@@ -48,7 +48,6 @@ export const Navbar = ({ collapsed }) => {
       setUser(JSON.parse(localStorage.getItem("user")));
       setToken(localStorage.getItem("token"));
     };
-
     const intervalId = setInterval(handleStorageChange, 1000);
     return () => clearInterval(intervalId);
   }, []);

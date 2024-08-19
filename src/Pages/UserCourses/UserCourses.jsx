@@ -30,7 +30,9 @@ const Card = ({
 
   return (
     <div className="card-bottom-userCourses" onClick={() => onClick(id)}>
+
       <img src={thumbnail} alt="Course image" style={{ objectFit: "cover" }} />
+
       <div className="middle-sec-card-userCourses">
         <div className="addCourse-card-userCourses">
           <h6>{category}</h6>
@@ -64,7 +66,11 @@ const Card = ({
   );
 };
 
+
+
+
 const UserCourses = () => {
+  // console.log("ok here");
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
 

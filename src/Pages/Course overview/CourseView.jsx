@@ -11,7 +11,7 @@ import { SyncLoader } from "react-spinners";
 
 const CourseView = () => {
   const { id } = useParams();
-  // console.log(id);
+  console.log(id);
   const [buttonPick, setButtonPick] = useState("Overview");
   const [openDetails, setOpenDetails] = useState({});
   const [openDetailsLeft, setOpenDetailsLeft] = useState({});

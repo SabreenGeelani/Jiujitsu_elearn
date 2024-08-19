@@ -17,20 +17,17 @@ import useFetch from "../../hooks/useFetch";
 import { BASE_URI } from "../../Config/url";
 import toast from "react-hot-toast";
 import { SyncLoader, PulseLoader } from "react-spinners";
-
 const UserCourseOverview = () => {
   const [isLoding, setIsLoding] = useState(false);
   const [openDetails, setOpenDetails] = useState({});
   const [isCart, setIsCart] = useState(false);
   const { id } = useParams();
-
   const handleToggle = (index) => {
     setOpenDetails((prevState) => ({
       ...prevState,
       [index]: !prevState[index],
     }));
   };
-
   const url = `${BASE_URI}/api/v1/courses/usersCourseOverview/${id}`;
   const token = localStorage.getItem("token");
   const { data, isLoading, error, refetch } = useFetch(url, {
@@ -38,10 +35,8 @@ const UserCourseOverview = () => {
       Authorization: "Bearer " + token,
     },
   });
-
   const courseData = useMemo(() => data?.data || [], [data]);
   const chapters = courseData?.courseChapters?.chapters || [];
-
   const handleCart = async () => {
     setIsLoding(true);
     try {
@@ -66,11 +61,9 @@ const UserCourseOverview = () => {
       }
     }
   };
-
   useEffect(() => {
     handleCart();
   }, []);
-
   return (
     <>
       {isLoading ? (
@@ -96,7 +89,6 @@ const UserCourseOverview = () => {
               <FontAwesomeIcon icon={faStar} className="staricon" />)
             </h6>
           </div>
-
           <div className="mid-userCourseview">
             <div className="left-mid-userCourseview">
               <div className="left-top-mid-userCourseview">
@@ -261,7 +253,6 @@ const UserCourseOverview = () => {
               </div>
             </div>
           </div>
-
           <div className="bottom-userCourseview">
             <span>
               <h3>More Courses by</h3>
@@ -270,7 +261,6 @@ const UserCourseOverview = () => {
                 <span></span>
               </div>
             </span>
-
             <div className="cards-userCourseview">
               {courseData?.otherCourses?.length > 0 ? (
                 courseData.otherCourses.map((course, index) => (
@@ -301,5 +291,4 @@ const UserCourseOverview = () => {
     </>
   );
 };
-
 export default UserCourseOverview;

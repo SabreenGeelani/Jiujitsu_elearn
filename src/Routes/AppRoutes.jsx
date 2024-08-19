@@ -11,7 +11,9 @@ const AppRoutes = () => (
     <Route path="/" element={<Login />} />
     <Route path="/signUp" element={<SignUp />} />
     <Route path="/verifyEmail" element={<VerifyEmail />} />
+
     <Route path="checkout" element={<Checkout />} />
+
     {role === "expert" && <Route path="*" element={<ExpertRoutes />} />}
     {role === "user" && <Route path="*" element={<UserRoutes />} />}
   </Routes>
