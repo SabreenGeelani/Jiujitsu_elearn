@@ -4,7 +4,7 @@ import { MdAddBox, MdDone } from "react-icons/md";
 import { BASE_URI } from "../../Config/url";
 import useFetch from "../../hooks/useFetch";
 import { useParams } from "react-router-dom";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast/headless";
 import { RiGalleryUploadFill } from "react-icons/ri";
@@ -22,7 +22,9 @@ export default function AddLesson() {
   const [filePreview, setFilePreview] = useState(null);
   const [editLesson, setEditLesson] = useState(null);
   const [isDelete, setIsDelete] = useState(false);
+  const [isDeleteChapter, setIsDeleteChapter] = useState(false);
   const [finalDelete, setFinalDelete] = useState(false);
+  const [finalDeleteChapter, setFinalDeleteChapter] = useState(false);
   const [newLesson, setNewLesson] = useState({
     chapter_id: "",
     title: "",
@@ -38,8 +40,12 @@ export default function AddLesson() {
     course_id: id,
     title: "",
   });
+  const [editingChapterId, setEditingChapterId] = useState(null);
+  const [chapterTitle, setChapterTitle] = useState("");
 
   const editorRef = useRef(null);
+  const inputRef = useRef(null);
+
   const token = localStorage.getItem("token");
   const courseUrl = `${BASE_URI}/api/v1/courses/${id}`;
   const chaptersUrl = `${BASE_URI}/api/v1/chapters/courseChapters/${id}`;
@@ -51,10 +57,17 @@ export default function AddLesson() {
   };
 
   const { data } = useFetch(courseUrl, fetchOptions);
+  // console.log(data);
   const { title } = data?.data[0] || "";
 
   const { data: chaptersData, refetch } = useFetch(chaptersUrl, fetchOptions);
   const { data: chapters } = chaptersData || [];
+
+  useEffect(() => {
+    if (editingChapterId !== null && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [editingChapterId]);
 
   const handleAddChapter = (e) => {
     e.preventDefault();
@@ -166,17 +179,21 @@ export default function AddLesson() {
 
   const handleLessonSubmit = (e) => {
     e.preventDefault();
+
     const url = editLesson
       ? `${BASE_URI}/api/v1/lessons/${editLesson}`
       : `${BASE_URI}/api/v1/lessons`;
+    const method = editLesson ? "PATCH" : "POST";
 
-    axios
-      .post(url, newLesson, {
-        headers: {
-          Authorization: "Bearer " + token,
-          "Content-Type": "multipart/form-data",
-        },
-      })
+    axios({
+      method,
+      url,
+      data: newLesson,
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
+      },
+    })
       .then((resp) => {
         setNewLesson({
           chapter_id: "",
@@ -188,23 +205,30 @@ export default function AddLesson() {
           thumbnail: null,
           course_id: id,
         });
+
         handleAddLessonClick(null);
         toast.success(resp.data.message);
+        setOpenForm(null);
         refetch();
       })
       .catch((err) => {
         console.log(err);
-        toast.error(err.response.data.message);
+        toast.error(err.response?.data?.message || "An error occurred");
       });
   };
 
   const handleDeleteLesson = () => {
+    // console.log(editLesson);
     axios
-      .delete(`${BASE_URI}/api/v1/lessons/${editLesson}`, {
-        headers: {
-          Authorization: "Bearer " + token,
-        },
-      })
+      .delete(
+        `${BASE_URI}/api/v1/lessons/${editLesson}`,
+
+        {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        }
+      )
       .then((resp) => {
         toast.success(resp.data.message);
         setEditLesson(null);
@@ -218,6 +242,7 @@ export default function AddLesson() {
           thumbnail: null,
           course_id: id,
         });
+        setOpenForm(null);
         refetch();
         setFinalDelete(true);
         setIsDelete(false);
@@ -228,14 +253,68 @@ export default function AddLesson() {
       });
   };
 
+  const handleSaveChanges = async (chapterId, newTitle, chapterSequence) => {
+    try {
+      await axios.patch(
+        `${BASE_URI}/api/v1/chapters/${chapterId}`,
+        {
+          courseId: id,
+          title: newTitle,
+          sequence: chapterSequence,
+        },
+        {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        }
+      );
+      refetch();
+      toast.success("Chapter updated successfully!");
+    } catch (error) {
+      toast.error("Error updating chapter!");
+    }
+  };
+
+  const handleDeleteChapter = () => {
+    axios.delete(
+      `${BASE_URI}/api/v1/chapters`,
+      {
+        chapter_id: 26,
+        course_id: id,
+      },
+      {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      }
+    );
+  };
+
+  const handleModalDeleteChapter = (chapterId) => {
+    setIsDeleteChapter(true);
+  };
+
+  const startEditing = (chapter) => {
+    setEditingChapterId(chapter.id);
+    setChapterTitle(chapter.title);
+  };
+
+  const saveChanges = (chapterId, chapterSequence) => {
+    handleSaveChanges(chapterId, chapterTitle, chapterSequence);
+    setEditingChapterId(null);
+  };
+
   const closeModal = () => {
     setIsDelete(false);
+  };
+  const closeModalChapter = () => {
+    setIsDeleteChapter(false);
   };
 
   return (
     <div className="w-100">
       <header className="d-flex align-items-center justify-content-between py-3 pb-4">
-        <h3 className="fw-bold text-capitalize">{title}</h3>
+        <h3 className="fw-bold text-capitalize">{title || "Course Name"}</h3>
         <button className="signup-now py-2 px-3 fw-lightBold mb-0 h-auto">
           Edit Course
         </button>
@@ -269,21 +348,57 @@ export default function AddLesson() {
                   className="rounded-2 border border-secondary-subtle text-start px-5 py-3 mb-3"
                   key={chapter.id}
                 >
-                  <div className="d-flex align-items-center justify-content-between">
-                    <div className="d-flex align-items-center gap-4">
-                      <p className="mb-0 fs-4 fw-lightBold">
-                        {index + 1}. {chapter.title}
-                      </p>
-                      <FaPen className="primary-color" />
-                      <IoMdTrash className="fs-5 primary-color" />
+                  {editingChapterId === chapter.id ? (
+                    <div className="d-flex flex-column gap-2">
+                      <input
+                        type="text"
+                        className="px-5 py-2-half-5 border-secondary-subtle border rounded-2 w-100 input-custom text-capitalize mb-3"
+                        value={chapterTitle}
+                        ref={inputRef}
+                        onChange={(e) => setChapterTitle(e.target.value)}
+                      />
+                      <div className="d-flex justify-content-end gap-3 mb-3">
+                        <button
+                          className="signup-now py-2 px-3 fw-light mb-0 h-auto text-black border border-2"
+                          style={{ background: "transparent" }}
+                          onClick={() => setEditingChapterId(null)}
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          className="signup-now py-2 px-3 fw-light mb-0 h-auto"
+                          onClick={() =>
+                            saveChanges(chapter.id, chapter.sequence)
+                          }
+                        >
+                          Save Changes
+                        </button>
+                      </div>
                     </div>
-                    <button
-                      className="signup-now py-2 px-3 fw-lightBold mb-0 h-auto"
-                      onClick={() => handleAddLessonClick(chapter.id)}
-                    >
-                      Add Lesson
-                    </button>
-                  </div>
+                  ) : (
+                    <div className="d-flex align-items-center justify-content-between">
+                      <div className="d-flex align-items-center gap-4">
+                        <p className="mb-0 fs-4 fw-lightBold">
+                          {index + 1}. {chapter.title}
+                        </p>
+                        <FaPen
+                          className="primary-color cursor-pointer"
+                          onClick={() => startEditing(chapter)}
+                        />
+                        <IoMdTrash
+                          className="fs-5 primary-color cursor-pointer"
+                          onClick={() => handleModalDeleteChapter(chapter.id)}
+                        />
+                      </div>
+                      <button
+                        className="signup-now py-2 px-3 fw-lightBold mb-0 h-auto"
+                        onClick={() => handleAddLessonClick(chapter.id)}
+                      >
+                        Add Lesson
+                      </button>
+                    </div>
+                  )}
+
                   {chapter.lessons.map((lesson, i) => (
                     <div
                       className="p-3 rounded-2 border border-secondary-subtle d-flex align-items-center justify-content-between my-3"
@@ -292,7 +407,7 @@ export default function AddLesson() {
                     >
                       <div className="d-flex align-items-center gap-3">
                         <FaYoutube className="primary-color fs-5" />
-                        <p className="primary-color mb-0">
+                        <p className="primary-color mb-0 text-capitalize">
                           {i + 1}. {lesson.title}
                         </p>
                       </div>
@@ -544,13 +659,20 @@ export default function AddLesson() {
           </div>
 
           {isAddChapter && (
-            <form className="pt-3" onSubmit={handleAddChapter}>
-              <div className="d-flex gap-2 justify-content-between">
+            <div className="w-100">
+              <div className="mb-4 w-100">
+                <label
+                  htmlFor=""
+                  className="d-block mb-1 fs-5 fw-light text-start"
+                >
+                  Chapter Title <span className="text-danger">*</span>
+                </label>
                 <input
                   type="text"
-                  className="w-100 custom-input px-2"
-                  placeholder="Enter chapter name"
+                  name="title"
+                  placeholder="Enter Chapter Title"
                   value={newChapterData.title}
+                  className="px-5 py-2-half-5 border-secondary-subtle border rounded-2 w-100 input-custom"
                   onChange={(e) =>
                     setNewChapterData((prevData) => ({
                       ...prevData,
@@ -558,17 +680,28 @@ export default function AddLesson() {
                     }))
                   }
                 />
-                <button className="signup-now px-3 fw-lightBold mb-0 h-auto py-2">
-                  Add
+              </div>
+              <div className="d-flex justify-content-end align-items-center gap-5 w-100">
+                <button
+                  className=" signup-now py-2 px-3 fw-lightBold mb-0 h-auto"
+                  onClick={() => setIsAddChapter(false)}
+                >
+                  Cancel
+                </button>
+                <button
+                  className=" signup-now py-2 px-3 fw-lightBold mb-0 h-auto"
+                  onClick={handleAddChapter}
+                >
+                  Add Chapter
                 </button>
               </div>
-            </form>
+            </div>
           )}
 
           {chapters?.length > 0 && (
             <div className="w-100 text-start">
               <button
-                className="signup-now py-2 px-3 fw-lightBold mb-0 h-auto mt-5"
+                className="signup-now py-2 px-3 fw-lightBold mb-0 h-auto"
                 onClick={() => setIsAddChapter(true)}
               >
                 Add Chapter
@@ -577,42 +710,72 @@ export default function AddLesson() {
           )}
         </div>
       </main>
-      {isDelete && (
-        <Modal onClose={closeModal}>
-          <div className="p-3 text-center">
-            <h5 className="mb-4">Are you sure to delete the lesson?</h5>
-            <div className="d-flex align-items-center justify-content-center gap-5">
-              <button
-                className="signup-now py-2 px-3 fw-light mb-0 h-auto"
-                onClick={closeModal}
-              >
-                Cancel
-              </button>
-              <button
-                className="signup-now py-2 px-3 fw-light mb-0 h-auto"
-                onClick={handleDeleteLesson}
-              >
-                Continue
-              </button>
-            </div>
-          </div>
-        </Modal>
-      )}
 
-      {finalDelete && (
-        <Modal>
-          <div className="d-flex flex-column align-items-center gap-3 justify-content-center">
-            <MdDone className="fs-1" />
-            <h5>Lesson deleted successfully.</h5>
+      <Modal onClose={closeModal} show={isDelete}>
+        <div className="p-3 text-center">
+          <h5 className="mb-4">Are you sure to delete the lesson?</h5>
+          <div className="d-flex align-items-center justify-content-center gap-5">
             <button
-              className="signup-now px-3 fw-lightBold mb-0 h-auto py-2"
-              onClick={() => setFinalDelete(false)}
+              className="signup-now py-2 px-3 fw-light mb-0 h-auto"
+              onClick={closeModal}
+            >
+              Cancel
+            </button>
+            <button
+              className="signup-now py-2 px-3 fw-light mb-0 h-auto"
+              onClick={handleDeleteLesson}
             >
               Continue
             </button>
           </div>
-        </Modal>
-      )}
+        </div>
+      </Modal>
+
+      <Modal show={finalDelete}>
+        <div className="d-flex flex-column align-items-center gap-3 justify-content-center">
+          <MdDone className="fs-1" />
+          <h5>Lesson deleted successfully.</h5>
+          <button
+            className="signup-now px-3 fw-lightBold mb-0 h-auto py-2"
+            onClick={() => setFinalDelete(false)}
+          >
+            Continue
+          </button>
+        </div>
+      </Modal>
+
+      <Modal onClose={closeModalChapter} show={isDeleteChapter}>
+        <div className="p-3 text-center">
+          <h5 className="mb-4">Are you sure to delete the chapter?</h5>
+          <div className="d-flex align-items-center justify-content-center gap-5">
+            <button
+              className="signup-now py-2 px-3 fw-light mb-0 h-auto"
+              onClick={closeModalChapter}
+            >
+              Cancel
+            </button>
+            <button
+              className="signup-now py-2 px-3 fw-light mb-0 h-auto"
+              onClick={handleDeleteChapter}
+            >
+              Continue
+            </button>
+          </div>
+        </div>
+      </Modal>
+
+      <Modal show={finalDeleteChapter}>
+        <div className="d-flex flex-column align-items-center gap-3 justify-content-center">
+          <MdDone className="fs-1" />
+          <h5>Chapter deleted successfully.</h5>
+          <button
+            className="signup-now px-3 fw-lightBold mb-0 h-auto py-2"
+            onClick={() => setFinalDeleteChapter(false)}
+          >
+            Continue
+          </button>
+        </div>
+      </Modal>
     </div>
   );
 }
