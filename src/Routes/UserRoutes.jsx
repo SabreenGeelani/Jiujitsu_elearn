@@ -6,17 +6,18 @@ import PurchaseHistory from "../Pages/PurchaseHistory/PurchaseHistory";
 import Messages from "../Pages/UserModule/Messages/Messages";
 import Settings from "../Pages/Settings/Settings";
 import MyLearning from "../Pages/MyLearning/MyLearning";
+import Checkout from "../Pages/Checkout/Checkout";
 
 const UserRoutes = () => (
   <Routes>
     <Route path="/userCourses" element={<UserCourses />} />
     <Route path="/userCourseView/:id" element={<UserCourseOverview />} />
-
+    <Route path="checkout" element={<Checkout />} />
     <Route path="/userCart" element={<UserCart />} />
     <Route path="/purchaseHistory" element={<PurchaseHistory />} />
     <Route path="/messages" element={<Messages />} />
     <Route path="/settings" element={<Settings />} />
-    <Route path="/myLearning" element={<MyLearning/>} />
+    <Route path="/myLearning" element={<MyLearning />} />
   </Routes>
 );
 

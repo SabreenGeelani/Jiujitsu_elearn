@@ -1,11 +1,3 @@
-
-
-
-
-
-
-
-
 import { useEffect, useMemo, useState } from "react";
 import "./MyLearning.css";
 import cardImage from "../../assets/coursesCard.png";
@@ -15,7 +7,6 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { PulseLoader, SyncLoader } from "react-spinners";
-
 const Card = ({
   id,
   category,
@@ -29,13 +20,11 @@ const Card = ({
   onAddToCart,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
-
   const handleAddToCart = async (e) => {
     e.stopPropagation();
     setIsLoading(true);
     await onAddToCart(id, setIsLoading);
   };
-
   return (
     <div className="card-bottom-myLearning" onClick={() => onClick(id)}>
       <img src={thumbnail} alt="Course image" />
@@ -55,25 +44,23 @@ const Card = ({
         ...
       </h4>
       <div className="bottom-card-usermyLearning">
-        <span><span></span></span>
-        <div><p>49% complete</p> <p>Add rating</p></div>
+        <span>
+          <span></span>
+        </span>
+        <div>
+          <p>49% complete</p> <p>Add rating</p>
+        </div>
       </div>
     </div>
   );
 };
-
-
-
-
 const MyLearning = () => {
   // console.log("ok here");
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
-
   const [initialCategory, setInitialCategory] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [activeTab, setActiveTab] = useState("All Courses");
-
   const url2 = `${BASE_URI}/api/v1/category/`;
   const {
     data: data2,
@@ -85,35 +72,28 @@ const MyLearning = () => {
       Authorization: "Bearer " + token,
     },
   });
-
   const categories = useMemo(() => data2?.data || [], [data2]);
-
   useEffect(() => {
     if (categories.length > 0) {
       setInitialCategory(categories[0].name);
       setSelectedCategory(categories[0].name);
     }
   }, [categories]);
-
   const handleCategoryClick = (category) => {
     setSelectedCategory(category);
   };
-
   const url = `${BASE_URI}/api/v1/courses/userDashboard/courses?category=${selectedCategory}`;
   const { data, error, refetch, isLoading } = useFetch(url, {
     headers: {
       Authorization: "Bearer " + token,
     },
   });
-
   // console.log(data.data);
   // // const coursesData = data;
   const coursesData = useMemo(() => data?.data || [], [data]);
-
   const handleNavigate = (id) => {
     navigate(`/userCourseView/${id}`);
   };
-
   const handleCart = async (id, setIsLoading) => {
     try {
       const response = await axios.post(
@@ -132,148 +112,65 @@ const MyLearning = () => {
       toast.error(`Error: ${err?.response?.data?.message}`);
     }
   };
-
   return (
     <>
       {isLoading ? (
-            <SyncLoader id="myLearningLoader" size={8} color="black" />
-          ) : (
+        <SyncLoader id="myLearningLoader" size={8} color="black" />
+      ) : (
         <div className="wrapper-myLearning">
           <header className="bg-gradient-custom-div p-3 pb-0 rounded-bottom-3.5 custom-box ">
-         <h3 className="pb-5">My Learning</h3>
-         <div className="d-flex gap-5 px-4">
-           <h5
-            className={`text-white px-3 pb-2 fw-light cursor-pointer ${
-              activeTab === "All Courses" ? "border-bottom border-4" : ""
-            }`}
-            onClick={() => setActiveTab("All Courses")}
-          >
-            All Courses
-          </h5>
-          <h5
-            className={`text-white px-3 pb-2 fw-light cursor-pointer ${
-              activeTab === "Archieved" ? "border-bottom border-4" : ""
-            }`}
-            onClick={() => setActiveTab("Archieved")}
-          >
-            Archieved
-          </h5>
-          <h5
-            className={`text-white px-3 pb-2 fw-light cursor-pointer ${
-              activeTab === "Favorite" ? "border-bottom border-4" : ""
-            }`}
-            onClick={() => setActiveTab("Favorite")}
-          >
-            Favorite
-          </h5>
-        </div>
-      </header>
-          
-            <div className="bottom-myLearning">
-              {error?.response?.data?.message === "No courses found" ? (
-                <h1>No courses found</h1>
-              ) : (
-                coursesData.map((course) => (
-                  <Card
-                    key={course.id}
-                    id={course.id}
-                    category={course.category}
-                    description={course.description}
-                    expert={course.expert}
-                    price={course.price}
-                    discount={course.discount}
-                    tags={course.tags}
-                    thumbnail={course.thumbnail}
-                    onClick={handleNavigate}
-                    onAddToCart={handleCart}
-                  />
-                ))
-              )}
+            <h3 className="pb-5">My Learning</h3>
+            <div className="d-flex gap-5 px-4">
+              <h5
+                className={`text-white px-3 pb-2 fw-light cursor-pointer ${
+                  activeTab === "All Courses" ? "border-bottom border-4" : ""
+                }`}
+                onClick={() => setActiveTab("All Courses")}
+              >
+                All Courses
+              </h5>
+              <h5
+                className={`text-white px-3 pb-2 fw-light cursor-pointer ${
+                  activeTab === "Archieved" ? "border-bottom border-4" : ""
+                }`}
+                onClick={() => setActiveTab("Archieved")}
+              >
+                Archieved
+              </h5>
+              <h5
+                className={`text-white px-3 pb-2 fw-light cursor-pointer ${
+                  activeTab === "Favorite" ? "border-bottom border-4" : ""
+                }`}
+                onClick={() => setActiveTab("Favorite")}
+              >
+                Favorite
+              </h5>
             </div>
-          
+          </header>
+          <div className="bottom-myLearning">
+            {error?.response?.data?.message === "No courses found" ? (
+              <h1>No courses found</h1>
+            ) : (
+              coursesData.map((course) => (
+                <Card
+                  key={course.id}
+                  id={course.id}
+                  category={course.category}
+                  description={course.description}
+                  expert={course.expert}
+                  price={course.price}
+                  discount={course.discount}
+                  tags={course.tags}
+                  thumbnail={course.thumbnail}
+                  onClick={handleNavigate}
+                  onAddToCart={handleCart}
+                />
+              ))
+            )}
+          </div>
         </div>
       )}
     </>
   );
 };
-
 export default MyLearning;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// import { useState } from "react";
-
-// const MyLearning = () => {
-//     const [activeTab, setActiveTab] = useState("All Courses");
-
-
-
-//   return (
-//     <div className='w-100'>
-
-// <header className="bg-gradient-custom-div p-3 pb-0 rounded-bottom-3.5 custom-box">
-//         <h3 className="pb-5">My Learning</h3>
-//         <div className="d-flex gap-5 px-4">
-//           <h5
-//             className={`text-white px-3 pb-2 fw-light cursor-pointer ${
-//               activeTab === "All Courses" ? "border-bottom border-4" : ""
-//             }`}
-//             onClick={() => setActiveTab("All Courses")}
-//           >
-//             All Courses
-//           </h5>
-//           <h5
-//             className={`text-white px-3 pb-2 fw-light cursor-pointer ${
-//               activeTab === "Archieved" ? "border-bottom border-4" : ""
-//             }`}
-//             onClick={() => setActiveTab("Archieved")}
-//           >
-//             Archieved
-//           </h5>
-//           <h5
-//             className={`text-white px-3 pb-2 fw-light cursor-pointer ${
-//               activeTab === "Favorite" ? "border-bottom border-4" : ""
-//             }`}
-//             onClick={() => setActiveTab("Favorite")}
-//           >
-//             Favorite
-//           </h5>
-//         </div>
-//       </header>
-//       <div className="bottom-myLearning">
-//               {error?.response?.data?.message === "No courses found" ? (
-//                 <h1>No courses found</h1>
-//               ) : (
-//                 coursesData.map((course) => (
-//                   <Card
-//                     key={course.id}
-//                     id={course.id}
-//                     category={course.category}
-//                     description={course.description}
-//                     expert={course.expert}
-//                     price={course.price}
-//                     discount={course.discount}
-//                     tags={course.tags}
-//                     thumbnail={course.thumbnail}
-//                     onClick={handleNavigate}
-//                     onAddToCart={handleCart}
-//                   />
-//                 ))
-//               )}
-//             </div>
-//     </div>
-//   )
-// }
-
-// export default MyLearning
