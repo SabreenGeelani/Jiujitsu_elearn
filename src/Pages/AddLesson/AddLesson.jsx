@@ -3,7 +3,7 @@ import { IoMdTrash } from "react-icons/io";
 import { MdAddBox, MdDone } from "react-icons/md";
 import { BASE_URI } from "../../Config/url";
 import useFetch from "../../hooks/useFetch";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useCallback, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast/headless";
@@ -14,8 +14,9 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { TbDragDrop } from "react-icons/tb";
 import Modal from "../../Components/Modal/Modal";
+import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 
-export default function AddLesson() {
+export default function AddLesson({ setEditCourse, setCourseId }) {
   const [isAddChapter, setIsAddChapter] = useState(false);
   const { id } = useParams();
   const [openForm, setOpenForm] = useState(null);
@@ -42,10 +43,11 @@ export default function AddLesson() {
   });
   const [editingChapterId, setEditingChapterId] = useState(null);
   const [chapterTitle, setChapterTitle] = useState("");
+  const [chapterToDelete, setChapterToDelete] = useState(null);
 
   const editorRef = useRef(null);
   const inputRef = useRef(null);
-
+  const navigate = useNavigate();
   const token = localStorage.getItem("token");
   const courseUrl = `${BASE_URI}/api/v1/courses/${id}`;
   const chaptersUrl = `${BASE_URI}/api/v1/chapters/courseChapters/${id}`;
@@ -82,6 +84,7 @@ export default function AddLesson() {
         toast.success(resp.data.message);
         setNewChapterData({ title: "", course_id: id });
         refetch();
+        setIsAddChapter(false);
       })
       .catch((err) => {
         toast.error(err.response ? err.response.data.message : err.message);
@@ -147,7 +150,6 @@ export default function AddLesson() {
         course_id: id,
       });
     } else {
-      // Adding a new lesson
       setEditLesson(null);
       setNewLesson({
         chapter_id: chapterId,
@@ -276,22 +278,29 @@ export default function AddLesson() {
   };
 
   const handleDeleteChapter = () => {
-    axios.delete(
-      `${BASE_URI}/api/v1/chapters`,
-      {
-        chapter_id: 26,
-        course_id: id,
-      },
-      {
+    // console.log(chapterToDelete);
+    axios
+      .delete(`${BASE_URI}/api/v1/chapters`, {
+        data: { chapter_id: chapterToDelete, course_id: id },
         headers: {
           Authorization: "Bearer " + token,
         },
-      }
-    );
+      })
+      .then((resp) => {
+        toast.success(resp.data.message);
+        setChapterToDelete(null);
+        refetch();
+        setIsDeleteChapter(false);
+        setFinalDeleteChapter(true);
+      })
+      .catch((err) => {
+        toast.error("Error deleting chapter!");
+      });
   };
 
   const handleModalDeleteChapter = (chapterId) => {
     setIsDeleteChapter(true);
+    setChapterToDelete(chapterId);
   };
 
   const startEditing = (chapter) => {
@@ -311,11 +320,70 @@ export default function AddLesson() {
     setIsDeleteChapter(false);
   };
 
+  const onDragEnd = async (result) => {
+    const { destination, source, draggableId } = result;
+
+    if (!destination) {
+      return;
+    }
+
+    const sourceChapterId = source.droppableId;
+    const destinationChapterId = destination.droppableId;
+
+    const sourceChapter = chapters.find(
+      (chap) => chap.id === Number(sourceChapterId)
+    );
+    const destinationChapter = chapters.find(
+      (chap) => chap.id === Number(destinationChapterId)
+    );
+
+    const draggedLesson = sourceChapter.lessons.find(
+      (lesson) => lesson.id === Number(draggableId)
+    );
+    const draggedLessonSequence = draggedLesson?.sequence;
+
+    const destinationLesson = destinationChapter.lessons[destination.index];
+    const destinationLessonSequence = destinationLesson?.sequence;
+
+    console.log("Dragged Lesson Sequence:", draggedLessonSequence);
+    console.log("Destination Lesson Sequence:", destinationLessonSequence);
+
+    const payload = {
+      course_id: "11",
+      swapSequence: draggedLessonSequence,
+      swapWithSequence: destinationLessonSequence,
+    };
+
+    try {
+      await axios
+        .patch(`${BASE_URI}/api/v1/lessons/changeSeq`, payload, {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        })
+        .then((resp) => {
+          console.log(resp.data);
+        });
+      console.log("Sequence updated successfully");
+    } catch (error) {
+      console.error("Error updating sequence:", error);
+    }
+  };
+
+  const handleEditCourse = () => {
+    setEditCourse(true);
+    setCourseId(id);
+    navigate("/courseCreation");
+  };
+
   return (
     <div className="w-100">
       <header className="d-flex align-items-center justify-content-between py-3 pb-4">
         <h3 className="fw-bold text-capitalize">{title || "Course Name"}</h3>
-        <button className="signup-now py-2 px-3 fw-lightBold mb-0 h-auto">
+        <button
+          className="signup-now py-2 px-3 fw-lightBold mb-0 h-auto"
+          onClick={handleEditCourse}
+        >
           Edit Course
         </button>
       </header>
@@ -340,323 +408,360 @@ export default function AddLesson() {
               Add Chapter
             </button>
           )}
-
-          <div className="w-100">
-            {chapters?.length > 0 &&
-              chapters.map((chapter, index) => (
-                <div
-                  className="rounded-2 border border-secondary-subtle text-start px-5 py-3 mb-3"
-                  key={chapter.id}
-                >
-                  {editingChapterId === chapter.id ? (
-                    <div className="d-flex flex-column gap-2">
-                      <input
-                        type="text"
-                        className="px-5 py-2-half-5 border-secondary-subtle border rounded-2 w-100 input-custom text-capitalize mb-3"
-                        value={chapterTitle}
-                        ref={inputRef}
-                        onChange={(e) => setChapterTitle(e.target.value)}
-                      />
-                      <div className="d-flex justify-content-end gap-3 mb-3">
-                        <button
-                          className="signup-now py-2 px-3 fw-light mb-0 h-auto text-black border border-2"
-                          style={{ background: "transparent" }}
-                          onClick={() => setEditingChapterId(null)}
-                        >
-                          Cancel
-                        </button>
-                        <button
-                          className="signup-now py-2 px-3 fw-light mb-0 h-auto"
-                          onClick={() =>
-                            saveChanges(chapter.id, chapter.sequence)
-                          }
-                        >
-                          Save Changes
-                        </button>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="d-flex align-items-center justify-content-between">
-                      <div className="d-flex align-items-center gap-4">
-                        <p className="mb-0 fs-4 fw-lightBold">
-                          {index + 1}. {chapter.title}
-                        </p>
-                        <FaPen
-                          className="primary-color cursor-pointer"
-                          onClick={() => startEditing(chapter)}
-                        />
-                        <IoMdTrash
-                          className="fs-5 primary-color cursor-pointer"
-                          onClick={() => handleModalDeleteChapter(chapter.id)}
-                        />
-                      </div>
-                      <button
-                        className="signup-now py-2 px-3 fw-lightBold mb-0 h-auto"
-                        onClick={() => handleAddLessonClick(chapter.id)}
+          <DragDropContext onDragEnd={onDragEnd}>
+            <div className="w-100">
+              {chapters?.length > 0 &&
+                chapters.map((chapter, index) => (
+                  <Droppable
+                    droppableId={String(chapter.id)}
+                    key={chapter.id}
+                    index={index}
+                  >
+                    {(provided) => (
+                      <div
+                        className="rounded-2 border border-secondary-subtle text-start px-5 py-3 mb-3"
+                        {...provided.droppableProps}
+                        ref={provided.innerRef}
                       >
-                        Add Lesson
-                      </button>
-                    </div>
-                  )}
-
-                  {chapter.lessons.map((lesson, i) => (
-                    <div
-                      className="p-3 rounded-2 border border-secondary-subtle d-flex align-items-center justify-content-between my-3"
-                      key={lesson.id}
-                      onClick={() => handleAddLessonClick(chapter.id, lesson)}
-                    >
-                      <div className="d-flex align-items-center gap-3">
-                        <FaYoutube className="primary-color fs-5" />
-                        <p className="primary-color mb-0 text-capitalize">
-                          {i + 1}. {lesson.title}
-                        </p>
-                      </div>
-                      <div className="d-flex gap-5">
-                        <p className="mb-0  fs-5">{lesson.duration}m</p>
-                        <TbDragDrop className="fs-3" />
-                      </div>
-                    </div>
-                  ))}
-                  {openForm === chapter.id && (
-                    <form onSubmit={handleLessonSubmit}>
-                      <div className="mb-3">
-                        <label
-                          htmlFor="title"
-                          className="d-block mb-1 fs-5 fw-light text-start"
-                        >
-                          Lesson Title <span className="text-danger">*</span>
-                        </label>
-                        <input
-                          type="text"
-                          name="title"
-                          placeholder="Enter Title"
-                          className="px-5 py-2-half-5 border-secondary-subtle border rounded-2 w-100 input-custom"
-                          value={newLesson.title}
-                          onChange={handleChange}
-                        />
-                      </div>
-                      <div className="mb-3">
-                        <div className="d-flex justify-content-between ">
-                          <label
-                            htmlFor="text_content"
-                            className="d-block mb-1 fs-5 fw-light"
-                          >
-                            Lesson Description{" "}
-                            <span className="text-danger">*</span>
-                          </label>
-                          <div className="cursor-pointer">
+                        {editingChapterId === chapter.id ? (
+                          <div className="d-flex flex-column gap-2">
                             <input
-                              type="file"
-                              accept=".txt"
-                              onChange={handleFileUpload}
-                              style={{ display: "none" }}
-                              id="uploadFile"
+                              type="text"
+                              className="px-5 py-2-half-5 border-secondary-subtle border rounded-2 w-100 input-custom text-capitalize mb-3"
+                              value={chapterTitle}
+                              ref={inputRef}
+                              onChange={(e) => setChapterTitle(e.target.value)}
                             />
-                            <label
-                              htmlFor="uploadFile"
-                              className="fs-small neutral-color"
-                            >
-                              <RiGalleryUploadFill className="fs-5 me-2" />
-                              Upload .txt file
-                            </label>
-                          </div>
-                        </div>
-                        <div className="border border-secondary-subtle rounded">
-                          <ReactQuill
-                            value={newLesson.text_content}
-                            onChange={handleEditorChange}
-                            ref={editorRef}
-                            theme="snow"
-                            modules={{
-                              toolbar: [
-                                [
-                                  { header: "1" },
-                                  { header: "2" },
-                                  { font: [] },
-                                ],
-                                [{ list: "ordered" }, { list: "bullet" }],
-                                ["bold", "italic", "underline"],
-                                [{ color: [] }, { background: [] }],
-                                [{ align: [] }],
-                                ["clean"],
-                              ],
-                            }}
-                            formats={[
-                              "header",
-                              "font",
-                              "list",
-                              "bullet",
-                              "bold",
-                              "italic",
-                              "underline",
-                              "color",
-                              "background",
-                              "align",
-                            ]}
-                            style={{ height: "13rem", overflowY: "auto" }}
-                          />
-                        </div>
-                      </div>
-                      <div className="mb-3">
-                        <label
-                          htmlFor="video_type"
-                          className="d-block mb-1 fs-5 fw-light text-start"
-                        >
-                          URL Type <span className="text-danger">*</span>
-                        </label>
-                        <select
-                          name="video_type"
-                          className="py-2-half-5 border-secondary-subtle border rounded-2 w-100 text-center"
-                          value={newLesson.video_type}
-                          onChange={handleChange}
-                        >
-                          <option value="" disabled>
-                            Select
-                          </option>
-                          <option
-                            value="youtube"
-                            className="border-top border-bottom py-2"
-                          >
-                            youtube
-                          </option>
-                          <option value="chrome" className="border-bottom py-2">
-                            chrome
-                          </option>
-                          <option value="upload" className="border-bottom py-2">
-                            Upload from device
-                          </option>
-                        </select>
-                        {newLesson.video_type === "upload" && (
-                          <div className="mt-3 w-25">
-                            <div
-                              {...getRootProps()}
-                              className="d-flex flex-column align-items-center justify-content-center  border-dotted rounded-2 py-3"
-                            >
-                              {filePreview && (
-                                <div className="mt-3">
-                                  <video
-                                    src={filePreview}
-                                    alt="Preview"
-                                    className="w-100 h-100"
-                                    style={{
-                                      // maxHeight: "150px",
-                                      objectFit: "cover",
-                                    }}
-                                  />
-                                </div>
-                              )}
-                              <input {...getInputProps()} />
-                              <IoCloudUploadOutline className="fs-1" />
-                              <p className="mt-2">Drag or drop here</p>
+                            <div className="d-flex justify-content-end gap-3 mb-3">
+                              <button
+                                className="signup-now py-2 px-3 fw-light mb-0 h-auto text-black border border-2"
+                                style={{ background: "transparent" }}
+                                onClick={() => setEditingChapterId(null)}
+                              >
+                                Cancel
+                              </button>
+                              <button
+                                className="signup-now py-2 px-3 fw-light mb-0 h-auto"
+                                onClick={() =>
+                                  saveChanges(chapter.id, chapter.sequence)
+                                }
+                              >
+                                Save Changes
+                              </button>
                             </div>
                           </div>
-                        )}
-                      </div>
-                      <div className="mb-3">
-                        <label
-                          htmlFor="video_url"
-                          className="d-block mb-1 fs-5 fw-light text-start"
-                        >
-                          Lesson URL <span className="text-danger">*</span>
-                        </label>
-                        <input
-                          type="text"
-                          name="video_url"
-                          placeholder="Enter or Paste URL"
-                          className="px-5 py-2-half-5 border-secondary-subtle border rounded-2 w-100 input-custom"
-                          value={newLesson.video_url}
-                          onChange={handleChange}
-                        />
-                      </div>
-                      <div className="mb-3">
-                        <label
-                          htmlFor="thumbnail"
-                          className="d-block mb-1 fs-5 fw-light"
-                        >
-                          Add Thumbnail <span className="text-danger">*</span>
-                        </label>
-                        <div {...getRootProps()} className="input-group">
-                          <input
-                            type="text"
-                            name="thumbnail"
-                            placeholder={
-                              newLesson.thumbnail
-                                ? newLesson.thumbnail.name
-                                : "Select or Drag & Drop"
-                            }
-                            className="form-control px-5 py-2-half-5 border-secondary-subtle border border-end-0 rounded-start-2 input-custom"
-                            readOnly
-                          />
-                          <button
-                            type="button"
-                            className="input-group-text border-start-0 bg-white border-secondary-subtle"
-                          >
-                            <RiGalleryUploadFill className="fs-5 neutral-color" />
-                          </button>
-                          <input
-                            {...getInputProps({
-                              style: { display: "none" },
-                            })}
-                          />
-                        </div>
-                      </div>
-                      <div className="mb-4">
-                        <label
-                          htmlFor="duration"
-                          className="d-block mb-1 fs-5 fw-light text-start"
-                        >
-                          Lesson Duration <span className="text-danger">*</span>
-                        </label>
-                        <input
-                          type="text"
-                          name="duration"
-                          placeholder="Enter Duration"
-                          className="px-5 py-2-half-5 border-secondary-subtle border rounded-2 w-100 input-custom"
-                          value={newLesson.duration}
-                          onChange={handleChange}
-                        />
-                      </div>
-                      <div className="d-flex align-items-center justify-content-end ">
-                        {editLesson ? (
-                          <div className="d-flex align-items-center gap-5">
-                            <button
-                              type="button"
-                              className="signup-now py-2 px-4 mt-4"
-                              style={{ background: "#CC3737" }}
-                              onClick={() => setIsDelete(true)}
-                            >
-                              Delete
-                            </button>
-                            <button
-                              type="submit"
-                              className="signup-now py-2 px-4 mt-4"
-                            >
-                              Save Changes
-                            </button>
-                          </div>
                         ) : (
-                          <div className="d-flex align-items-center gap-5">
+                          <div className="d-flex align-items-center justify-content-between">
+                            <div className="d-flex align-items-center gap-4">
+                              <p className="mb-0 fs-4 fw-lightBold">
+                                {index + 1}. {chapter.title}
+                              </p>
+                              <FaPen
+                                className="primary-color cursor-pointer"
+                                onClick={() => startEditing(chapter)}
+                              />
+                              <IoMdTrash
+                                className="fs-5 primary-color cursor-pointer"
+                                onClick={() =>
+                                  handleModalDeleteChapter(chapter.id)
+                                }
+                              />
+                            </div>
                             <button
-                              type="button"
-                              className="signup-now py-2 px-3 fw-light mb-0 h-auto"
-                              onClick={() => handleAddLessonClick(null)}
-                            >
-                              Cancel
-                            </button>
-                            <button
-                              type="submit"
-                              className="signup-now py-2 px-3 fw-light mb-0 h-auto"
+                              className="signup-now py-2 px-3 fw-lightBold mb-0 h-auto"
+                              onClick={() => handleAddLessonClick(chapter.id)}
                             >
                               Add Lesson
                             </button>
                           </div>
                         )}
+
+                        {chapter.lessons.map((lesson, i) => (
+                          <Draggable
+                            key={lesson.id}
+                            draggableId={String(lesson.id)}
+                            index={i}
+                          >
+                            {(provided) => (
+                              <div
+                                ref={provided.innerRef}
+                                {...provided.draggableProps}
+                                {...provided.dragHandleProps}
+                                className="p-3 rounded-2 border border-secondary-subtle d-flex align-items-center justify-content-between my-3"
+                                onClick={() =>
+                                  handleAddLessonClick(chapter.id, lesson)
+                                }
+                                // draggable
+                              >
+                                <div className="d-flex align-items-center gap-3">
+                                  <FaYoutube className="primary-color fs-5" />
+                                  <p className="primary-color mb-0 text-capitalize">
+                                    {i + 1}. {lesson.title}
+                                  </p>
+                                </div>
+                                <div className="d-flex gap-5">
+                                  <p className="mb-0  fs-5">
+                                    {lesson.duration}m
+                                  </p>
+                                  <TbDragDrop className="fs-3" />
+                                </div>
+                              </div>
+                            )}
+                          </Draggable>
+                        ))}
+                        {openForm === chapter.id && (
+                          <form onSubmit={handleLessonSubmit}>
+                            <div className="mb-3">
+                              <label
+                                htmlFor="title"
+                                className="d-block mb-1 fs-5 fw-light text-start"
+                              >
+                                Lesson Title{" "}
+                                <span className="text-danger">*</span>
+                              </label>
+                              <input
+                                type="text"
+                                name="title"
+                                placeholder="Enter Title"
+                                className="px-5 py-2-half-5 border-secondary-subtle border rounded-2 w-100 input-custom"
+                                value={newLesson.title}
+                                onChange={handleChange}
+                              />
+                            </div>
+                            <div className="mb-3">
+                              <div className="d-flex justify-content-between ">
+                                <label
+                                  htmlFor="text_content"
+                                  className="d-block mb-1 fs-5 fw-light"
+                                >
+                                  Lesson Description{" "}
+                                  <span className="text-danger">*</span>
+                                </label>
+                                <div className="cursor-pointer">
+                                  <input
+                                    type="file"
+                                    accept=".txt"
+                                    onChange={handleFileUpload}
+                                    style={{ display: "none" }}
+                                    id="uploadFile"
+                                  />
+                                  <label
+                                    htmlFor="uploadFile"
+                                    className="fs-small neutral-color"
+                                  >
+                                    <RiGalleryUploadFill className="fs-5 me-2" />
+                                    Upload .txt file
+                                  </label>
+                                </div>
+                              </div>
+                              <div className="border border-secondary-subtle rounded">
+                                <ReactQuill
+                                  value={newLesson.text_content}
+                                  onChange={handleEditorChange}
+                                  ref={editorRef}
+                                  theme="snow"
+                                  modules={{
+                                    toolbar: [
+                                      [
+                                        { header: "1" },
+                                        { header: "2" },
+                                        { font: [] },
+                                      ],
+                                      [{ list: "ordered" }, { list: "bullet" }],
+                                      ["bold", "italic", "underline"],
+                                      [{ color: [] }, { background: [] }],
+                                      [{ align: [] }],
+                                      ["clean"],
+                                    ],
+                                  }}
+                                  formats={[
+                                    "header",
+                                    "font",
+                                    "list",
+                                    "bullet",
+                                    "bold",
+                                    "italic",
+                                    "underline",
+                                    "color",
+                                    "background",
+                                    "align",
+                                  ]}
+                                  style={{ height: "13rem", overflowY: "auto" }}
+                                />
+                              </div>
+                            </div>
+                            <div className="mb-3">
+                              <label
+                                htmlFor="video_type"
+                                className="d-block mb-1 fs-5 fw-light text-start"
+                              >
+                                URL Type <span className="text-danger">*</span>
+                              </label>
+                              <select
+                                name="video_type"
+                                className="py-2-half-5 border-secondary-subtle border rounded-2 w-100 text-center"
+                                value={newLesson.video_type}
+                                onChange={handleChange}
+                              >
+                                <option value="" disabled>
+                                  Select
+                                </option>
+                                <option
+                                  value="youtube"
+                                  className="border-top border-bottom py-2"
+                                >
+                                  youtube
+                                </option>
+                                <option
+                                  value="chrome"
+                                  className="border-bottom py-2"
+                                >
+                                  chrome
+                                </option>
+                                <option
+                                  value="upload"
+                                  className="border-bottom py-2"
+                                >
+                                  Upload from device
+                                </option>
+                              </select>
+                              {newLesson.video_type === "upload" && (
+                                <div className="mt-3 w-25">
+                                  <div
+                                    {...getRootProps()}
+                                    className="d-flex flex-column align-items-center justify-content-center  border-dotted rounded-2 py-3"
+                                  >
+                                    {filePreview && (
+                                      <div className="mt-3">
+                                        <video
+                                          src={filePreview}
+                                          alt="Preview"
+                                          className="w-100 h-100"
+                                          style={{
+                                            // maxHeight: "150px",
+                                            objectFit: "cover",
+                                          }}
+                                        />
+                                      </div>
+                                    )}
+                                    <input {...getInputProps()} />
+                                    <IoCloudUploadOutline className="fs-1" />
+                                    <p className="mt-2">Drag or drop here</p>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                            <div className="mb-3">
+                              <label
+                                htmlFor="video_url"
+                                className="d-block mb-1 fs-5 fw-light text-start"
+                              >
+                                Lesson URL{" "}
+                                <span className="text-danger">*</span>
+                              </label>
+                              <input
+                                type="text"
+                                name="video_url"
+                                placeholder="Enter or Paste URL"
+                                className="px-5 py-2-half-5 border-secondary-subtle border rounded-2 w-100 input-custom"
+                                value={newLesson.video_url}
+                                onChange={handleChange}
+                              />
+                            </div>
+                            <div className="mb-3">
+                              <label
+                                htmlFor="thumbnail"
+                                className="d-block mb-1 fs-5 fw-light"
+                              >
+                                Add Thumbnail{" "}
+                                <span className="text-danger">*</span>
+                              </label>
+                              <div {...getRootProps()} className="input-group">
+                                <input
+                                  type="text"
+                                  name="thumbnail"
+                                  placeholder={
+                                    newLesson.thumbnail
+                                      ? newLesson.thumbnail.name
+                                      : "Select or Drag & Drop"
+                                  }
+                                  className="form-control px-5 py-2-half-5 border-secondary-subtle border border-end-0 rounded-start-2 input-custom"
+                                  readOnly
+                                />
+                                <button
+                                  type="button"
+                                  className="input-group-text border-start-0 bg-white border-secondary-subtle"
+                                >
+                                  <RiGalleryUploadFill className="fs-5 neutral-color" />
+                                </button>
+                                <input
+                                  {...getInputProps({
+                                    style: { display: "none" },
+                                  })}
+                                />
+                              </div>
+                            </div>
+                            <div className="mb-4">
+                              <label
+                                htmlFor="duration"
+                                className="d-block mb-1 fs-5 fw-light text-start"
+                              >
+                                Lesson Duration{" "}
+                                <span className="text-danger">*</span>
+                              </label>
+                              <input
+                                type="text"
+                                name="duration"
+                                placeholder="Enter Duration"
+                                className="px-5 py-2-half-5 border-secondary-subtle border rounded-2 w-100 input-custom"
+                                value={newLesson.duration}
+                                onChange={handleChange}
+                              />
+                            </div>
+                            <div className="d-flex align-items-center justify-content-end ">
+                              {editLesson ? (
+                                <div className="d-flex align-items-center gap-5">
+                                  <button
+                                    type="button"
+                                    className="signup-now py-2 px-4 mt-4"
+                                    style={{ background: "#CC3737" }}
+                                    onClick={() => setIsDelete(true)}
+                                  >
+                                    Delete
+                                  </button>
+                                  <button
+                                    type="submit"
+                                    className="signup-now py-2 px-4 mt-4"
+                                  >
+                                    Save Changes
+                                  </button>
+                                </div>
+                              ) : (
+                                <div className="d-flex align-items-center gap-5">
+                                  <button
+                                    type="button"
+                                    className="signup-now py-2 px-3 fw-light mb-0 h-auto"
+                                    onClick={() => handleAddLessonClick(null)}
+                                  >
+                                    Cancel
+                                  </button>
+                                  <button
+                                    type="submit"
+                                    className="signup-now py-2 px-3 fw-light mb-0 h-auto"
+                                  >
+                                    Add Lesson
+                                  </button>
+                                </div>
+                              )}
+                            </div>
+                          </form>
+                        )}
                       </div>
-                    </form>
-                  )}
-                </div>
-              ))}
-          </div>
+                    )}
+                  </Droppable>
+                ))}
+            </div>
+          </DragDropContext>
 
           {isAddChapter && (
             <div className="w-100">

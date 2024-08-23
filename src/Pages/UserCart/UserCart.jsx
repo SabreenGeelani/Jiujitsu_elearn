@@ -61,6 +61,24 @@ const UserCart = () => {
     }
   };
 
+  const handleCheckout = () => {
+    axios
+      .get(`${BASE_URI}/api/v1/payment`, {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      })
+      .then((response) => {
+        if (response.data.status === "Success" && response.data.session.url) {
+          window.location.href = response.data.session.url;
+        } else {
+          console.error("Checkout session failed or URL not found.");
+        }
+      })
+      .catch((error) => {
+        console.error("Error during checkout: ", error);
+      });
+  };
   return (
     <>
       {isLoading ? (
@@ -75,7 +93,11 @@ const UserCart = () => {
               {cartItems?.cart?.map((item, index) => (
                 <div key={index} className="mid-left-cards-usercart">
                   <div className="mid-left-left-usercart">
-                    <img src={item.thumbnail || itemThumb} alt="thumbnail" />
+                    <img
+                      src={item.thumbnail || itemThumb}
+                      alt="thumbnail"
+                      style={{ objectFit: "cover" }}
+                    />
                     <div
                       style={{ cursor: "pointer" }}
                       onClick={() => handleRemoveCart(item?.course_id)}
@@ -87,9 +109,14 @@ const UserCart = () => {
                     <h5>
                       {item?.title?.split(" ").slice(0, 3).join(" ") + "..."}
                     </h5>
-                    <p>
-                      {item?.description?.split(" ").slice(0, 7).join(" ") +
-                        "..."}
+                    <p
+                      dangerouslySetInnerHTML={{
+                        __html:
+                          item?.description?.split(" ").slice(0, 7).join(" ") +
+                          "...",
+                      }}
+                    >
+                      {/* {} */}
                     </p>
                     <p>
                       {item?.totalRviews} reviews ({item?.rating})
@@ -97,11 +124,11 @@ const UserCart = () => {
                   </div>
                   <div className="mid-left-right-usercart">
                     <h6>
-                      ${item?.price}{" "}
+                      ${item?.discounted_price}{" "}
                       <FontAwesomeIcon icon={faTag} className="tag-usercart" />
                     </h6>
                     <span>
-                      <p>${item?.discounted_price}</p>
+                      <p>${item?.price}</p>
                     </span>
                   </div>
                 </div>
@@ -115,7 +142,7 @@ const UserCart = () => {
                   <h6>${cartItems?.totalPrice}</h6>
                   <h6>$15.99</h6>
                 </span>
-                <div>
+                <div onClick={handleCheckout} className="cursor-pointer">
                   <p>Checkout</p>
                   <p>
                     <FontAwesomeIcon icon={faArrowRight} />
@@ -152,7 +179,7 @@ const UserCart = () => {
                       <h5>Tag1 Tag2 Tag3</h5>
                     </div>
                   </div>
-                  <p>{items?.name}, Designer at Raybit...</p>
+                  <p>{items?.name}</p>
                   <h5>{items?.title?.split(" ").slice(0, 3).join(" ")}</h5>
                   <h4>
                     {items?.description?.split(" ").slice(0, 7).join(" ") +
