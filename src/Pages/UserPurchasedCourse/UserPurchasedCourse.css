@@ -1,8 +1,8 @@
-.wrapper-courseview{
+.wrapper-purchasedCourse{
     width: 100%;
     height: 100%;
 }
-.top-courseview{
+.top-purchasedCourse{
     height: 10vh;
     /* background-color: black; */
     width: 100%;
@@ -12,10 +12,10 @@
     align-items: center;
     padding: 0 1vw 0 0vw;
 }
-.top-courseview h4{
+.top-purchasedCourse h4{
     font-weight: 700;
 }
-.top-courseview div{
+.top-purchasedCourse div{
     background: linear-gradient(97.89deg, #0C243C 0%, #7E8C9C 95.36%);
     height: 60%;
     width: 11%;
@@ -26,16 +26,19 @@
     color: white;
     cursor: pointer;
 }
-.top-courseview h6{
+.top-purchasedCourse h6{
     font-weight: 400;
 }
-.bottom-courseview{
+
+.bottom-purchasedCourse{
+   
     height: max-content;
     display: flex;
     justify-content: space-between;
     /* padding: 0 5vh 0 10vh; */
+
 }
-.left-bottom-courseview{
+.left-bottom-purchasedCourse{
     background-color: #ffffff;
     height: max-content;
     width: 67%;
@@ -47,34 +50,33 @@
     border-radius: 0.30vw;
     box-shadow: 0 0 9px rgba(0, 0, 0, 0.2);
 }
-.right-bottom-courseview{
+.right-bottom-purchasedCourse{
     border-radius: 0.30vw;
     box-shadow: 0 0 9px rgba(0, 0, 0, 0.2);
     height: max-content;
     padding: 1vh;
     width: 30%;
+    
 }
 
-.video-container-courseview{
+.video-container-purchasedCourse{
     background-color: white;
-    height: 35vh;
+    height: 55vh;
     width: 92%;
     border-radius: 0.56vw;
 }
-.video-container-courseview img{
+
+.video-container-purchasedCourse video{
     width: 100%;
-    height: 100%;
+    height: 96.5%;
     border-radius: 0.56vw;
+    /* background-color: black; */
+    border-top-left-radius: 0.5vw;
     background-size: auto;
-    opacity: 0.7;
+    object-fit: cover;
 }
-.video-container-courseview video{
-    width: 100%;
-    height: 70%;
-    border-radius: 0.56vw;
-    background-size: auto;
-}
-.bottom-courseview span{
+
+.bottom-purchasedCourse span{
     display: flex;
     align-items: center;
     justify-content: start;
@@ -82,14 +84,14 @@
     width: 92%;
     margin-top: 1vh;
 }
-.bottom-courseview span h5{
+.bottom-purchasedCourse span h5{
     font-size: 1.5vw;
 }
-.bottom-courseview span h6{
+.bottom-purchasedCourse span h6{
     font-size: 1.25vw;
-    font-weight: 300;
+    font-weight: 400;
 }
-.videoCreator-courseview{
+.videoCreator-purchasedCourse{
     height: 7vh;
     margin-top: 1vh;
     display: flex;
@@ -97,17 +99,17 @@
     align-items: center;
     gap: 1vw;
 }
-.videoCreator-courseview img{
+.videoCreator-purchasedCourse img{
     height: 75%;
     border-radius: 50%;
 }
-.videoCreator-courseview h6{
+.videoCreator-purchasedCourse h6{
     font-weight: 500;
 }
-.videoCreator-courseview h6:last-child{
+.videoCreator-purchasedCourse h6:last-child{
     color: #7E8C9C;
 }
-.buttons-courseview{
+.buttons-purchasedCourse{
     width: 92%;
     margin-top: 1vh;
     height: 7vh;
@@ -116,7 +118,7 @@
     gap: 2vw;
     position: relative;
 }
-.line-courseview{
+.line-purchasedCourse{
     position: absolute;
     height: 1.5px;
     width: 100%;
@@ -146,7 +148,7 @@
     
 }
 
-.button-courseview{
+.button-purchasedCourse{
     height: 100%;
     width: 100%;
     background: linear-gradient(97.89deg, #0C243C 0%, #7E8C9C 95.36%);
@@ -159,7 +161,7 @@
     color: white;
     cursor: pointer;
 }
-.not-button-courseview{
+.not-button-purchasedCourse{
     height: 100%;
     width: 100%;
     display: flex;
@@ -169,13 +171,13 @@
     color: black;
     cursor: pointer;
 }
-.buttons-courseview div div h5{
+.buttons-purchasedCourse div div h5{
     font-weight: 400;
 }
 .no-button-triangle{
     display: none;
 }
-.course-details-courseview{
+.course-details-purchasedCourse{
     /* Remove fixed height */
     width: 92%;
     margin-top: 1vh;
@@ -183,15 +185,16 @@
     display: flex;
     flex-direction: column;
 }
-.course-details-courseview h5{
-    font-size: 1.25vw;
+.course-details-purchasedCourse span h5{
+    font-size: 1.15vw;
 }
-.course-details-courseview h6{
+
+.course-details-purchasedCourse h6{
     font-weight: 300;
     font-size: 1vw;
 }
 
-.course-details-courseview details {
+.course-details-purchasedCourse details {
     border-bottom: 1px solid #C9D1D5;
     padding-bottom: 1.5vh;
     margin-top: 1.5vh;
@@ -199,41 +202,41 @@
     
 }
 
-.course-details-courseview details summary {
+.course-details-purchasedCourse details summary {
     
     list-style: none;
 
     position: relative;
     cursor: pointer;
 }
-.course-details-courseview details summary p{
+.course-details-purchasedCourse details summary p{
     margin-top: 2vh;
     
 }
 
-.course-details-courseview details summary .up-icon {
+.course-details-purchasedCourse details summary .up-icon {
     position: absolute;
     right: 10%;
     transition: transform 0.3s ease;
 }
 
-.course-details-courseview details summary .up-icon {
+.course-details-purchasedCourse details summary .up-icon {
     right: 10%;
     transform: rotate(180deg); /* Rotates the icon when details is open */
 }
 
-.course-details-courseview details summary .down-icon {
+.course-details-purchasedCourse details summary .down-icon {
     position: absolute;
     right: 10%;
     transition: transform 0.3s ease;
 }
 
 
-.course-details-courseview details summary::-webkit-details-marker {
+.course-details-purchasedCourse details summary::-webkit-details-marker {
     display: none;
 }
 
-.ratings-courseview{
+.ratings-purchasedCourse{
     
     height: 23vh;
     width: 100%;
@@ -241,7 +244,7 @@
     
 }
 
-.left-ratings-courseview{
+.left-ratings-purchasedCourse{
     background-color: rgb(251, 251, 251);
     height: 100%;
     width: 25%;
@@ -250,7 +253,7 @@
     align-items: center;
     box-shadow: 0 0 9px rgba(0, 0, 0, 0.2);
 }
-.left-ratings-courseview span{
+.left-ratings-purchasedCourse span{
     display: flex;
     justify-content: center;
     gap: 0.2vw;
@@ -263,35 +266,35 @@
     font-size: 1vw;
     margin: 0;
 }
-.left-ratings-courseview h5{
+.left-ratings-purchasedCourse h5{
     margin-top: 1.5vh;
     font-weight: 700;
     font-size: 2vw;
 }
-.left-ratings-courseview h6{
+.left-ratings-purchasedCourse h6{
     font-weight: 500;
 }
-.left-ratings-courseview h6:first-child{
+.left-ratings-purchasedCourse h6:first-child{
     margin-top: 1vh;
 }
-.right-ratings-courseview{
+.right-ratings-purchasedCourse{
     width: 75%;
     height: 100%;
     padding-left: 1vw;
 }
-.right-ratings-courseview div{
+.right-ratings-purchasedCourse div{
     height: max-content;
     display: flex;
     gap: 1vw;
     align-items: center;
     justify-content: start;
 }
-.right-ratings-courseview div h6{
+.right-ratings-purchasedCourse div h6{
     width: 1.5vw;
     height: max-content;
     margin: 0;
 }
-.right-ratings-courseview div span {
+.right-ratings-purchasedCourse div span {
     display: flex;
     gap: 0.5vw;
     justify-content: start;
@@ -300,49 +303,49 @@
     align-items: center;
     /* padding-top: 1vh; */
 }
-.right-ratings-courseview h6:first-child{
+.right-ratings-purchasedCourse h6:first-child{
     font-weight: 500;
     margin-top: 1vh;
 }
-.right-ratings-courseview div div{
+.right-ratings-purchasedCourse div div{
     width: 50%;
     height: 2vh;
     background-color:#D9D9D9;
     
     border-radius: 1vw;
 }
-.right-ratings-courseview div div .fifty-rating-courseview{
+.right-ratings-purchasedCourse div div .fifty-rating-purchasedCourse{
     width: 50%;
     height: 100%;
     border-radius: 1vw;
     background-color: #0C243C;
 }
-.right-ratings-courseview div div .fourty-rating-courseview{
+.right-ratings-purchasedCourse div div .fourty-rating-purchasedCourse{
     width: 40%;
     height: 100%;
     border-radius: 1vw;
     background-color: #0C243C;
 }
-.right-ratings-courseview div div .thirty-rating-courseview{
+.right-ratings-purchasedCourse div div .thirty-rating-purchasedCourse{
     width: 30%;
     height: 100%;
     border-radius: 1vw;
     background-color: #0C243C;
 }
-.right-ratings-courseview div div .twenty-rating-courseview{
+.right-ratings-purchasedCourse div div .twenty-rating-purchasedCourse{
     width: 20%;
     height: 100%;
     border-radius: 1vw;
     background-color: #0C243C;
 }
-.right-ratings-courseview div div .ten-rating-courseview{
+.right-ratings-purchasedCourse div div .ten-rating-purchasedCourse{
     width: 10%;
     height: 100%;
     border-radius: 1vw;
     background-color: #0C243C;
 }
 
-.heading-bottom-courseview{
+.heading-bottom-purchasedCourse{
     border-bottom: 1.5px solid #C9D1D5;
     height: 10vh;
     width: 100%;
@@ -352,18 +355,16 @@
     justify-content: center;
     padding-left: 1.5vw;
 }
-.heading-bottom-courseview h5{
+.heading-bottom-purchasedCourse h5{
     font-weight: 500;
 }
-.heading-bottom-courseview h6{
+.heading-bottom-purchasedCourse h6{
     font-weight: 400;
     font-size: 1vw;
     color: #7E8C9C;
 }
-.right-bottom-courseview{
-    padding-bottom: 3vh;
-}
-.right-bottom-options-courseView details {
+
+.right-bottom-options details {
     border-bottom: 1.5px solid #C9D1D5;
     margin-top: 2vh;
     list-style-type: none;
@@ -371,7 +372,7 @@
     padding-bottom: 1vh;
     /* transition: all ease-in-out 1s; */
 }
-.right-bottom-options-courseView details div{
+.right-bottom-options details div{
     display: flex;
     justify-content: start;
     gap: 1vw;
@@ -379,56 +380,100 @@
     /* transition: all ease-in-out 1s; */
 }
 
-.right-bottom-options-courseView details div span{
+.right-bottom-options details div span{
     display: flex;
     flex-direction: column;
     align-items: start;
-    gap: 0.5vh;
     /* transition: all ease-in-out 1s; */
 }
-.right-bottom-options-courseView details div span h6:first-child{
+.right-bottom-options details div span h6:first-child{
     font-weight: 500;
     color: #202020;
     
 }
-.right-bottom-options-courseView details summary {
+.right-bottom-options details summary {
     list-style: none;
     position: relative;
     cursor: pointer;
     height: 6vh;
-    /* transition: all ease-in-out 1s; */
+    transition: all ease-in-out 1s;
+}
+
+.right-bottom-options details summary .up-icon {
+    position: absolute;
+    right: 10%;
+    top: 30%;
+    transition: transform 0.3s ease;
+}
+
+.right-bottom-options details summary .up-icon {
+    right: 10%;
+    top: 30%;
+    transform: rotate(180deg); /* Rotates the icon when details is open */
+}
+
+.right-bottom-options details summary .down-icon {
+    position: absolute;
+    right: 10%;
+    top: 30%;
+    transition: transform 0.3s ease;
 }
 
 
-
-.right-bottom-options-courseView details summary::-webkit-details-marker {
+.right-bottom-options details summary::-webkit-details-marker {
     display: none;
 }
 
 
-.right-bottom-options-courseView details h5{
-    font-size: 1.2vw;
+.right-bottom-options details h5{
+    font-size: 1.4vw;
     font-weight: 400;
 }
-.right-bottom-options-courseView details h6{
+.right-bottom-options details h6{
     font-size: 1vw;
     color: #7E8C9C;
 }
 
-
-.right-bottom-options-courseView  details  .up-icon {
-    position: absolute;
-    right: 5%;
-    transition: transform 0.3s ease;
+.certificate-purchasedCourse{
+    display: flex;
+    justify-content: space-between;
+    padding: 0 2vw 0 0;
+    /* background-color: blue; */
+    border-top: 1px solid #7E8C9C;
+    border-bottom: 1px solid #7E8C9C;
+    align-items: center;
+    margin-top: 2vh;
+    height: 10vh;
 }
 
-.right-bottom-options-courseView  details  .up-icon {
-    right: 5%;
-    transform: rotate(180deg); /* Rotates the icon when details is open */
+.certificate-purchasedCourse div{
+    
+        background: linear-gradient(97.89deg, #0C243C 0%, #7E8C9C 95.36%);
+        height: 60%;
+        width: 15%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 0.26vw;
+        color: white;
+        cursor: pointer;
+    
 }
+.certificate-purchasedCourse h6{
+    font-weight: 400;
+    font-size: 1.15vw;
+}
+.discription-purchasedCourse{
+    display: flex;
+    flex-direction: column;
+    padding-top: 2vh;
+    height: max-content;
+    /* background-color: blue; */
+    padding-bottom: 2vh;
+    border-bottom: 1px solid #7E8C9C;
 
-.right-bottom-options-courseView  details .down-icon {
-    position: absolute;
-    right: 5%;
-    transition: transform 0.3s ease;
+}
+.discription-purchasedCourse h5{
+    font-weight: 500;
+    font-size: 1.25vw;
 }

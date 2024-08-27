@@ -374,18 +374,22 @@
     text-decoration: none;
     font-size: 0.8vw;
     color: #7E8C9C;
+    
 }
 .card-bottom-usercart p{
     font-size: 0.9vw;
     font-weight: 300;
+    
 }
 .card-bottom-usercart h5{
     font-size: 1.2vw;
+    
 }
 .card-bottom-usercart h4{
     font-size: 0.9vw;
     font-weight: 400;
     width: 80%;
+    height: 15%;
 }
 
 .no-usercart-usercart{
@@ -424,7 +428,8 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-top: 1vh;
+    /* margin-top: 1vh;
+     */
 }
 .bottom-card-userusercart span{
     display: flex;
@@ -434,6 +439,7 @@
     text-decoration: line-through;
     /* font-size: 0.8vw; */
     color: #7E8C9C;
+    
 }
 .bottom-card-userusercart div{
     background: linear-gradient(97.89deg, #0C243C 0%, #7E8C9C 95.36%);

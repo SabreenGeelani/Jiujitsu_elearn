@@ -21,24 +21,21 @@ const Card = ({
   category,
   description,
   expert,
-  price,
-  discount,
+  title,
   tags,
   thumbnail,
   onClick,
-  onAddToCart,
+  completed
 }) => {
-  const [isLoading, setIsLoading] = useState(false);
+ 
 
-  const handleAddToCart = async (e) => {
-    e.stopPropagation();
-    setIsLoading(true);
-    await onAddToCart(id, setIsLoading);
-  };
-
+ 
   return (
     <div className="card-bottom-myLearning" onClick={() => onClick(id)}>
-      <img src={thumbnail} alt="Course image" />
+        <span>
+          <img src={thumbnail} alt="Course image" />  
+        </span>
+      
       <div className="middle-sec-card-myLearning">
         <div className="addCourse-card-myLearning">
           <h6>{category}</h6>
@@ -48,6 +45,7 @@ const Card = ({
         </div>
       </div>
       <p>{expert}</p>
+      <h4 style={{fontSize:15}}>{title}</h4>
       <h4>
         {description
           ? description.split(" ").slice(0, 10).join(" ")
@@ -55,8 +53,8 @@ const Card = ({
         ...
       </h4>
       <div className="bottom-card-usermyLearning">
-        <span><span></span></span>
-        <div><p>49% complete</p> <p>Add rating</p></div>
+        <span><span style={{width:`${completed}%`}}></span></span>
+        <div><p>{completed}% complete</p> <p>Add rating</p></div>
       </div>
     </div>
   );
@@ -70,36 +68,13 @@ const MyLearning = () => {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
-  const [initialCategory, setInitialCategory] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("");
   const [activeTab, setActiveTab] = useState("All Courses");
 
-  const url2 = `${BASE_URI}/api/v1/category/`;
-  const {
-    data: data2,
-    isLoading: isLoading2,
-    error: error2,
-    refetch: refetch2,
-  } = useFetch(url2, {
-    headers: {
-      Authorization: "Bearer " + token,
-    },
-  });
 
-  const categories = useMemo(() => data2?.data || [], [data2]);
+ 
 
-  useEffect(() => {
-    if (categories.length > 0) {
-      setInitialCategory(categories[0].name);
-      setSelectedCategory(categories[0].name);
-    }
-  }, [categories]);
 
-  const handleCategoryClick = (category) => {
-    setSelectedCategory(category);
-  };
-
-  const url = `${BASE_URI}/api/v1/courses/userDashboard/courses?category=${selectedCategory}`;
+  const url = `${BASE_URI}/api/v1/users/myLearning`;
   const { data, error, refetch, isLoading } = useFetch(url, {
     headers: {
       Authorization: "Bearer " + token,
@@ -109,28 +84,11 @@ const MyLearning = () => {
   // console.log(data.data);
   // // const coursesData = data;
   const coursesData = useMemo(() => data?.data || [], [data]);
+  console.log(data)
+
 
   const handleNavigate = (id) => {
-    navigate(`/userCourseView/${id}`);
-  };
-
-  const handleCart = async (id, setIsLoading) => {
-    try {
-      const response = await axios.post(
-        `${BASE_URI}/api/v1/cart`,
-        { course_id: id },
-        {
-          headers: {
-            Authorization: "Bearer " + token,
-          },
-        }
-      );
-      setIsLoading(false);
-      toast.success(`${response.data.message}`);
-    } catch (err) {
-      setIsLoading(false);
-      toast.error(`Error: ${err?.response?.data?.message}`);
-    }
+    navigate(`/userPurchasedCourses/${id}`);
   };
 
   return (
@@ -173,19 +131,19 @@ const MyLearning = () => {
               {error?.response?.data?.message === "No courses found" ? (
                 <h1>No courses found</h1>
               ) : (
-                coursesData.map((course) => (
+                coursesData?.course?.map((course) => (
                   <Card
                     key={course.id}
                     id={course.id}
                     category={course.category}
                     description={course.description}
-                    expert={course.expert}
-                    price={course.price}
-                    discount={course.discount}
+                    expert={course.name}
+                    completed={course.completion_percentage}
+                    title={course.title}
                     tags={course.tags}
                     thumbnail={course.thumbnail}
                     onClick={handleNavigate}
-                    onAddToCart={handleCart}
+                    
                   />
                 ))
               )}

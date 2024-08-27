@@ -90,8 +90,8 @@ const UserCart = () => {
                   <p>{item?.totalRviews} reviews ({item?.rating})</p>
                 </div>
                 <div className="mid-left-right-usercart">
-                  <h6>${item?.price} <FontAwesomeIcon icon={faTag} className='tag-usercart'/></h6>
-                  <span><p>${item?.discounted_price}</p></span>
+                  <h6> ${item?.discounted_price}<FontAwesomeIcon icon={faTag} className='tag-usercart'/></h6>
+                  <span><p>${item?.price}</p></span>
                 </div>
               </div>
             ))}
@@ -129,12 +129,12 @@ const UserCart = () => {
                   </div>
                 </div>
                 <p>{items?.name}, Designer at Raybit...</p>
-                <h5>{items?.title?.split(' ').slice(0, 3).join(' ')}</h5>
+                <h5>{items?.title?.split(' ').slice(0, 2).join(' ') + '...'}</h5>
                 <h4>{items?.description?.split(' ').slice(0, 7).join(' ') + '...'}</h4>
                 <div className="bottom-card-userusercart">
                   <span>
-                    <h5>${items?.discount}</h5>
                     <h5>${items?.price}</h5>
+                    <h5>${items?.discount}</h5>
                   </span>
                   <div onClick={() => handleCart(items?.id)}>
                     

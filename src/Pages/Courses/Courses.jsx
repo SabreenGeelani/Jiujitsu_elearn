@@ -33,7 +33,7 @@ const Card = ({
     <h5>{title}</h5>
     <h4
       dangerouslySetInnerHTML={{
-        __html: description?.split(" ").slice(0, 8).join(" ") + "...",
+        __html: description?.split(" ").slice(0, 6).join(" ") + "...",
       }}
     ></h4>
   </div>
@@ -42,6 +42,7 @@ const Card = ({
 const Courses = () => {
   const navigate = useNavigate();
   const [course, setcourse] = useState(true);
+  
 
   const url = `${BASE_URI}/api/v1/courses/expertCourses`;
   const token = localStorage.getItem("token");
@@ -66,6 +67,8 @@ const Courses = () => {
   const handleCardClick = (id) => {
     navigate(`/courseView/${id}`);
   };
+  
+ 
 
   const cards = coursesData.map((course, index) => (
     <Card
