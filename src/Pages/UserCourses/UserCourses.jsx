@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { PulseLoader, SyncLoader } from "react-spinners";
+import { Outlet } from "react-router-dom";
 
 const Card = ({
   id,
@@ -30,10 +31,12 @@ const Card = ({
 
   return (
     <div className="card-bottom-userCourses" onClick={() => onClick(id)}>
+
       <span>
       <img src={thumbnail} alt="Course image" style={{ objectFit: "cover" }} />  
       </span>
       
+
 
       <div className="middle-sec-card-userCourses">
         <div className="addCourse-card-userCourses">
@@ -67,9 +70,6 @@ const Card = ({
     </div>
   );
 };
-
-
-
 
 const UserCourses = () => {
   // console.log("ok here");
@@ -189,6 +189,7 @@ const UserCourses = () => {
           )}
         </div>
       )}
+      <Outlet />
     </>
   );
 };

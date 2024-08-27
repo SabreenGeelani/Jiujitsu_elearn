@@ -11,7 +11,7 @@ import { Link } from "react-router-dom";
 import ReactQuill from "react-quill";
 import DOMPurify from "dompurify";
 
-export default function CourseCreation() {
+export default function CourseCreation({ editCourse, courseeId }) {
   const [courseData, setCourseData] = useState({
     title: "",
     description: "",

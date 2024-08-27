@@ -35,7 +35,7 @@ function Checkout() {
             <div className="d-flex align-items-center justify-content-center">
               <button
                 className="btn btn-primary mt-4 signup-now px-3"
-                onClick={() => (window.location.href = "/userCourses")}
+                onClick={() => (window.location.href = "/myLearning")}
               >
                 Continue
               </button>
@@ -300,7 +300,7 @@ function Checkout() {
 
                 <button
                   className="btn btn-primary w-100 signup-now"
-                  onClick={handlePaymentSubmit} // Trigger payment submit
+                  onClick={handlePaymentSubmit}
                 >
                   Proceed
                 </button>
