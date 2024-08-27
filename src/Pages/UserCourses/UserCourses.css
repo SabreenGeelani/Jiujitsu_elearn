@@ -97,8 +97,13 @@
   transform: translateY(-10px);
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
-.card-bottom-userCourses img {
+.card-bottom-userCourses span{
+  display: block;
   height: 50%;
+  width: 100%;
+}
+.card-bottom-userCourses span img {
+  height: 100%;
   width: 100%;
   border-radius: 0.5vw;
 }
@@ -190,7 +195,7 @@
 .bottom-card-useruserCourses div {
   background: linear-gradient(97.89deg, #0c243c 0%, #7e8c9c 95.36%);
   height: 80%;
-  width: 40%;
+  width: 55%;
   display: flex;
   justify-content: center;
   align-items: center;

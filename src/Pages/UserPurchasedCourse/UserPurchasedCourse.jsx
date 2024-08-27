@@ -1,5 +1,5 @@
-import React,{ useMemo, useState , useEffect} from "react";
-import "./CourseView.css";
+import React,{ useEffect, useMemo, useState } from "react";
+import "./UserPurchasedCourse.css";
 import videoPlayer from "../../assets/videoPlayer.png";
 import profile from "../../assets/profile.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -9,7 +9,7 @@ import useFetch from "../../hooks/useFetch";
 import { BASE_URI } from "../../Config/url";
 import { SyncLoader } from "react-spinners";
 
-const CourseView = () => {
+const UserPurchasedCourse = () => {
   const { id } = useParams();
   console.log(id);
   const [buttonPick, setButtonPick] = useState("Overview");
@@ -17,7 +17,6 @@ const CourseView = () => {
   const [openDetailsLeft, setOpenDetailsLeft] = useState({});
   const [video_url, setVideo_url]= useState("");
   const [video_thumb, setVideo_thumb]= useState("");
-  const [selectedLesson, setSelectedLesson] = useState("");
   const [Data, setData] = useState(null);
 
   const handleButtonToggle = (event) => {
@@ -30,7 +29,6 @@ const CourseView = () => {
       ...prevState,
       [index]: !prevState[index],
     }));
-    // console.log()
   };
   const handleLeftToggle = (index) => {
     setOpenDetailsLeft((prevState) => ({
@@ -39,7 +37,7 @@ const CourseView = () => {
     }));
   };
 
-  const url = `${BASE_URI}/api/v1/courses/courseOverview/${id}`;
+  const url = `${BASE_URI}/api/v1/courses/usersCourseOverview/${id}`;
   const token = localStorage.getItem("token");
   const { data, isLoading, error, refetch } = useFetch(url, {
     headers: {
@@ -48,54 +46,50 @@ const CourseView = () => {
   });
   //  setData(data.data[0]);
   //  console.log(data);
-  const courseData = useMemo(() => data?.data?.chapters || [], [data]);
-  
+  const courseData = useMemo(() => data?.data || [], [data]);
+  console.log(courseData);
 
-  const url2 = `${BASE_URI}/api/v1/courses/${id}`;
-  // const token2 = localStorage.getItem("token");
-  const {
-    data: data2,
-    isLoading2,
-    error: error2,
-    refetch2,
-  } = useFetch(url2, {
-    headers: {
-      Authorization: "Bearer " + token,
-    },
-  });
-  // console.log(data2)
-  const courseData2 = useMemo(() => data2?.data || [data2]);
-  console.log(courseData[0]?.lessons[0]?.video_url);
+  const convertSecondsToMinutes = (totalSeconds) => {
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    return `${minutes}m ${seconds}s`;
+  };
+  const total_duration = convertSecondsToMinutes(courseData?.course?.total_duration)
+
   useEffect(()=>{
-    setVideo_url(courseData[0]?.lessons[0]?.video_url);
-    setVideo_thumb(courseData[0]?.lessons[0]?.thumbnail);
-    setSelectedLesson(courseData[0]?.lessons[0]?.lesson_id);
-    console.log(video_url);
+    setVideo_url(courseData?.courseChapters?.chapters[0]?.lessons[0]?.video_url);
+    setVideo_thumb(courseData?.courseChapters?.chapters[0]?.lessons[0]?.thumbnail);
+    console.log(video_url)
   },[courseData]);
+  
+  // console.log(courseData);
 
-  const handleVideoChange = (video_url,video_thumb, lesson_id)=>{
+  const handleVideoChange = (video_url,video_thumb)=>{
     setVideo_url(video_url)
     setVideo_thumb(video_thumb)
-    setSelectedLesson(lesson_id);
     // refetch();
   }
+
+
+
   return (
     <>
-      {error2?.response?.data?.message === "No courses found" ? (
-        <h1>No courses found</h1>
-      ) : isLoading2 || isLoading ? (
+      {/* {error2?.response?.data?.message === "No courses found" ? (
+        <h1>No courses found</h1> */}
+      {/* ) : */}
+       {isLoading ? (
         <SyncLoader />
       ) : (
-        <div className="wrapper-courseview">
-          <div className="top-courseview">
+        <div className="wrapper-purchasedCourse">
+          <div className="top-purchasedCourse">
             <h4>Course Overview</h4>
             <div>
               <h6>Edit Course</h6>
             </div>
           </div>
-          <div className="bottom-courseview">
-            <div className="left-bottom-courseview">
-            <div className="video-container-purchasedCourse">
+          <div className="bottom-purchasedCourse">
+            <div className="left-bottom-purchasedCourse">
+              <div className="video-container-purchasedCourse">
               <video 
       src={video_url} 
       controls 
@@ -108,24 +102,24 @@ const CourseView = () => {
     </video>
               </div>
               <span>
-                <h5>{courseData2[0]?.title} :</h5>
+                <h5>{courseData?.course?.title} :</h5>
                 <h6
                   dangerouslySetInnerHTML={{
                     __html:
-                      courseData2[0]?.description
+                    courseData?.course?.description
                         ?.split(" ")
-                        .slice(0, 5)
+                        .slice(0, 7)
                         .join(" ") + "...",
                   }}
                 ></h6>
               </span>
-              <div className="videoCreator-courseview">
+              <div className="videoCreator-purchasedCourse">
                 <img src={profile} alt="profile" />
-                <h6>{courseData2[0]?.name}</h6>
+                <h6>{courseData?.course?.name}</h6>
                 <h5>|</h5>
                 <h6>Raybit Tech</h6>
               </div>
-              <div className="buttons-courseview">
+              <div className="buttons-purchasedCourse">
                 <div className="buttons-holder">
                   {
                     <div
@@ -140,8 +134,8 @@ const CourseView = () => {
                     onClick={handleButtonToggle}
                     className={
                       buttonPick === "Overview"
-                        ? "button-courseview"
-                        : "not-button-courseview"
+                        ? "button-purchasedCourse"
+                        : "not-button-purchasedCourse"
                     }
                   >
                     <h5>Overview</h5>
@@ -161,8 +155,8 @@ const CourseView = () => {
                     onClick={handleButtonToggle}
                     className={
                       buttonPick === "FAQ"
-                        ? "button-courseview"
-                        : "not-button-courseview"
+                        ? "button-purchasedCourse"
+                        : "not-button-purchasedCourse"
                     }
                   >
                     <h5>FAQ</h5>
@@ -182,28 +176,48 @@ const CourseView = () => {
                     onClick={handleButtonToggle}
                     className={
                       buttonPick === "Reviews"
-                        ? "button-courseview"
-                        : "not-button-courseview"
+                        ? "button-purchasedCourse"
+                        : "not-button-purchasedCourse"
                     }
                   >
                     <h5>Reviews</h5>
                   </div>
                 </div>
-                <div className="line-courseview"></div>
+                <div className="line-purchasedCourse"></div>
               </div>
-              <div className="course-details-courseview">
+              <div className="course-details-purchasedCourse">
                 {buttonPick === "Overview" && (
                   <>
-                    <h5>Course Title:</h5>
-                    <h6>{courseData2[0]?.title}</h6>
-                    <h5>Course Duration:</h5>
-                    <h6>{courseData2[0]?.total_duration} hrs</h6>
-                    <h5>Course Description:</h5>
-                    <h6
-                      dangerouslySetInnerHTML={{
-                        __html: courseData2[0]?.description,
-                      }}
-                    ></h6>
+                  <span><h5>Rating:</h5>
+                    <h6>{courseData?.review?.averageRating} out of 5</h6></span>
+                    
+                    <span><h6>{courseData?.review?.totalReviews}</h6>
+                    <h5>Ratings</h5></span>
+                    <span><h5>{courseData?.course?.enrolled} Students</h5></span>
+                    <span><h6>{total_duration}</h6>
+                    <h5>Total</h5></span>
+                    
+                    <div className="certificate-purchasedCourse">
+                    <h6>Get Jiujitsux Certificate by completing the entire course</h6>
+                    <div><h6>Certificate</h6></div>
+                    </div>
+                    <div className="discription-purchasedCourse">
+                      <h5>Discription</h5>
+                      <h6
+                      // dangerouslySetInnerHTML={{
+                      //   __html: courseData?.course?.description,
+                      // }}
+                      
+                    >In 2024, React is still the #1 skill to learn if you want to become a successful front-end developer!
+                    But it can be hard. There are so many moving parts, so many different libraries, so many tutorials out there.
+                    That's why you came here... And you came to the right place! This is THE ultimate React course for 2024 and
+                    beyond.
+                    A practice-heavy approach to master React by building polished apps, backed up by diagrams, theory, and looks
+                    under the hood of React.
+                    The all-in-one package that takes you from zero to truly understanding React and building modern, powerful,
+                    and professional web applications.
+                    Real projects. Real explanations. Real React.</h6>
+                    </div>
                   </>
                 )}
                 {buttonPick === "FAQ" && (
@@ -233,8 +247,8 @@ const CourseView = () => {
                 )}
 
                 {buttonPick === "Reviews" && (
-                  <div className="ratings-courseview">
-                    <div className="left-ratings-courseview">
+                  <div className="ratings-purchasedCourse">
+                    <div className="left-ratings-purchasedCourse">
                       <h6>Average Reviews</h6>
                       <h5>4.0</h5>
                       <span>
@@ -245,7 +259,7 @@ const CourseView = () => {
                       </span>
                       <h6>Ratings</h6>
                     </div>
-                    <div className="right-ratings-courseview">
+                    <div className="right-ratings-purchasedCourse">
                       <h6>Detailed Ratings</h6>
                       <div>
                         <h6>51%</h6>
@@ -257,7 +271,7 @@ const CourseView = () => {
                           <FontAwesomeIcon icon={faStar} className="staricon" />
                         </span>
                         <div>
-                          <div className="fifty-rating-courseview"></div>
+                          <div className="fifty-rating-purchasedCourse"></div>
                         </div>
                       </div>
                       <div>
@@ -269,7 +283,7 @@ const CourseView = () => {
                           <FontAwesomeIcon icon={faStar} className="staricon" />
                         </span>
                         <div>
-                          <div className="fourty-rating-courseview"></div>
+                          <div className="fourty-rating-purchasedCourse"></div>
                         </div>
                       </div>
                       <div>
@@ -280,7 +294,7 @@ const CourseView = () => {
                           <FontAwesomeIcon icon={faStar} className="staricon" />
                         </span>
                         <div>
-                          <div className="thirty-rating-courseview"></div>
+                          <div className="thirty-rating-purchasedCourse"></div>
                         </div>
                       </div>
                       <div>
@@ -290,7 +304,7 @@ const CourseView = () => {
                           <FontAwesomeIcon icon={faStar} className="staricon" />
                         </span>
                         <div>
-                          <div className="twenty-rating-courseview"></div>
+                          <div className="twenty-rating-purchasedCourse"></div>
                         </div>
                       </div>
                       <div>
@@ -299,31 +313,31 @@ const CourseView = () => {
                           <FontAwesomeIcon icon={faStar} className="staricon" />
                         </span>
                         <div>
-                          <div className="ten-rating-courseview"></div>
+                          <div className="ten-rating-purchasedCourse"></div>
                         </div>
                       </div>
                     </div>
                   </div>
                 )}
               </div>
+              <div className=""></div>
             </div>
-            <div className="right-bottom-courseview">
-              <div className="heading-bottom-courseview">
+            <div className="right-bottom-purchasedCourse">
+              <div className="heading-bottom-purchasedCourse">
                 <h5>Course Content</h5>
                 <h6>Lecture (15) Total (15.3hr)</h6>
               </div>
 
-              <div className="right-bottom-options-courseView">
+              <div className="right-bottom-options">
                 {courseData.length === 0 ? (
                   <h5>No chapters found!</h5>
                 ) : isLoading ? (
                   <SyncLoader />
                 ) : (
-                  courseData.map((chapter, chapterIndex) => (
+                  courseData?.courseChapters?.chapters?.map((chapter, chapterIndex) => (
                     <details
                       key={chapter?.chapter_id}
                       open={!!openDetailsLeft[chapterIndex]}
-                      onToggle={() => handleLeftToggle(chapterIndex)}
                     >
                       <summary>
                         <FontAwesomeIcon
@@ -336,7 +350,7 @@ const CourseView = () => {
                         />
                         <h5>
                           Section {chapter?.chapter_no} |{" "}
-                          {chapter?.chapterTitle?.split(" ").slice(0, 3).join(" ")}
+                          {chapter?.chapterTitle.trim()}
                         </h5>
                         <h6>
                           {chapter?.totalLessons} Videos |{" "}
@@ -346,8 +360,8 @@ const CourseView = () => {
                       {chapter?.lessons.map((lesson) => (
                         <div key={lesson?.lesson_id}>
                           <input type="checkbox" />
-                          <span  onClick={()=> handleVideoChange(lesson?.video_url,lesson?.thumbnail,lesson?.lesson_id)} style={{cursor:"pointer" ,color: selectedLesson === lesson?.lesson_id && "red"}}>
-                            <h6 style={{cursor:"pointer" ,color: selectedLesson === lesson?.lesson_id ? "red" :"black"}}>{lesson?.lessonTitle}</h6>
+                          <span  onClick={()=> handleVideoChange(lesson?.video_url,lesson?.thumbnail)} style={{cursor:"pointer"}}>
+                            <h6>{lesson?.lessonTitle}</h6>
                             <h6>1 Video | {lesson?.duration} mins</h6>
                           </span>
                         </div>
@@ -357,10 +371,13 @@ const CourseView = () => {
                 )}
               </div>
             </div>
+            
           </div>
         </div>
       )}
     </>
   );
 };
-export default CourseView;
+export default UserPurchasedCourse;
+
+

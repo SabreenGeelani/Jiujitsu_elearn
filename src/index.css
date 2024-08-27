@@ -68,6 +68,7 @@ input::placeholder {
 .py-1-and-08rem {
   padding-block: 1.8rem;
 }
+
 .border-dotted {
   border: 2px dashed gray;
 }
@@ -83,4 +84,7 @@ input::placeholder {
 }
 .hover-underline:hover {
   text-decoration: underline;
+}
+.h-20{
+  height: 20%;
 }

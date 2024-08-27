@@ -21,6 +21,8 @@ const UserCourseOverview = () => {
   const [isLoding, setIsLoding] = useState(false);
   const [openDetails, setOpenDetails] = useState({});
   const [isCart, setIsCart] = useState(false);
+  const [video_url, setVideo_url]= useState("");
+  const [video_thumb, setVideo_thumb]= useState("");
   const { id } = useParams();
   const handleToggle = (index) => {
     setOpenDetails((prevState) => ({
@@ -28,14 +30,17 @@ const UserCourseOverview = () => {
       [index]: !prevState[index],
     }));
   };
-  const url = `${BASE_URI}/api/v1/courses/usersCourseOverview/${id}`;
+
+  const url = `${BASE_URI}/api/v1/courses/courseOverviewWithoutPurchase/${id}`;
   const token = localStorage.getItem("token");
   const { data, isLoading, error, refetch } = useFetch(url, {
     headers: {
       Authorization: "Bearer " + token,
     },
   });
+  
   const courseData = useMemo(() => data?.data || [], [data]);
+  console.log(courseData);
   const chapters = courseData?.courseChapters?.chapters || [];
   const handleCart = async () => {
     setIsLoding(true);
@@ -64,6 +69,14 @@ const UserCourseOverview = () => {
   useEffect(() => {
     handleCart();
   }, []);
+
+  const handleVideoChange = (video_url,video_thumb)=>{
+    setVideo_url(video_url);
+    setVideo_thumb(video_thumb);
+    // refetch();
+  }
+
+  
   return (
     <>
       {isLoading ? (
@@ -108,7 +121,7 @@ const UserCourseOverview = () => {
               <div className="left-bottom-mid-userCourseview">
                 <h4>Course Lessons</h4>
                 <div>
-                  {chapters?.length < 0 ? (
+                  {courseData?.courseChapters?.chapters?.length > 0 ? (
                     chapters.map((chapter, index) => (
                       <details
                         key={chapter.chapter_id}
@@ -127,15 +140,15 @@ const UserCourseOverview = () => {
                             {chapter.chapterTitle || "No chapter title"}
                           </h6>
                         </summary>
-                        {chapter.lessons.map((lesson, idx) => (
-                          <div key={idx}>
+                        {chapter?.lessons.map((lesson, idx) => (
+                          <div key={idx} onClick={()=> handleVideoChange(lesson?.video_url, lesson?.thumbnail)}>
                             <h6>
                               <FaYoutube color="black" />
                               Lesson {idx + 1}:{" "}
-                              {lesson.lessonTitle || "No lesson title"}
+                              {lesson?.lessonTitle || "No lesson title"}
                             </h6>
                             <h6>
-                              {lesson.duration || "No duration available"}
+                              {lesson?.duration || "No duration available"}
                             </h6>
                           </div>
                         ))}

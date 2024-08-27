@@ -31,7 +31,12 @@ const Card = ({
 
   return (
     <div className="card-bottom-userCourses" onClick={() => onClick(id)}>
-      <img src={thumbnail} alt="Course image" style={{ objectFit: "cover" }} />
+
+      <span>
+      <img src={thumbnail} alt="Course image" style={{ objectFit: "cover" }} />  
+      </span>
+      
+
 
       <div className="middle-sec-card-userCourses">
         <div className="addCourse-card-userCourses">
@@ -55,11 +60,11 @@ const Card = ({
           <h5>{`$${(price * (1 - discount / 100)).toFixed(2)}`}</h5>
         </span>
         <div onClick={handleAddToCart}>
-          {isLoading ? (
+          
+            <h6>{isLoading ? (
             <PulseLoader size={8} color="white" />
-          ) : (
-            <h6>Add to Cart</h6>
-          )}
+          ) : ( "Add to Cart" )}</h6>
+          
         </div>
       </div>
     </div>

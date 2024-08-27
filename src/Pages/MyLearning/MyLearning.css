@@ -27,8 +27,14 @@
   transform: translateY(-10px);
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
-.card-bottom-myLearning img {
-  height: 50%;
+.card-bottom-myLearning span{
+    display: block;
+    height: 42%;
+    width: 100%;
+    /* background-color: blue; */
+}
+.card-bottom-myLearning span img {
+  height: 100%;
   width: 100%;
   border-radius: 0.5vw;
 }
@@ -120,7 +126,7 @@
 }
 .bottom-card-usermyLearning span span{
     height: 100%;
-    width: 60%;
+    /* width: 60%; */
     background: #0C243C;
     border-radius: 1vw;
     
