@@ -143,7 +143,7 @@ const UserCart = () => {
                   <h6>$15.99</h6>
                 </span>
                 <div>
-                  <button onClick={checkoutHandler}>Checkout NOW</button>
+                  <button onClick={checkoutHandler}>Checkout</button>
                   <p>
                     <FontAwesomeIcon icon={faArrowRight} />
                   </p>
