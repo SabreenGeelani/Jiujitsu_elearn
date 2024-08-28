@@ -3,6 +3,7 @@ import Courses from "../Pages/Courses/Courses";
 import CourseCreation from "../Pages/CourseCreation/CourseCreation";
 import CourseView from "../Pages/Course overview/CourseView";
 import AddLesson from "../Pages/AddLesson/AddLesson";
+import ExpertWallet from "../Pages/ExpertWallet/ExpertWallet";
 import { useState } from "react";
 
 const ExpertRoutes = () => {
@@ -24,6 +25,7 @@ const ExpertRoutes = () => {
           <AddLesson setEditCourse={setEditCourse} setCourseId={setCourseId} />
         }
       />
+      <Route path="/expertWallet" element={<ExpertWallet />} />
     </Routes>
   );
 };
