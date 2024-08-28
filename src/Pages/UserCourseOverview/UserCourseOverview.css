@@ -21,6 +21,7 @@
     gap: 1vh;
     justify-content: center;
     padding-left: 2vw;
+    overflow-y: auto;
 }
 .top-userCourseview h3{
     font-size: 1.7vw;
@@ -167,6 +168,9 @@
     top: -10vh;
     left: 2.5vw;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 22.1vw;
+    background-size: auto;
+    object-fit: cover;
 }
 .pricing-right-mid-userCourseview{
     /* background-color: #FFE500; */

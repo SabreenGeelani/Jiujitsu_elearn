@@ -19,7 +19,7 @@ const Card = ({
   category,
 }) => (
   <div className="card-bottom-courses" onClick={() => onClick(id)}>
-    <img src={cardImage || thumbnail} alt="Course image" />
+    <img src={ thumbnail|| cardImage} alt="Course image" />
     <div className="middle-sec-card-courses">
       <div className="addCourse-card-courses">
         <h6>{category}</h6>

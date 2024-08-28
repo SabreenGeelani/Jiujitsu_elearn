@@ -14,10 +14,10 @@ import Checkout from "../Pages/Checkout/Checkout";
 
 const UserRoutes = () => (
   <Routes>
-    <Route path="/userCourses" element={<UserCourses />}>
-      <Route path="userCourseView/:id" element={<UserCourseOverview />} />
-    </Route>
-
+    <Route path="/userCourses" element={<UserCourses />}/>
+      
+    
+    <Route path="/userCourseView/:id" element={<UserCourseOverview/>} />
     <Route path="checkout" element={<Checkout />} />
     <Route path="/userCart" element={<UserCart />} />
     <Route path="/purchaseHistory" element={<PurchaseHistory />} />

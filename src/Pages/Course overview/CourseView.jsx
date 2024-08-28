@@ -84,7 +84,7 @@ const CourseView = () => {
       {error2?.response?.data?.message === "No courses found" ? (
         <h1>No courses found</h1>
       ) : isLoading2 || isLoading ? (
-        <SyncLoader />
+        <SyncLoader id="spinner-usercourseview" size={8} color="black"/>
       ) : (
         <div className="wrapper-courseview">
           <div className="top-courseview">
