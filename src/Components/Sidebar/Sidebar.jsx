@@ -207,6 +207,30 @@ export const Sidebar = ({ collapsed, handleToggle }) => {
                 {!collapsed && <span className="text">Support</span>}
               </Link>
             </motion.div>
+            <motion.div variants={sidebarAnimation}>
+              <Link
+                to="/expertWallet"
+                onClick={handleClick}
+                className={`menu-item d-flex align-items-center p-3 ${
+                  location.pathname === "/expertWallet"
+                    ? "bg-gradient-custom rounded-start-3 shadow-bottom-lg"
+                    : ""
+                }`}
+              >
+                <motion.div
+                  animate={controls}
+                  variants={linkAnimation}
+                  className={`me-4 ${
+                    location.pathname === "/expertWallet"
+                      ? "text-white"
+                      : "primary-color"
+                  }`}
+                >
+                  <FontAwesomeIcon icon={faLifeRing} />
+                </motion.div>
+                {!collapsed && <span className="text">Wallet</span>}
+              </Link>
+            </motion.div>
           </>
         )}
 
