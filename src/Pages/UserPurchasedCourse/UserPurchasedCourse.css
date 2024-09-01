@@ -10,21 +10,95 @@
     /* margin-top: 5vh; */
     justify-content: space-between;
     align-items: center;
-    padding: 0 1vw 0 0vw;
+    padding: 0 0 0 0vw;
 }
 .top-purchasedCourse h4{
     font-weight: 700;
 }
-.top-purchasedCourse div{
-    background: linear-gradient(97.89deg, #0C243C 0%, #7E8C9C 95.36%);
+.top-purchasedCourse span{
     height: 60%;
-    width: 11%;
+    width: 30%;
+    /* background-color: yellow; */
+}
+/* .hover-div-purchased-course{
+    background: linear-gradient(97.89deg, #0080ff 0%, #0278ff 95.36%);
+   transition: all ease-in-out 1s;
+} */
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(10px);
+        visibility: hidden;
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+        visibility: visible;
+    }
+}
+
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+        transform: translateY(0);
+        /* visibility: hidden; */
+        
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(15px);
+        visibility: hidden;
+        display: none ;
+        
+    }
+}
+
+.hover-div-purchased-course {
+    width: 70%;
+    height: 150%;
+    position: absolute;
+    top: -180%;
+    left: -10%;
+    background: white;
+    border: 1px solid black;
     display: flex;
     justify-content: center;
+    align-items: center;
+    color: black;
+    flex-direction: column;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+/* Use the 'show' class to trigger the fadeIn animation */
+.hover-div-purchased-course.show {
+    animation: fadeIn 0.5s forwards;
+}
+
+/* Use the 'hide' class to trigger the fadeOut animation */
+.hover-div-purchased-course.hide {
+    animation: fadeOut 0.5s backwards;
+    cursor: default;
+    
+}
+
+
+.top-purchasedCourse span div{
+    background: linear-gradient(97.89deg, #0C243C 0%, #7E8C9C 95.36%);
+    height: 100%;
+    width: 50%;
+    display: flex;
+    justify-content: space-evenly;
     align-items: center;
     border-radius: 0.26vw;
     color: white;
     cursor: pointer;
+    
+}
+
+.top-purchasedCourse span div div{
+    background:transparent;
 }
 .top-purchasedCourse h6{
     font-weight: 400;
@@ -87,9 +161,9 @@
 .bottom-purchasedCourse span h5{
     font-size: 1.5vw;
 }
-.bottom-purchasedCourse span h6{
+.bottom-purchasedCourse span h6 {
     font-size: 1.25vw;
-    font-weight: 400;
+    font-weight: 400; 
 }
 .videoCreator-purchasedCourse{
     height: 7vh;
@@ -315,31 +389,31 @@
     border-radius: 1vw;
 }
 .right-ratings-purchasedCourse div div .fifty-rating-purchasedCourse{
-    width: 50%;
+    /* width: 50%; */
     height: 100%;
     border-radius: 1vw;
     background-color: #0C243C;
 }
 .right-ratings-purchasedCourse div div .fourty-rating-purchasedCourse{
-    width: 40%;
+    /* width: 40%; */
     height: 100%;
     border-radius: 1vw;
     background-color: #0C243C;
 }
 .right-ratings-purchasedCourse div div .thirty-rating-purchasedCourse{
-    width: 30%;
+    /* width: 30%; */
     height: 100%;
     border-radius: 1vw;
     background-color: #0C243C;
 }
 .right-ratings-purchasedCourse div div .twenty-rating-purchasedCourse{
-    width: 20%;
+    /* width: 20%; */
     height: 100%;
     border-radius: 1vw;
     background-color: #0C243C;
 }
 .right-ratings-purchasedCourse div div .ten-rating-purchasedCourse{
-    width: 10%;
+    /* width: 10%; */
     height: 100%;
     border-radius: 1vw;
     background-color: #0C243C;
@@ -396,26 +470,26 @@
     position: relative;
     cursor: pointer;
     height: 6vh;
-    transition: all ease-in-out 1s;
+    /* transition: all ease-in-out 1s; */
 }
 
 .right-bottom-options details summary .up-icon {
     position: absolute;
-    right: 10%;
-    top: 30%;
+    right: 5%;
+    /* top: 30%; */
     transition: transform 0.3s ease;
 }
 
 .right-bottom-options details summary .up-icon {
-    right: 10%;
-    top: 30%;
+    right: 5%;
+    /* top: 30%; */
     transform: rotate(180deg); /* Rotates the icon when details is open */
 }
 
 .right-bottom-options details summary .down-icon {
     position: absolute;
-    right: 10%;
-    top: 30%;
+    right: 5%;
+    /* top: 30%; */
     transition: transform 0.3s ease;
 }
 
@@ -426,7 +500,7 @@
 
 
 .right-bottom-options details h5{
-    font-size: 1.4vw;
+    font-size: 1.2vw;
     font-weight: 400;
 }
 .right-bottom-options details h6{
@@ -476,4 +550,9 @@
 .discription-purchasedCourse h5{
     font-weight: 500;
     font-size: 1.25vw;
+}
+#reviews-loading{
+    position: absolute;
+    left: 30%;
+    top: 115%;
 }

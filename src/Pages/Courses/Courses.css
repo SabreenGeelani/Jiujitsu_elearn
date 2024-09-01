@@ -1,3 +1,8 @@
+
+.wrapper-courses{
+  width: 100%;
+}
+
 .top-courses {
   height: 10vh;
   /* background-color: black; */
@@ -125,4 +130,51 @@
 }
 .no-courses-courses div h1 {
   font-weight: 400;
+}
+
+
+/* Shimmer effect */
+@keyframes shimmer {
+  0% {
+    background-position: -100% 0;
+  }
+  100% {
+    background-position: 100% 0;
+  }
+}
+
+.shimmer-card-courses {
+  background-color: #f0f0f0;
+  background-image: linear-gradient(
+    90deg,
+    #f0f0f0 0px,
+    #e0e0e0 40px,
+    #f0f0f0 80px
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 8px;
+  padding: 16px;
+  width: 17vw;
+  height: 40vh;
+  padding-top: 25vh;
+}
+
+.shimmer-content-courses {
+  background-color: #e0e0e0;
+  height: 20px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+}
+
+.shimmer-content.short-courses {
+  width: 40%;
+}
+
+.shimmer-content-courses.medium {
+  width: 80%;
+}
+
+.shimmer-content-courses.long {
+  width: 100%;
 }

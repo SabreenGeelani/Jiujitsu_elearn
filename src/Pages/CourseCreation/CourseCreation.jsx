@@ -589,6 +589,7 @@ export default function CourseCreation({ editCourse, courseeId }) {
         </form>
       </main>
 
+
       <Modal
         show={isModal}
         // onClose={closeModal}
@@ -599,6 +600,7 @@ export default function CourseCreation({ editCourse, courseeId }) {
           <h5>Your Course has been successfully created!</h5>
         </div>
       </Modal>
+
     </div>
   );
 }
