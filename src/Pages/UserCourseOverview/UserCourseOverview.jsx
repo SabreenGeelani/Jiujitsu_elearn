@@ -126,9 +126,9 @@ const UserCourseOverview = () => {
       ) : (
         <div className="wrapper-userCourseview">
           <div className="top-userCourseview">
-            <h3 className="text-capitalize">
-              {courseData?.course?.title || "No title available"}
-            </h3>
+
+            <h3 className="text-uppercase">{courseData?.course?.title || "No title available"}</h3>
+
             <h6
               dangerouslySetInnerHTML={{
                 __html: courseData?.course?.description
@@ -168,23 +168,18 @@ const UserCourseOverview = () => {
                   {courseData?.courseChapters?.chapters?.length > 0 ? (
                     chapters.map((chapter, chapterIndex) => (
                       <details
-                        key={chapter?.chapter_id}
-                        open={
-                          (chapterIndex === 0 && true) ||
-                          openChapters[chapterIndex]
-                        }
-                        onToggle={() => handleLeftToggle(chapterIndex)}
-                      >
-                        <summary>
-                          <FontAwesomeIcon
-                            icon={faAngleDown}
-                            className={
-                              openChapters[chapterIndex]
-                                ? "up-icon"
-                                : "down-icon"
-                            }
-                          />
-                          <h6>
+
+        key={chapter?.chapter_id}
+        open={ chapterIndex === 0 && true || openChapters[chapterIndex]}
+        onToggle={() => handleLeftToggle(chapterIndex)}
+      >
+        <summary>
+          <FontAwesomeIcon
+            icon={faAngleDown}
+            className={openChapters[chapterIndex] ? "up-icon" : "down-icon"}
+          />
+                          <h6 >
+
                             {chapter.chapter_no || "No chapter number"}.{" "}
                             {chapter.chapterTitle || "No chapter title"}
                           </h6>
@@ -294,7 +289,7 @@ const UserCourseOverview = () => {
                   ) : (
                     <FaUserCircle className="fs-1" />
                   )}
-                  <h6>{courseData?.course?.name || "No author information"}</h6>
+                  <h6 className="text-uppercase">{courseData?.course?.name || "No author information"}</h6>
                 </span>
               </div>
               <div className="ratings-right-mid-userCourseview">
@@ -345,36 +340,68 @@ const UserCourseOverview = () => {
             <span>
               <h3>More Courses by</h3>
               <div>
-                {/* <h6>{"No author name available"}</h6> */}
-                <span>
-                  <h6>
-                    {courseData?.course?.name || "No author name available"}
-                  </h6>
-                </span>
+
+               {/* <h6>{"No author name available"}</h6> */}
+                <span><h6 className="text-uppercase">{courseData?.course?.name || "No author name available"}</h6></span>
+
               </div>
             </span>
 
             <div className="cards-userCourseview">
               {courseData?.other_courses?.length > 0 ? (
                 courseData.other_courses.map((course, index) => (
-                  <div
-                    onClick={() =>
-                      course?.is_purchased
-                        ? navigate(`/userPurchasedCourses/${course?.id}`)
-                        : course?.is_in_cart
-                        ? navigate("/userCart")
-                        : navigate(`/userCourseView/${course?.id}`)
-                    }
-                    className="card-bottom-userCourseview"
-                    key={index}
-                  >
-                    <span>
-                      {" "}
-                      <img
-                        src={course?.thumbnail || cardImage}
-                        alt="Course image"
-                      />
-                    </span>
+
+                  
+                  <div onClick={() =>
+                    course?.is_purchased ? navigate(`/userPurchasedCourses/${course?.id}`) : course?.is_in_cart ? navigate('/userCart') :
+                    navigate(`/userCourses/userCourseView/${course?.id}`)
+                  } className="card-bottom-userCourseview" key={index}> 
+                  <span> <img src={course?.thumbnail || cardImage} alt="Course image" /></span>
+     
+      <div className="middle-sec-card-userCourseview">
+        <div className="addCourse-card-userCourseview">
+          <h6 className="text-uppercase">{course?.category || "No title available"}</h6>
+        </div>
+        <div className="pricing-card-userCourseview">
+          <h5>{course?.tags || "No tags available"}</h5>
+          {/* <h5>$10.99</h5> */}
+        </div>
+      </div>
+      <p className="text-uppercase">{course?.name}</p>
+      <h5 className="text-uppercase">{course?.title}</h5>
+      <h4
+      dangerouslySetInnerHTML={{
+                __html: course?.description
+                  ? course?.description
+                      .split(" ")
+                      .slice(0, 7)
+                      .join(" ") + "..."
+                  : "No description available",
+              }}
+      >
+      
+        </h4>
+      <div className="bottom-card-useruserCourseview">
+      <span>
+      <h5>${course?.price}</h5>
+      <h5>${course?.discounted_price}</h5>
+      </span>
+      <div onClick={(e) => course?.is_purchased ? navigate(`/userPurchasedCourses/${course?.id}`) : course?.is_in_cart ? navigate('/userCart') : handleCart(course?.id, e)}>
+                    {loadingItems === course?.id ? (
+                      <l-bouncy
+                      size="35"
+                      speed="1.2"
+                      color="white"
+                    ></l-bouncy>
+                    ) : (
+                      course?.is_purchased ? <h6>Purchased!</h6> : course?.is_in_cart ? <h6>In Cart!</h6> : 
+                      <h6>Add to Cart</h6>
+                    )}
+                  </div>
+      {/* <div onClick={() => handleCart(course?.id)}>{loadingItems[course?.id] ? <PulseLoader size={8} color="white"/> :<h6> Add to Cart </h6>}</div> */}
+      </div>
+    </div>
+
 
                     <div className="middle-sec-card-userCourseview">
                       <div className="addCourse-card-userCourseview">

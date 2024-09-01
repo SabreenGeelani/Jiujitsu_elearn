@@ -160,10 +160,12 @@
 }
 .bottom-purchasedCourse span h5{
     font-size: 1.5vw;
+    width: 30%;
 }
 .bottom-purchasedCourse span h6 {
     font-size: 1.25vw;
     font-weight: 400; 
+    
 }
 .videoCreator-purchasedCourse{
     height: 7vh;
@@ -311,7 +313,7 @@
 }
 
 .ratings-purchasedCourse{
-    
+    position: relative;
     height: 23vh;
     width: 100%;
     display: flex;
@@ -553,6 +555,6 @@
 }
 #reviews-loading{
     position: absolute;
-    left: 30%;
-    top: 115%;
+    left: 45%;
+    top: 35%;
 }

@@ -14,12 +14,14 @@ import "ldrs/grid";
 import "ldrs/bouncy";
 
 const ShimmerCard = () => (
-  <div className="card-bottom-userCourses shimmer-card">
-    <div className="shimmer-content short"></div>
-    <div className="shimmer-content long"></div>
 
-    <div className="shimmer-content medium"></div>
-    <div className="shimmer-content long"></div>
+  <div className="card-bottom-userCourses shimmer-card-usercourses">
+  <div className="shimmer-content-usercourses short"></div>
+      <div className="shimmer-content-usercourses long"></div>
+    
+    <div className="shimmer-content-usercourses medium"></div>
+    <div className="shimmer-content-usercourses long"></div>
+
   </div>
 );
 
@@ -48,18 +50,19 @@ const Card = ({
   };
 
   return (
-    <div
-      className="card-bottom-userCourses"
-      onClick={() => {
-        if (purchase) {
-          onClick(id, "Purchased");
-        } else if (carted) {
-          onClick(id, "carted");
-        } else {
-          onClick(id);
-        }
-      }}
-    >
+
+    <div className="card-bottom-userCourses" onClick={() => 
+    { if(purchase){
+      onClick(id, "Purchased")
+      }
+      else if(carted) {
+        onClick(id , "carted")
+      }
+      else {
+        onClick(id)
+      }
+      }}>
+
       <span>
         <img
           loading="lazy"
@@ -71,17 +74,17 @@ const Card = ({
 
       <div className="middle-sec-card-userCourses">
         <div className="addCourse-card-userCourses">
-          <h6>{category}</h6>
+          <h6 className="text-uppercase">{category}</h6>
         </div>
         <div className="pricing-card-userCourses">
           <h5>{tags}</h5>
         </div>
       </div>
-      <p>{expert}</p>
+      <p className="text-uppercase">{expert}</p>
       <h4
         dangerouslySetInnerHTML={{
           __html: description
-            ? description.split(" ").slice(0, 10).join(" ") + "..."
+            ? description.split(" ").slice(0, 5.5).join(" ") + "..."
             : "No description found",
         }}
       ></h4>
@@ -91,28 +94,17 @@ const Card = ({
           <h5>{`$${(price * (1 - discount / 100)).toFixed(2)}`}</h5>
         </span>
 
-        <div
-          onClick={
-            purchase
-              ? () => handlePurchase(id)
-              : carted
-              ? () => handleCarted()
-              : handleAddToCart
+        <div onClick={purchase ? () => handlePurchase(id) : carted ? () => handleCarted() : handleAddToCart}>
+          { 
+            purchase ? <h6>Purchased!</h6> : carted ? <h6>In Cart!</h6>: <h6>{isLoading ? (
+              <l-bouncy
+  size="30"
+  speed="1.5"
+  color="white" 
+></l-bouncy>
+            ) : ( "Add to Cart" )}</h6> 
           }
-        >
-          {purchase ? (
-            <h6>Purchased!</h6>
-          ) : carted ? (
-            <h6>In Cart!</h6>
-          ) : (
-            <h6>
-              {isLoading ? (
-                <l-bouncy size="30" speed="1.5" color="white"></l-bouncy>
-              ) : (
-                "Add to Cart"
-              )}
-            </h6>
-          )}
+
         </div>
       </div>
     </div>
@@ -133,14 +125,9 @@ const UserCourses = ({ search }) => {
     isLoading: isLoading2,
     error: error2,
     refetch: refetch2,
-  } = useFetch(
-    url2
-    //    {
-    //   headers: {
-    //     Authorization: "Bearer " + token,
-    //   },
-    // }
-  );
+  } = useFetch(url2, {
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+  });
 
   const categories = useMemo(() => data2?.data || [], [data2]);
 
@@ -165,6 +152,7 @@ const UserCourses = ({ search }) => {
   // // const coursesData = data;
   const coursesData = useMemo(() => data?.data || [], [data]);
 
+
   const handleNavigate = (id, status) => {
     if (!status) {
       navigate(`/userCourses/userCourseView/${id}}`);
@@ -173,6 +161,7 @@ const UserCourses = ({ search }) => {
     } else if (status === "carted") {
       navigate(`/userCart`);
     }
+
   };
 
   const handleCart = async (id, setIsLoading) => {
