@@ -30,8 +30,7 @@ const Card = ({
   category,
 }) => (
   <div className="card-bottom-courses" onClick={() => onClick(id)}>
-
-    <img loading="lazy" src={ thumbnail|| cardImage} alt="Course image" />
+    <img loading="lazy" src={thumbnail || cardImage} alt="Course image" />
 
     <div className="middle-sec-card-courses">
       <div className="addCourse-card-courses">
@@ -55,7 +54,6 @@ const Card = ({
 const Courses = ({ search, setEditCourse }) => {
   const navigate = useNavigate();
   const [course, setcourse] = useState(true);
-  
 
   const url = `${BASE_URI}/api/v1/courses/expertCourses?search=${search}`;
   const token = localStorage.getItem("token");
@@ -80,10 +78,6 @@ const Courses = ({ search, setEditCourse }) => {
   const handleCardClick = (id) => {
     navigate(`/courses/courseView/${id}`);
   };
-<
-  
-//  const discounted_price =  (coursesData?.price * coursesData?.discount) / 100;
-// console.log(discounted_price)
 
   const cards = coursesData.map((course, index) => (
     <Card
@@ -115,34 +109,31 @@ const Courses = ({ search, setEditCourse }) => {
           </div>
         </div>
 
-
-          {error?.response?.data?.message !== "no courses found" ? (
-            <div className="bottom-courses">
-              {
-                isLoading ?  
-                Array.from({ length: 12 }).map((_, idx) => (<ShimmerCard key={idx}/> )) : cards
-              }
-              
-              </div>
-          ) : (
-            <div className="no-courses-courses">
-              <div>
-                <h1>No Course uploaded yet</h1>
-                <h5>
-                  Get started by uploading your first course and inspire
-                  athletes around the world!
-                </h5>
-                <Link
-                  to="/courses/courseCreation"
-                  className="text-decoration-none text-white"
-                >
-                  <FontAwesomeIcon
-                    icon={faSquarePlus}
-                    className="add-icon-courses"
-                  />
-                </Link>
-              </div>
-
+        {error?.response?.data?.message !== "no courses found" ? (
+          <div className="bottom-courses">
+            {isLoading
+              ? Array.from({ length: 12 }).map((_, idx) => (
+                  <ShimmerCard key={idx} />
+                ))
+              : cards}
+          </div>
+        ) : (
+          <div className="no-courses-courses">
+            <div>
+              <h1>No Course uploaded yet</h1>
+              <h5>
+                Get started by uploading your first course and inspire athletes
+                around the world!
+              </h5>
+              <Link
+                to="/courses/courseCreation"
+                className="text-decoration-none text-white"
+              >
+                <FontAwesomeIcon
+                  icon={faSquarePlus}
+                  className="add-icon-courses"
+                />
+              </Link>
             </div>
           </div>
         )}
