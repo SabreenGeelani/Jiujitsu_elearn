@@ -107,7 +107,7 @@ const UserCourses = () => {
   // console.log("ok here");
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
-
+  
   const [initialCategory, setInitialCategory] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
 
@@ -118,7 +118,7 @@ const UserCourses = () => {
     error: error2,
     refetch: refetch2,
   } = useFetch(url2, {
-    headers: token ? { Authorization: `Bearer ${token}` } : {},
+    // headers: token ? { Authorization: `Bearer ${token}` } : {},
   });
 
   const categories = useMemo(() => data2?.data || [], [data2]);
@@ -134,10 +134,11 @@ const UserCourses = () => {
   const handleCategoryClick = (category) => {
     setSelectedCategory(category);
   };
-
+  console.log(token)
   const url = `${BASE_URI}/api/v1/courses/userDashboard/courses?category=${selectedCategory}`;
   const { data, error, refetch, isLoading } = useFetch(url, {
-    headers: token ? { Authorization: `Bearer ${token}` } : {},
+    // headers: token ? { Authorization: `Bearer ${token}` } : {},
+    
   });
 
   // console.log(data.data);
@@ -158,6 +159,13 @@ console.log(coursesData)
   };
 
   const handleCart = async (id, setIsLoading) => {
+    if(!token){
+      setIsLoading(false)
+      navigate(`/`)
+
+      return toast.error(`Error: Please Login First!`)
+    } 
+  
     try {
       const response = await axios.post(
         `${BASE_URI}/api/v1/cart`,
@@ -173,7 +181,7 @@ console.log(coursesData)
     } catch (err) {
       setIsLoading(false);
       toast.error(`Error: ${err?.response?.data?.message}`);
-    }
+    } 
   };
 
   const handlePurchase = (id) => {

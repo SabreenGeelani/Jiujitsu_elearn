@@ -141,7 +141,7 @@ const Courses = () => {
                   athletes around the world!
                 </h5>
                 <Link
-                  to="/courseCreation"
+                  to="/courses/courseCreation"
                   className="text-decoration-none text-white"
                 >
                   <FontAwesomeIcon

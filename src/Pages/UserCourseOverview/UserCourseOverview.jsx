@@ -82,10 +82,16 @@ const UserCourseOverview = () => {
   const chapters = useMemo(() => courseData?.courseChapters?.chapters || [], [courseData]);
 
 
+
   const handleCart = async (course_id, e) => {
     e.stopPropagation();
     setLoadingItems(course_id);
     setIsLoding(true);
+    if(!token){
+      setIsLoding(false)
+      navigate(`/`)
+      return toast.error(`Error: Please Login First!`)
+    } 
     try {
       const response = await axios.post(
         `${BASE_URI}/api/v1/cart`,
@@ -208,7 +214,12 @@ id="spinner-usercourseview"
                             }}
                           >
                             <h6>
-                              <FaYoutube color="black" />
+                              <FaYoutube color="black" style={{
+                              cursor: "pointer",
+                              color:
+                                selectedLesson === lesson?.lesson_id && "red",
+                                transition:"all ease-in-out 0.5s"
+                            }}/>
                               Lesson {idx + 1}:{" "}
                               {lesson?.lessonTitle || "No lesson title"}
                             </h6>
