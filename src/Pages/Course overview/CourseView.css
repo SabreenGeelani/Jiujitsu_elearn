@@ -1,6 +1,7 @@
 .wrapper-courseview{
     width: 100%;
     height: 100%;
+    position: relative;
 }
 .top-courseview{
     height: 10vh;
@@ -84,6 +85,7 @@
 }
 .bottom-courseview span h5{
     font-size: 1.5vw;
+    width: 25%;
 }
 .bottom-courseview span h6{
     font-size: 1.25vw;
@@ -234,7 +236,7 @@
 }
 
 .ratings-courseview{
-    
+    position: relative;
     height: 23vh;
     width: 100%;
     display: flex;
@@ -431,4 +433,9 @@
     position: absolute;
     right: 5%;
     transition: transform 0.3s ease;
+}
+#reviews-loading{
+    position: absolute;
+    left: 30%;
+    top: 115%;
 }
