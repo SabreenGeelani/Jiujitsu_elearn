@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import "./UserCourseOverview.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
@@ -12,26 +12,51 @@ import { FaUserCircle, FaYoutube } from "react-icons/fa";
 import thumbnail from ".././../assets/thumbnail-userCourseview.jpeg";
 import courseby from ".././../assets/userCourseview-profile.png";
 import cardImage from "../../assets/coursesCard.png";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import useFetch from "../../hooks/useFetch";
 import { BASE_URI } from "../../Config/url";
 import toast from "react-hot-toast";
 import { SyncLoader, PulseLoader } from "react-spinners";
+import 'ldrs/grid'
+import "ldrs/bouncy";
 const UserCourseOverview = () => {
   const [isLoding, setIsLoding] = useState(false);
-  const [loadingItems, setLoadingItems] = useState({});
-  const [openDetails, setOpenDetails] = useState({});
+  const [loadingItems, setLoadingItems] = useState(null);
+  const [openChapters, setOpenChapters] = useState({ 0: true });
   // const [isCart, setIsCart] = useState(false);
   const [selectedLesson, setSelectedLesson] = useState("");
   const [video_url, setVideo_url]= useState("");
   const [video_thumb, setVideo_thumb]= useState("");
   const { id } = useParams();
-  const handleToggle = (index) => {
-    setOpenDetails((prevState) => ({
-      ...prevState,
-      [index]: !prevState[index],
-    }));
-  };
+  const navigate = useNavigate();
+
+
+
+
+
+
+  const handleLeftToggle = (chapterIndex) => {
+    console.log(chapterIndex);
+    setOpenChapters((prevOpenChapters) => ({
+      ...prevOpenChapters,
+      [chapterIndex]: !prevOpenChapters[chapterIndex],
+    }));}
+
+     function formatTime(seconds) {
+    if (seconds < 60) {
+        return `${seconds} sec`;
+    } else if (seconds < 3600) {
+        const minutes = Math.floor(seconds / 60);
+        const remainingSeconds = seconds % 60;
+        return `${minutes} min ${remainingSeconds} sec`;
+    } else {
+        const hours = Math.floor(seconds / 3600);
+        const remainingMinutes = Math.floor((seconds % 3600) / 60);
+        const remainingSeconds = seconds % 60;
+        return `${hours} hr ${remainingMinutes} min ${remainingSeconds} sec`;
+    }
+}
+ 
 
   const url = `${BASE_URI}/api/v1/courses/courseOverviewWithoutPurchase/${id}`;
   const token = localStorage.getItem("token");
@@ -58,14 +83,17 @@ const UserCourseOverview = () => {
 
 
   console.log(courseData);
-  const chapters = courseData?.courseChapters?.chapters || [];
-  const handleCart = async () => {
-    setLoadingItems((prev) => ({ ...prev, [id]: true }));
+  const chapters = useMemo(() => courseData?.courseChapters?.chapters || [], [courseData]);
+
+
+  const handleCart = async (course_id, e) => {
+    e.stopPropagation();
+    setLoadingItems(course_id);
     setIsLoding(true);
     try {
       const response = await axios.post(
         `${BASE_URI}/api/v1/cart`,
-        { course_id: id },
+        { course_id: course_id },
         {
           headers: {
             Authorization: "Bearer " + token,
@@ -73,33 +101,41 @@ const UserCourseOverview = () => {
         }
       );
       setIsLoding(false);
+      setLoadingItems((prev) => ({ ...prev, [id]: false }));
       toast.success(`${response?.data?.message}`);
       // console.log(response, "its response")
     } catch (err) {
       setIsLoding(false);
-      // console.log(err?.response?.data?.message)
-      if (err?.response?.data?.message === "Course is already in the cart") {
+      setLoadingItems((prev) => ({ ...prev, [id]: false }));
+      
         // setIsCart(true);
         toast.error(`Error: ${err?.response?.data?.message}`);
-      }
+      
     }
   };
 
 
 
-  const handleVideoChange = (video_url,video_thumb, lesson_id)=>{
+  const handleVideoChange = useCallback((video_url,video_thumb, lesson_id)=>{
     setVideo_url(video_url)
     setVideo_thumb(video_thumb)
     setSelectedLesson(lesson_id);
     // refetch();
-  }
+  },[]);
   
   
   
   return (
     <>
       {isLoading ? (
-        <SyncLoader id="spinner-usercourseview" size={8} color="black" />
+       
+        // Default values shown  
+<l-grid
+id="spinner-usercourseview"
+  size="60"
+  speed="1.5"
+  color="black" 
+></l-grid>
       ) : (
         <div className="wrapper-userCourseview">
           <div className="top-userCourseview">
@@ -141,19 +177,17 @@ const UserCourseOverview = () => {
                 <h4>Course Lessons</h4>
                 <div>
                   {courseData?.courseChapters?.chapters?.length > 0 ? (
-                    chapters.map((chapter, index) => (
+                    chapters.map((chapter, chapterIndex) => (
                       <details
-                        key={chapter.chapter_id}
-                        open={!!openDetails[index]}
-                        onToggle={() => handleToggle(index)}
-                      >
-                        <summary>
-                          <FontAwesomeIcon
-                            icon={faAngleDown}
-                            className={
-                              openDetails[index] ? "up-icon" : "down-icon"
-                            }
-                          />
+        key={chapter?.chapter_id}
+        open={ chapterIndex === 0 && true || openChapters[chapterIndex]}
+        onToggle={() => handleLeftToggle(chapterIndex)}
+      >
+        <summary>
+          <FontAwesomeIcon
+            icon={faAngleDown}
+            className={openChapters[chapterIndex] ? "up-icon" : "down-icon"}
+          />
                           <h6>
                             {chapter.chapter_no || "No chapter number"}.{" "}
                             {chapter.chapterTitle || "No chapter title"}
@@ -167,7 +201,7 @@ const UserCourseOverview = () => {
                               {lesson?.lessonTitle || "No lesson title"}
                             </h6>
                             <h6>
-                              {lesson?.duration || "No duration available"}
+                              {formatTime(lesson?.duration) || "No duration available"}
                             </h6>
                           </div>
                         ))}
@@ -207,9 +241,13 @@ const UserCourseOverview = () => {
                 </span>
 
                 
-                  <div onClick={handleCart}>
+                <div onClick={(e)=> handleCart(id,e)}>
                     {isLoding ? (
-                      <PulseLoader size={8} color="white" />
+                      <l-bouncy
+                      size="35"
+                      speed="1.2"
+                      color="white"
+                    ></l-bouncy>
                     ) : (
                       "Add to Cart"
                     )}
@@ -261,18 +299,19 @@ const UserCourseOverview = () => {
                     courseData.review.userReviews.map((review, index) => (
                       <div key={index}>
                         <div>
-                          {review.profile_picture ? (
+                          {review?.profile_picture ? (
                             <img
-                              src={review.profile_picture}
+                            loading="lazy"
+                              src={review?.profile_picture}
                               alt="profile image"
                             />
                           ) : (
                             <FaUserCircle className="fs-1" />
                           )}
-                          <h5>{review.name || "No name available"}</h5>
+                          <h5>{review?.name || "No name available"}</h5>
                           <p>
-                            {review.review_date
-                              ? review.review_date.split("T")[0]
+                            {review?.review_date
+                              ? review?.review_date.split("T")[0]
                               : "No review date"}
                           </p>
                         </div>
@@ -291,7 +330,7 @@ const UserCourseOverview = () => {
                       </div>
                     ))
                   ) : (
-                    <p>No reviews available</p>
+                    <p style={{marginLeft:"2vw"}}>No reviews available!</p>
                   )}
                 </div>
               </div>
@@ -301,32 +340,21 @@ const UserCourseOverview = () => {
             <span>
               <h3>More Courses by</h3>
               <div>
-                <p>{courseData?.course?.name || "No author name available"}</p>
-                <span></span>
+               {/* <h6>{"No author name available"}</h6> */}
+                <span><h6>{courseData?.course?.name || "No author name available"}</h6></span>
               </div>
             </span>
-            <div className="cards-userCourseview">
+            <div  className="cards-userCourseview">
               
               {courseData?.other_courses?.length > 0 ? (
                 courseData.other_courses.map((course, index) => (
-                  // <div className="card-bottom-userCourseview" key={index}>
-                  //   <img src={cardImage} alt="Course image" />
-                  //   <div className="middle-sec-card-userCourseview">
-                  //     <div className="addCourse-card-userCourseview">
-                  //       <h6>{course?.title || "No title available"}</h6>
-                  //     </div>
-                  //     <div>
-                  //       <h5>${course?.price || "No price available"}</h5>
-                  //       <h6>
-                  //         {course?.updated_at
-                  //           ? course.updated_at.split("T")[0]
-                  //           : "No update date"}
-                  //       </h6>
-                  //     </div>
-                  //   </div>
-                  // </div>
-                  <div className="card-bottom-userCourseview" key={index}> 
-      <img src={course?.thumbnail} alt="Course image" />
+                  
+                  <div onClick={() =>
+                    course?.is_purchased ? navigate(`/userPurchasedCourses/${course?.id}`) : course?.is_in_cart ? navigate('/userCart') :
+                    navigate(`/userCourseView/${course?.id}`)
+                  } className="card-bottom-userCourseview" key={index}> 
+                  <span> <img src={course?.thumbnail || cardImage} alt="Course image" /></span>
+     
       <div className="middle-sec-card-userCourseview">
         <div className="addCourse-card-userCourseview">
           <h6>{course?.category || "No title available"}</h6>
@@ -338,14 +366,36 @@ const UserCourseOverview = () => {
       </div>
       <p>{course?.name}, Developer at Raybit...</p>
       <h5>{course?.title}</h5>
-      <h4>{course?.description.split(" ").slice(0, 7)
-                      .join(" ") + "..."}</h4>
+      <h4
+      dangerouslySetInnerHTML={{
+                __html: course?.description
+                  ? course?.description
+                      .split(" ")
+                      .slice(0, 7)
+                      .join(" ") + "..."
+                  : "No description available",
+              }}
+      >
+      
+        </h4>
       <div className="bottom-card-useruserCourseview">
       <span>
-      <h5>$14.99</h5>
-      <h5>$10.99</h5>
+      <h5>${course?.price}</h5>
+      <h5>${course?.discounted_price}</h5>
       </span>
-      <div onClick={() => handleCart(course?.id)}>{loadingItems[course?.id] ? <PulseLoader size={8} color="white"/> : <h6>Add to Cart</h6>}</div>
+      <div onClick={(e) => course?.is_purchased ? navigate(`/userPurchasedCourses/${course?.id}`) : course?.is_in_cart ? navigate('/userCart') : handleCart(course?.id, e)}>
+                    {loadingItems === course?.id ? (
+                      <l-bouncy
+                      size="35"
+                      speed="1.2"
+                      color="white"
+                    ></l-bouncy>
+                    ) : (
+                      course?.is_purchased ? <h6>Purchased!</h6> : course?.is_in_cart ? <h6>In Cart!</h6> : 
+                      <h6>Add to Cart</h6>
+                    )}
+                  </div>
+      {/* <div onClick={() => handleCart(course?.id)}>{loadingItems[course?.id] ? <PulseLoader size={8} color="white"/> :<h6> Add to Cart </h6>}</div> */}
       </div>
     </div>
                 ))
