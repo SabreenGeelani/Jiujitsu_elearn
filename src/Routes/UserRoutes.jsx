@@ -10,6 +10,7 @@ import UserPurchasedCourse from "../Pages/UserPurchasedCourse/UserPurchasedCours
 
 import Checkout from "../Pages/Checkout/Checkout";
 import Logout from "../Pages/Logout/Logout";
+import NotFound from "../Pages/NotFound/NotFound";
 
 const UserRoutes = () => {
   return (
@@ -26,6 +27,7 @@ const UserRoutes = () => {
         element={<UserPurchasedCourse />}
       />
       <Route path="/logout" element={<Logout />} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 };

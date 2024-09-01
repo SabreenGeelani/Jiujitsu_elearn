@@ -14,7 +14,12 @@ export default function ExpertWallet() {
     async function fetchWalletData() {
       try {
         const response = await axios.get(
-          `${BASE_URI}/api/v1/expert/expertWallet`
+          `${BASE_URI}/api/v1/expert/expertWallet`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
         );
         console.log(response.data);
         setWalletData(response.data.data);
