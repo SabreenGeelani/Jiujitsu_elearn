@@ -115,7 +115,7 @@ const UserCart = () => {
   };
 
   if (!token) {
-    return <Navigate to="/" />;
+    return <navigate to="/" />;
   }
 
   
@@ -164,7 +164,7 @@ const UserCart = () => {
                       key={index}
                       className="mid-left-cards-usercart"
                       onClick={() =>
-                        navigate(`/userCourseView/${item.course_id}`)
+                        navigate(`/userCourses/userCourseView/${item.course_id}`)
                       }
                     >
                       <div className="mid-left-left-usercart">
@@ -260,7 +260,7 @@ const UserCart = () => {
                     <div
                       onClick={() => {
                         if(!items?.is_purchased){
-                          navigate(`/userCourseView/${items?.id}`);
+                          navigate(`/userCourses/userCourseView/${items?.id}`);
                         }
                         else if(items?.is_purchased) {
                           navigate(`/userPurchasedCourses/${items?.id}`);
@@ -279,15 +279,15 @@ const UserCart = () => {
 
                       <div className="middle-sec-card-usercart">
                         <div className="addCourse-card-usercart">
-                          <h6>{items?.category}</h6>
+                          <h6 className="text-uppercase">{items?.category}</h6>
                         </div>
                         <div className="pricing-card-usercart">
                           <h5>Tag1 Tag2 Tag3</h5>
                         </div>
                       </div>
-                      <p>{items?.name}, Designer at Raybit...</p>
-                      <h5>
-                        {items?.title?.split(" ").slice(0, 2).join(" ") + "..."}
+                      <p className="text-uppercase">{items?.name}</p>
+                      <h5 className="text-uppercase">
+                        {items?.title?.split(" ").slice(0, 3).join(" ")}
                       </h5>
                       <h4
                         dangerouslySetInnerHTML={{

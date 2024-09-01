@@ -244,22 +244,21 @@ id="spinner-usercourseview"
     </video>
               </div>
               <span>
-                <h5>{courseData?.course?.title} :</h5>
+                <h5 className="text-uppercase">{courseData?.course?.title} :</h5>
                 <h6
                   dangerouslySetInnerHTML={{
                     __html:
                     courseData?.course?.description
                         ?.split(" ")
-                        .slice(0, 5)
+                        .slice(0, 9)
                         .join(" ") + "...",
                   }}
                 ></h6>
               </span>
               <div className="videoCreator-purchasedCourse">
                 <img src={profile} alt="profile" />
-                <h6>{courseData?.course?.name}</h6>
-                <h5>|</h5>
-                <h6>Raybit Tech</h6>
+                <h6 className="text-uppercase">{courseData?.course?.name}</h6>
+                
               </div>
               <div className="buttons-purchasedCourse">
                 <div className="buttons-holder">
@@ -357,7 +356,7 @@ id="spinner-usercourseview"
                     </div>
                     <div style={{backgroundColor:"transparent"}}>
                       <h6 style={{fontWeight:500}}>Expert</h6>
-                      <span ><img src={courseData?.course?.profile_picture || profile} alt="profile" style={{width:"7%", borderRadius:"50%"}}/> <h6>{courseData?.course?.name}</h6></span>
+                      <span ><img src={courseData?.course?.profile_picture || profile} alt="profile" style={{width:"7%", borderRadius:"50%"}}/> <h6 className="text-uppercase">{courseData?.course?.name}</h6></span>
                       <span ><div style={{backgroundColor:"#0C243C", padding:"0 2% 0.7% 2%", borderRadius:"0.5vw", cursor:"pointer"}}><img src={twitter} alt="" /></div>
                       <div style={{backgroundColor:"#0C243C", padding:"0 2% 0.7% 2%", borderRadius:"0.5vw", cursor:"pointer"}}><img src={youtube} alt="" /></div>
                       <div style={{backgroundColor:"#0C243C", padding:"0 2% 0.7% 2%", borderRadius:"0.5vw", cursor:"pointer"}}><img src={chain} alt="" /></div>

@@ -15,12 +15,12 @@ import "ldrs/bouncy";
 
 
 const ShimmerCard = () => (
-  <div className="card-bottom-userCourses shimmer-card">
-  <div className="shimmer-content short"></div>
-      <div className="shimmer-content long"></div>
+  <div className="card-bottom-userCourses shimmer-card-usercourses">
+  <div className="shimmer-content-usercourses short"></div>
+      <div className="shimmer-content-usercourses long"></div>
     
-    <div className="shimmer-content medium"></div>
-    <div className="shimmer-content long"></div>
+    <div className="shimmer-content-usercourses medium"></div>
+    <div className="shimmer-content-usercourses long"></div>
   </div>
 );
 
@@ -50,7 +50,6 @@ const Card = ({
   };
 
   return (
-
     <div className="card-bottom-userCourses" onClick={() => 
     { if(purchase){
       onClick(id, "Purchased")
@@ -66,20 +65,19 @@ const Card = ({
         <img loading="lazy" src={thumbnail} alt="Course image" style={{ objectFit: "cover" }} />  
       </span>
       
-
       <div className="middle-sec-card-userCourses">
         <div className="addCourse-card-userCourses">
-          <h6>{category}</h6>
+          <h6 className="text-uppercase">{category}</h6>
         </div>
         <div className="pricing-card-userCourses">
           <h5>{tags}</h5>
         </div>
       </div>
-      <p>{expert}</p>
+      <p className="text-uppercase">{expert}</p>
       <h4
         dangerouslySetInnerHTML={{
           __html: description
-            ? description.split(" ").slice(0, 10).join(" ") + "..."
+            ? description.split(" ").slice(0, 5.5).join(" ") + "..."
             : "No description found",
         }}
       ></h4>
@@ -88,7 +86,6 @@ const Card = ({
           <h5>{`$${price}`}</h5>
           <h5>{`$${(price * (1 - discount / 100)).toFixed(2)}`}</h5>
         </span>
-
         <div onClick={purchase ? () => handlePurchase(id) : carted ? () => handleCarted() : handleAddToCart}>
           { 
             purchase ? <h6>Purchased!</h6> : carted ? <h6>In Cart!</h6>: <h6>{isLoading ? (
@@ -99,7 +96,6 @@ const Card = ({
 ></l-bouncy>
             ) : ( "Add to Cart" )}</h6> 
           }
-
         </div>
       </div>
     </div>
@@ -121,14 +117,9 @@ const UserCourses = () => {
     isLoading: isLoading2,
     error: error2,
     refetch: refetch2,
-  } = useFetch(
-    url2
-    //    {
-    //   headers: {
-    //     Authorization: "Bearer " + token,
-    //   },
-    // }
-  );
+  } = useFetch(url2, {
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+  });
 
   const categories = useMemo(() => data2?.data || [], [data2]);
 
@@ -152,11 +143,10 @@ const UserCourses = () => {
   // console.log(data.data);
   // // const coursesData = data;
   const coursesData = useMemo(() => data?.data || [], [data]);
-
-
+console.log(coursesData)
   const handleNavigate = (id, status) => {
     if(!status){
-      navigate(`/userCourses/userCourseView/${id}}`);
+      navigate(`/userCourses/userCourseView/${id}`);
     }
     else if(status === "Purchased"){
       navigate(`/userPurchasedCourses/${id}`)
@@ -165,7 +155,6 @@ const UserCourses = () => {
       navigate(`/userCart`)
     }
     
-
   };
 
   const handleCart = async (id, setIsLoading) => {

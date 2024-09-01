@@ -155,11 +155,11 @@ const CourseView = ({ setEditCourse, setCourseId }) => {
 
         
         <l-grid
-        id="spinner-usercourseview"
-                              size="60"
-                              speed="1.2"
-                              color="black"
-                            ></l-grid>
+id="spinner-usercourseview"
+  size="60"
+  speed="1.5"
+  color="black" 
+></l-grid>
 
       ) : (
         <div className="wrapper-courseview">
@@ -184,7 +184,7 @@ const CourseView = ({ setEditCourse, setCourseId }) => {
                 </video>
               </div>
               <span>
-                <h5>{courseData2[0]?.title} :</h5>
+                <h5 className="text-uppercase">{courseData2[0]?.title} :</h5>
                 <h6
                   dangerouslySetInnerHTML={{
                     __html:
@@ -197,9 +197,8 @@ const CourseView = ({ setEditCourse, setCourseId }) => {
               </span>
               <div className="videoCreator-courseview">
                 <img src={profile_picture || profile} alt="profile" />
-                <h6>{courseData2[0]?.name}</h6>
-                <h5>|</h5>
-                <h6>Raybit Tech</h6>
+                <h6 className="text-uppercase">{courseData2[0]?.name}</h6>
+                
               </div>
               <div className="buttons-courseview">
                 <div className="buttons-holder">
