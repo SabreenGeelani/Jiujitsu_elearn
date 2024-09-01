@@ -398,8 +398,9 @@ export default function CourseCreation({ editCourse, courseeId }) {
           </div>
         </form>
       </main>
-      {isModal && (
+      
         <Modal
+        show={isModal}
           onClose={closeModal}
           btnName="Continue"
           path={`/addLesson/${courseId}`}
@@ -408,7 +409,7 @@ export default function CourseCreation({ editCourse, courseeId }) {
             <h5>Your Course has been successfully created!</h5>
           </div>
         </Modal>
-      )}
+   
     </div>
   );
 }

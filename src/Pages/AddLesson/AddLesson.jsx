@@ -398,7 +398,7 @@ export default function AddLesson({ setEditCourse, setCourseId }) {
             Start adding Chapters to your course
           </p>
 
-          {isAddChapter || chapters?.length !== 0 || (
+          {isAddChapter && chapters?.length !== 0 || (
             <button
               className="signup-now px-4 py-1-and-08rem fs-5 mt-5"
               onClick={() => setIsAddChapter(true)}

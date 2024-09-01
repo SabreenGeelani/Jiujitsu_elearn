@@ -46,11 +46,17 @@ const Card = ({
       </div>
       <p>{expert}</p>
       <h4 style={{fontSize:15}}>{title}</h4>
-      <h4>
-        {description
-          ? description.split(" ").slice(0, 10).join(" ")
-          : "No description found"}
-        ...
+      <h4
+      dangerouslySetInnerHTML={{
+          
+        __html: description?.split(" ").slice(0, 6).join(" ") + "..."
+        
+      }}
+      >
+       
+          
+          
+   
       </h4>
       <div className="bottom-card-usermyLearning">
         <span><span style={{width:`${completed}%`}}></span></span>
@@ -94,7 +100,13 @@ const MyLearning = () => {
   return (
     <>
       {isLoading ? (
-            <SyncLoader id="myLearningLoader" size={8} color="black" />
+           
+            <l-grid
+id="myLearningLoader"
+  size="60"
+  speed="1.5"
+  color="black" 
+></l-grid>
           ) : (
         <div className="wrapper-myLearning">
           <header className="bg-gradient-custom-div p-3 pb-0 rounded-bottom-3.5 custom-box ">

@@ -7,6 +7,26 @@ import { faSquarePlus } from "@fortawesome/free-solid-svg-icons";
 import useFetch from "../../hooks/useFetch";
 import { BASE_URI } from "../../Config/url";
 import { SyncLoader } from "react-spinners";
+
+
+
+const ShimmerCard = () => (
+  <div className="card-bottom-courses shimmer-card-courses">
+  <div className="shimmer-content-courses short"></div>
+      {/* <div className="shimmer-content-courses long"></div> */}
+    
+    <div className="shimmer-content-courses medium"></div>
+    <div className="shimmer-content-courses long"></div>
+  </div>
+);
+
+
+
+
+
+
+
+
 const Card = ({
   id,
   onClick,
@@ -19,14 +39,15 @@ const Card = ({
   category,
 }) => (
   <div className="card-bottom-courses" onClick={() => onClick(id)}>
-    <img src={ thumbnail|| cardImage} alt="Course image" />
+    <img loading="lazy" src={ thumbnail|| cardImage} alt="Course image" />
     <div className="middle-sec-card-courses">
       <div className="addCourse-card-courses">
         <h6>{category}</h6>
       </div>
       <div className="pricing-card-courses">
         <h5>${price}</h5>
-        <h5>${discount}</h5>
+        <h5>${price - (price * discount) / 100}</h5>
+
       </div>
     </div>
     <p>{name}, Designer at Raybit...</p>
@@ -68,8 +89,8 @@ const Courses = () => {
     navigate(`/courseView/${id}`);
   };
   
- 
-
+//  const discounted_price =  (coursesData?.price * coursesData?.discount) / 100;
+// console.log(discounted_price)
   const cards = coursesData.map((course, index) => (
     <Card
       key={index}
@@ -87,9 +108,7 @@ const Courses = () => {
 
   return (
     <>
-      {isLoading ? (
-        <SyncLoader id="spinner-usercourseview" size={8} color="black" />
-      ) : (
+      
         <div className="wrapper-courses">
           <div className="top-courses">
             <h4>Courses</h4>
@@ -106,7 +125,18 @@ const Courses = () => {
           </div>
 
           {error?.response?.data?.message !== "no courses found" ? (
-            <div className="bottom-courses">{cards}</div>
+            <div className="bottom-courses">
+              {
+                isLoading ?  
+                Array.from({ length: 12 }).map((_, idx) => (<ShimmerCard key={idx}/> )) : cards
+              }
+              {/* {isLoading ? (
+        Array.from({ length: 12 }).map((_, idx) => (
+
+          <ShimmerCard key={idx}/> )) 
+        ) :( {cards})
+        } */}
+              </div>
           ) : (
             <div className="no-courses-courses">
               <div>
@@ -128,7 +158,7 @@ const Courses = () => {
             </div>
           )}
         </div>
-      )}
+      
     </>
   );
 };
