@@ -24,13 +24,13 @@ export const VerifyEmail = () => {
         </div>
         <div className="verify-form col-md-5 w-50">
           <div className="verify-email-box">
-            <h2>Verify Email</h2>
-            <p>
+            <h1 className="mb-3">Verify Email</h1>
+            <p className="mb-3">
               We have sent a verification email to the provided email please
               verify the email to get started.
             </p>
             <button className="verify-now mt-3">
-              <Link to="/" className="text-decoration-none text-black">
+              <Link to="/" className="text-decoration-none text-white">
                 Go to Sign In
               </Link>
             </button>

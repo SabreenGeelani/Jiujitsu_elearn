@@ -6,35 +6,13 @@ import { BiSolidChevronRightSquare } from "react-icons/bi";
 import { IoIosAddCircleOutline, IoMdNotifications } from "react-icons/io";
 import { MdMessage } from "react-icons/md";
 import { PiFolderUserFill } from "react-icons/pi";
-import { FaCircleUser } from "react-icons/fa6";
 import { BsFillCartFill } from "react-icons/bs";
 import { Link } from "react-router-dom";
-const users = [
-  {
-    id: 1,
-    name: "John Doe",
-    designation: "Software Engineer",
-    image: "src/assets/istockphoto-841971598-1024x1024.jpg",
-  },
-  {
-    id: 2,
-    name: "Jane Smith",
-    designation: "Product Manager",
-    image: "src/assets/istockphoto-841971598-1024x1024.jpg",
-  },
-  {
-    id: 3,
-    name: "Alice Johnson",
-    designation: "UX Designer",
-    image: "src/assets/istockphoto-841971598-1024x1024.jpg",
-  },
-  {
-    id: 4,
-    name: "Alice Johnson",
-    designation: "UX Designer",
-    image: "src/assets/istockphoto-841971598-1024x1024.jpg", // Replace with your actual image path
-  },
-];
+import { BASE_URI } from "../../Config/url";
+import toast from "react-hot-toast";
+import { FaUserCircle } from "react-icons/fa";
+import axios from "axios";
+
 export const Navbar = ({ collapsed }) => {
   const searchInputRef = useRef(null);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -43,6 +21,9 @@ export const Navbar = ({ collapsed }) => {
   );
   const [token, setToken] = useState(localStorage.getItem("token"));
   const userType = localStorage.getItem("userType");
+  const [experts, setExperts] = useState([]);
+  const [profileCompletion, setProfileCompletion] = useState(null);
+
   useEffect(() => {
     const handleStorageChange = () => {
       setUser(JSON.parse(localStorage.getItem("user")));
@@ -51,15 +32,57 @@ export const Navbar = ({ collapsed }) => {
     const intervalId = setInterval(handleStorageChange, 1000);
     return () => clearInterval(intervalId);
   }, []);
+
+  useEffect(() => {
+    if (token) {
+      const fetchUsers = async () => {
+        try {
+          const response = await fetch(
+            `${BASE_URI}/api/v1/users/otherExperts`,
+            {
+              headers: {
+                Authorization: "Bearer " + token,
+              },
+            }
+          );
+          const result = await response.json();
+          if (result.status === "Success") {
+            setExperts(result.data);
+          }
+        } catch (error) {
+          toast.error("Error fetching experts");
+        }
+      };
+
+      fetchUsers();
+    }
+  }, [token]);
+
+  useEffect(() => {
+    if (token) {
+      axios
+        .get(`${BASE_URI}/api/v1/users/profileCompletion`, {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        })
+        .then((resp) => {
+          // console.log(resp.data.data.profileCompletion);
+          setProfileCompletion(parseInt(resp.data.data.profileCompletion, 10));
+        });
+    }
+  }, [token]);
+
   const handleIconClick = () => {
     searchInputRef.current.focus();
   };
   const handleProfileClick = () => {
     setIsProfileOpen(!isProfileOpen);
   };
+
   return (
     <nav
-      className={`navbar navbar-expand-lg d-flex align-items-center ps-6 pe-5 ${
+      className={`navbar navbar-expand-lg d-flex align-items-center ps-6 pe-5  ${
         token ? "justify-content-between" : "justify-content-center"
       } ${collapsed ? "collapsed" : ""}`}
     >
@@ -81,30 +104,36 @@ export const Navbar = ({ collapsed }) => {
             className="navbar-input form-control border-start-0 ps-0"
           />
         </div>
-        <CiFilter className="primary-color fs-2 ms-3 cursor-pionter" />
+        <CiFilter className="primary-color fs-2 ms-3 cursor-pointer" />
       </div>
+      {/* {userType === "user" && ( */}
       {userType === "user" && (
         <Link to="/userCart">
-          <BsFillCartFill className="primary-color fs-2 ms-5 cursor-pionter" />
+          <BsFillCartFill className="primary-color fs-2 ms-5 cursor-pointer" />
         </Link>
       )}
+
       {token && (
         <div onClick={handleProfileClick} style={{ cursor: "pointer" }}>
-          {user?.profile_picture === "" ? (
-            <FaCircleUser className="fs-2" />
-          ) : (
-            <img
-              src={user?.profile_picture}
-              alt="Profile"
-              className="rounded-circle"
+          <div className="profile-picture-container">
+            <div
+              className="completion-bar"
               style={{
-                height: "3rem",
-                width: "3rem",
-                objectFit: "cover",
-                border: "4px solid black",
+                background: `conic-gradient(#0c243c ${profileCompletion}%, #e0e0e0 ${profileCompletion}% 100%)`,
+                width: "4rem",
+                height: "4rem",
               }}
-            />
-          )}
+            ></div>
+            {user?.profile_picture ? (
+              <img
+                src={user?.profile_picture}
+                alt="Profile"
+                className="profile-picture"
+              />
+            ) : (
+              <FaUserCircle className="profile-picture fs-1 text-black z-10" />
+            )}
+          </div>
         </div>
       )}
       <div
@@ -112,7 +141,7 @@ export const Navbar = ({ collapsed }) => {
           isProfileOpen ? "open" : ""
         }`}
       >
-        <div className="d-flex align-items-center justify-content-between  mb-4">
+        <div className="d-flex align-items-center justify-content-between mb-4">
           <p className="mb-0 fs-small w-60 text-end text-secondary">
             Your Profile
           </p>
@@ -122,17 +151,30 @@ export const Navbar = ({ collapsed }) => {
           />
         </div>
         <main className="text-center">
-          <img
-            src={user?.profile_picture}
-            alt=""
-            className="rounded-circle mb-3"
-            style={{
-              height: "5rem",
-              width: "5rem",
-              objectFit: "cover",
-              border: "4px solid black",
-            }}
-          />
+          <div className="profile-picture-container">
+            <div
+              className="completion-bar"
+              style={{
+                background: `conic-gradient(#0c243c ${profileCompletion}%, #e0e0e0 ${profileCompletion}% 100%)`,
+                width: "6rem",
+                height: "6rem",
+              }}
+            ></div>
+            {user?.profile_picture ? (
+              <img
+                src={user?.profile_picture}
+                alt=""
+                className="profile-picture mb-4"
+                style={{ width: "5rem", height: "5rem" }}
+              />
+            ) : (
+              <FaUserCircle
+                className="profile-picture text-black"
+                style={{ fontSize: "5rem" }}
+              />
+            )}
+          </div>
+
           <h4 className="fw-lightBold mb-1 text-capitalize">
             Good Morning {user?.name?.split(" ")[0]}
           </h4>
@@ -140,7 +182,7 @@ export const Navbar = ({ collapsed }) => {
             className="text-center lightgray-color fs-small mb-3"
             style={{ lineHeight: "14.52px" }}
           >
-            continue your journey and Inspire many
+            Continue your journey and Inspire many
           </p>
           <div className="d-flex align-items-center justify-content-between px-4">
             <p
@@ -168,30 +210,39 @@ export const Navbar = ({ collapsed }) => {
               <h4 className="fw-lightBold mb-0">Other Experts</h4>
               <IoIosAddCircleOutline className="fs-2 text-secondary" />
             </div>
-            <div className=" mb-4">
-              {users.map((user) => (
+            <div className="mb-4">
+              {experts.map((expert) => (
                 <div
                   className="d-flex align-items-center justify-content-between py-2 border-bottom"
-                  key={user.id}
+                  key={expert.id}
                 >
                   <div className="d-flex align-items-center gap-2">
-                    <img
-                      src={user.image}
-                      alt=""
-                      className="rounded-circle"
-                      style={{
-                        height: "2rem",
-                        width: "2rem",
-                        objectFit: "cover",
-                      }}
-                    />
+                    {expert.profile_picture ? (
+                      <img
+                        src={expert.profile_picture}
+                        alt=""
+                        className="rounded-circle"
+                        style={{
+                          height: "2rem",
+                          width: "2rem",
+                          objectFit: "cover",
+                        }}
+                      />
+                    ) : (
+                      <FaUserCircle
+                        className="fs-2"
+                        style={{
+                          height: "2rem",
+                          width: "2rem",
+                        }}
+                      />
+                    )}
                     <div>
-                      <p className="mb-0 fw-lightBold text-start">
-                        {user.name}
+                      <p className="mb-0 fw-lightBold text-start text-capitalize">
+                        {expert.name}
                       </p>
-                      <p className="mb-0 fs-small text-start">
-                        {user.designation}
-                      </p>
+                      {/* Optional: Display designation if you have it */}
+                      {/* <p className="mb-0 fs-small text-start">{user.designation}</p> */}
                     </div>
                   </div>
                   <button
@@ -203,7 +254,9 @@ export const Navbar = ({ collapsed }) => {
                 </div>
               ))}
             </div>
-            <button className="signup-now w-100 rounded-pill">See all</button>
+            {experts.length > 3 && (
+              <button className="signup-now w-100 rounded-pill">See all</button>
+            )}
           </div>
         </main>
       </div>

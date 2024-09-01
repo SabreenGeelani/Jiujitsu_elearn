@@ -1,24 +1,26 @@
-import React,{ useMemo, useState , useEffect} from "react";
+import { useMemo, useState, useEffect } from "react";
 import "./CourseView.css";
 import videoPlayer from "../../assets/videoPlayer.png";
 import profile from "../../assets/profile.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDown, faStar } from "@fortawesome/free-solid-svg-icons";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import useFetch from "../../hooks/useFetch";
 import { BASE_URI } from "../../Config/url";
 import { SyncLoader } from "react-spinners";
+import { useScroll } from "framer-motion";
 
-const CourseView = () => {
+const CourseView = ({ setEditCourse, setCourseId }) => {
   const { id } = useParams();
   console.log(id);
   const [buttonPick, setButtonPick] = useState("Overview");
   const [openDetails, setOpenDetails] = useState({});
   const [openDetailsLeft, setOpenDetailsLeft] = useState({});
-  const [video_url, setVideo_url]= useState("");
-  const [video_thumb, setVideo_thumb]= useState("");
+  const [video_url, setVideo_url] = useState("");
+  const [video_thumb, setVideo_thumb] = useState("");
   const [selectedLesson, setSelectedLesson] = useState("");
   const [Data, setData] = useState(null);
+  const navigate = useNavigate();
 
   const handleButtonToggle = (event) => {
     const text = event.currentTarget.querySelector("h5").textContent;
@@ -49,7 +51,6 @@ const CourseView = () => {
   //  setData(data.data[0]);
   //  console.log(data);
   const courseData = useMemo(() => data?.data?.chapters || [], [data]);
-  
 
   const url2 = `${BASE_URI}/api/v1/courses/${id}`;
   // const token2 = localStorage.getItem("token");
@@ -64,48 +65,54 @@ const CourseView = () => {
     },
   });
   // console.log(data2)
-  const courseData2 = useMemo(() => data2?.data || [data2]);
+  const courseData2 = useMemo(() => data2?.data || [], [data2]);
   console.log(courseData[0]?.lessons[0]?.video_url);
-  useEffect(()=>{
+  useEffect(() => {
     setVideo_url(courseData[0]?.lessons[0]?.video_url);
     setVideo_thumb(courseData[0]?.lessons[0]?.thumbnail);
     setSelectedLesson(courseData[0]?.lessons[0]?.lesson_id);
     console.log(video_url);
-  },[courseData]);
+  }, [courseData]);
 
-  const handleVideoChange = (video_url,video_thumb, lesson_id)=>{
-    setVideo_url(video_url)
-    setVideo_thumb(video_thumb)
+  const handleVideoChange = (video_url, video_thumb, lesson_id) => {
+    setVideo_url(video_url);
+    setVideo_thumb(video_thumb);
     setSelectedLesson(lesson_id);
     // refetch();
-  }
+  };
+
+  const handleEditCourse = () => {
+    setEditCourse(true);
+    setCourseId(id);
+    navigate(`/courses/addLesson/${id}`);
+  };
   return (
     <>
       {error2?.response?.data?.message === "No courses found" ? (
         <h1>No courses found</h1>
       ) : isLoading2 || isLoading ? (
-        <SyncLoader id="spinner-usercourseview" size={8} color="black"/>
+        <SyncLoader id="spinner-usercourseview" size={8} color="black" />
       ) : (
         <div className="wrapper-courseview">
           <div className="top-courseview">
             <h4>Course Overview</h4>
             <div>
-              <h6>Edit Course</h6>
+              <h6 onClick={handleEditCourse}>Edit Course</h6>
             </div>
           </div>
           <div className="bottom-courseview">
             <div className="left-bottom-courseview">
-            <div className="video-container-purchasedCourse">
-              <video 
-      src={video_url} 
-      controls 
-      muted 
-      loop 
-      poster={video_thumb}
-      preload="auto"
-    >
-      Your browser does not support the video tag.
-    </video>
+              <div className="video-container-purchasedCourse">
+                <video
+                  src={video_url}
+                  controls
+                  muted
+                  loop
+                  poster={video_thumb}
+                  preload="auto"
+                >
+                  Your browser does not support the video tag.
+                </video>
               </div>
               <span>
                 <h5>{courseData2[0]?.title} :</h5>
@@ -336,7 +343,10 @@ const CourseView = () => {
                         />
                         <h5>
                           Section {chapter?.chapter_no} |{" "}
-                          {chapter?.chapterTitle?.split(" ").slice(0, 3).join(" ")}
+                          {chapter?.chapterTitle
+                            ?.split(" ")
+                            .slice(0, 3)
+                            .join(" ")}
                         </h5>
                         <h6>
                           {chapter?.totalLessons} Videos |{" "}
@@ -346,8 +356,31 @@ const CourseView = () => {
                       {chapter?.lessons.map((lesson) => (
                         <div key={lesson?.lesson_id}>
                           <input type="checkbox" />
-                          <span  onClick={()=> handleVideoChange(lesson?.video_url,lesson?.thumbnail,lesson?.lesson_id)} style={{cursor:"pointer" ,color: selectedLesson === lesson?.lesson_id && "red"}}>
-                            <h6 style={{cursor:"pointer" ,color: selectedLesson === lesson?.lesson_id ? "red" :"black"}}>{lesson?.lessonTitle}</h6>
+                          <span
+                            onClick={() =>
+                              handleVideoChange(
+                                lesson?.video_url,
+                                lesson?.thumbnail,
+                                lesson?.lesson_id
+                              )
+                            }
+                            style={{
+                              cursor: "pointer",
+                              color:
+                                selectedLesson === lesson?.lesson_id && "red",
+                            }}
+                          >
+                            <h6
+                              style={{
+                                cursor: "pointer",
+                                color:
+                                  selectedLesson === lesson?.lesson_id
+                                    ? "red"
+                                    : "black",
+                              }}
+                            >
+                              {lesson?.lessonTitle}
+                            </h6>
                             <h6>1 Video | {lesson?.duration} mins</h6>
                           </span>
                         </div>

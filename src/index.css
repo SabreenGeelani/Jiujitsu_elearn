@@ -85,6 +85,12 @@ input::placeholder {
 .hover-underline:hover {
   text-decoration: underline;
 }
-.h-20{
+.h-20 {
   height: 20%;
+}
+.rounded-custom {
+  border-top-left-radius: 1.5rem;
+  border-bottom-right-radius: 1.5rem;
+  border-top-right-radius: 0;
+  border-bottom-left-radius: 0;
 }

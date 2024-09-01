@@ -31,12 +31,13 @@ const Card = ({
 
   return (
     <div className="card-bottom-userCourses" onClick={() => onClick(id)}>
-
       <span>
-      <img src={thumbnail} alt="Course image" style={{ objectFit: "cover" }} />  
+        <img
+          src={thumbnail}
+          alt="Course image"
+          style={{ objectFit: "cover" }}
+        />
       </span>
-      
-
 
       <div className="middle-sec-card-userCourses">
         <div className="addCourse-card-userCourses">
@@ -60,11 +61,9 @@ const Card = ({
           <h5>{`$${(price * (1 - discount / 100)).toFixed(2)}`}</h5>
         </span>
         <div onClick={handleAddToCart}>
-          
-            <h6>{isLoading ? (
-            <PulseLoader size={8} color="white" />
-          ) : ( "Add to Cart" )}</h6>
-          
+          <h6>
+            {isLoading ? <PulseLoader size={8} color="white" /> : "Add to Cart"}
+          </h6>
         </div>
       </div>
     </div>
@@ -85,11 +84,14 @@ const UserCourses = () => {
     isLoading: isLoading2,
     error: error2,
     refetch: refetch2,
-  } = useFetch(url2, {
-    headers: {
-      Authorization: "Bearer " + token,
-    },
-  });
+  } = useFetch(
+    url2
+    //    {
+    //   headers: {
+    //     Authorization: "Bearer " + token,
+    //   },
+    // }
+  );
 
   const categories = useMemo(() => data2?.data || [], [data2]);
 
@@ -106,9 +108,7 @@ const UserCourses = () => {
 
   const url = `${BASE_URI}/api/v1/courses/userDashboard/courses?category=${selectedCategory}`;
   const { data, error, refetch, isLoading } = useFetch(url, {
-    headers: {
-      Authorization: "Bearer " + token,
-    },
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
   });
 
   // console.log(data.data);
@@ -116,7 +116,7 @@ const UserCourses = () => {
   const coursesData = useMemo(() => data?.data || [], [data]);
 
   const handleNavigate = (id) => {
-    navigate(`/userCourseView/${id}`);
+    navigate(`/userCourses/userCourseView/${id}`);
   };
 
   const handleCart = async (id, setIsLoading) => {
