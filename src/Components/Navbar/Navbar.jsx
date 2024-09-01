@@ -13,7 +13,7 @@ import toast from "react-hot-toast";
 import { FaUserCircle } from "react-icons/fa";
 import axios from "axios";
 
-export const Navbar = ({ collapsed }) => {
+export const Navbar = ({ collapsed, search, setSearch }) => {
   const searchInputRef = useRef(null);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [user, setUser] = useState(() =>
@@ -100,6 +100,8 @@ export const Navbar = ({ collapsed }) => {
             id="search"
             placeholder="Search here..."
             aria-label="search"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
             ref={searchInputRef}
             className="navbar-input form-control border-start-0 ps-0"
           />
@@ -129,9 +131,13 @@ export const Navbar = ({ collapsed }) => {
                 src={user?.profile_picture}
                 alt="Profile"
                 className="profile-picture"
+                style={{ objectFit: "cover" }}
               />
             ) : (
-              <FaUserCircle className="profile-picture fs-1 text-black z-10" />
+              <FaUserCircle
+                className="profile-picture text-secondary"
+                style={{ fontSize: "3rem" }}
+              />
             )}
           </div>
         </div>
@@ -165,11 +171,11 @@ export const Navbar = ({ collapsed }) => {
                 src={user?.profile_picture}
                 alt=""
                 className="profile-picture mb-4"
-                style={{ width: "5rem", height: "5rem" }}
+                style={{ width: "5rem", height: "5rem", objectFit: "cover" }}
               />
             ) : (
               <FaUserCircle
-                className="profile-picture text-black"
+                className="profile-picture text-secondary"
                 style={{ fontSize: "5rem" }}
               />
             )}

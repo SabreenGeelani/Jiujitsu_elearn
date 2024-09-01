@@ -1,4 +1,3 @@
-
 import React, { useEffect, useMemo, useState } from "react";
 
 import "./UserCart.css";
@@ -16,10 +15,7 @@ import { SyncLoader, PulseLoader } from "react-spinners";
 import toast from "react-hot-toast";
 import axios from "axios";
 
-axios.defaults.withCredentials = true;
-
 import { loadStripe } from "@stripe/stripe-js";
-
 
 const stripePromise = loadStripe(
   "pk_test_51M6nsQSDOobx5Z6rHgqPiLuidjpToZrZmAfdJOwiI27L2yy26DKRZXJ3hxmYcCpLoEzUfg3QK3ltWNCqb3Ll4lfk00drwlA3lS"
@@ -30,13 +26,10 @@ import Loader from "../../Components/Loader/Loader";
 import "ldrs/bouncy";
 import "ldrs/grid";
 
-
 const UserCart = () => {
   const [loadingItems, setLoadingItems] = useState({});
   const [removeLoading, setremoveLoading] = useState({});
   const navigate = useNavigate();
-
-  
 
   const url = `${BASE_URI}/api/v1/cart`;
   const token = localStorage.getItem("token");
@@ -45,7 +38,6 @@ const UserCart = () => {
       Authorization: "Bearer " + token,
     },
   });
-  
 
   const APIdata = useMemo(() => data?.data || [data], [data]);
   const cartItems = APIdata[0];
@@ -74,7 +66,6 @@ const UserCart = () => {
     }
   };
 
-
   const handleRemoveCart = async (id, e) => {
     e.stopPropagation();
     setremoveLoading((prev) => ({ ...prev, [id]: true }));
@@ -93,7 +84,6 @@ const UserCart = () => {
       setremoveLoading((prev) => ({ ...prev, [id]: false }));
     }
   };
-
 
   const checkoutHandler = async () => {
     try {
@@ -118,7 +108,6 @@ const UserCart = () => {
     return <navigate to="/" />;
   }
 
-  
   return (
     <>
       {isLoading ? (
@@ -169,7 +158,7 @@ const UserCart = () => {
                     >
                       <div className="mid-left-left-usercart">
                         <img
-                        loading="lazy"
+                          loading="lazy"
                           src={item.thumbnail || cardImage}
                           alt="thumbnail"
                         />
@@ -183,8 +172,8 @@ const UserCart = () => {
                               speed="1.2"
                               color="white"
                             ></l-bouncy>
-                          ) : ( <p>Remove</p>
-                           
+                          ) : (
+                            <p>Remove</p>
                           )}
                         </div>
                       </div>
@@ -259,10 +248,12 @@ const UserCart = () => {
                   {cartItems?.expertCourses?.map((items, index) => (
                     <div
                       onClick={() => {
+
                         if(!items?.is_purchased){
                           navigate(`/userCourses/userCourseView/${items?.id}`);
                         }
                         else if(items?.is_purchased) {
+
                           navigate(`/userPurchasedCourses/${items?.id}`);
                         }
                       }}
@@ -271,7 +262,7 @@ const UserCart = () => {
                     >
                       <span>
                         <img
-                        loading="lazy"
+                          loading="lazy"
                           src={items?.thumbnail || cardImage}
                           alt="Course image"
                         />
@@ -303,15 +294,20 @@ const UserCart = () => {
                           <h5>${items?.price}</h5>
                           <h5>${items?.discount}</h5>
                         </span>
-                        <div onClick={ (e) => !items?.is_purchased && handleCart(items?.id, e)}>
+                        <div
+                          onClick={(e) =>
+                            !items?.is_purchased && handleCart(items?.id, e)
+                          }
+                        >
                           {loadingItems[items?.id] ? ( // Default values shown
                             <l-bouncy
                               size="35"
                               speed="1.2"
                               color="white"
                             ></l-bouncy>
+                          ) : items?.is_purchased ? (
+                            <h6>Purchased!</h6>
                           ) : (
-                            items?.is_purchased ? <h6>Purchased!</h6> :
                             <h6>Add to Cart</h6>
                           )}
                         </div>
@@ -322,7 +318,6 @@ const UserCart = () => {
               </div>
             </>
           )}
-
         </div>
       )}
     </>

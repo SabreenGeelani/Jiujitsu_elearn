@@ -209,14 +209,14 @@ export default function ExpertWallet() {
                     <td className="text-center align-middle fs-small">
                       {formatDate(order.payment_date)}
                     </td>
-                    <td className="text-center align-middle fs-small">
+                    <td className="text-center align-middle fs-small text-capitalize">
                       {order.payment_type}
                     </td>
-                    <td className="text-center align-middle fs-small">
+                    <td className="text-center align-middle fs-small text-capitalize">
                       {order.payment_status}
                     </td>
                     <td className="text-center align-middle fs-small">
-                      ${order.discounted_price}
+                      ${order.amount}
                     </td>
                     <td className="text-center align-middle fs-small">
                       ${order.service_charges}
