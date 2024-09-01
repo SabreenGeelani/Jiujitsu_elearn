@@ -4,28 +4,36 @@ import CourseCreation from "../Pages/CourseCreation/CourseCreation";
 import CourseView from "../Pages/Course overview/CourseView";
 import AddLesson from "../Pages/AddLesson/AddLesson";
 import ExpertWallet from "../Pages/ExpertWallet/ExpertWallet";
+import ExpertAnalytics from "../Pages/ExpertAnalytics/ExpertAnalytics";
 import { useState } from "react";
 
 const ExpertRoutes = () => {
   const [editCourse, setEditCourse] = useState(false);
   const [courseId, setCourseId] = useState("");
+
   return (
     <Routes>
       <Route path="/courses" element={<Courses />} />
-      <Route path="/courseView/:id" element={<CourseView />} />
       <Route
-        path="/courseCreation"
+        path="/courses/courseView/:id"
+        element={
+          <CourseView setEditCourse={setEditCourse} setCourseId={setCourseId} />
+        }
+      />
+      <Route
+        path="/courses/courseCreation"
         element={
           <CourseCreation editCourse={editCourse} courseeId={courseId} />
         }
       />
       <Route
-        path="/addLesson/:id"
+        path="/courses/addLesson/:id"
         element={
           <AddLesson setEditCourse={setEditCourse} setCourseId={setCourseId} />
         }
       />
       <Route path="/expertWallet" element={<ExpertWallet />} />
+      <Route path="/dashboard" element={<ExpertAnalytics />} />
     </Routes>
   );
 };

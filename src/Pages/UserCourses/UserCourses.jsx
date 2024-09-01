@@ -50,6 +50,7 @@ const Card = ({
   };
 
   return (
+
     <div className="card-bottom-userCourses" onClick={() => 
     { if(purchase){
       onClick(id, "Purchased")
@@ -65,6 +66,7 @@ const Card = ({
         <img loading="lazy" src={thumbnail} alt="Course image" style={{ objectFit: "cover" }} />  
       </span>
       
+
       <div className="middle-sec-card-userCourses">
         <div className="addCourse-card-userCourses">
           <h6>{category}</h6>
@@ -86,6 +88,7 @@ const Card = ({
           <h5>{`$${price}`}</h5>
           <h5>{`$${(price * (1 - discount / 100)).toFixed(2)}`}</h5>
         </span>
+
         <div onClick={purchase ? () => handlePurchase(id) : carted ? () => handleCarted() : handleAddToCart}>
           { 
             purchase ? <h6>Purchased!</h6> : carted ? <h6>In Cart!</h6>: <h6>{isLoading ? (
@@ -96,6 +99,7 @@ const Card = ({
 ></l-bouncy>
             ) : ( "Add to Cart" )}</h6> 
           }
+
         </div>
       </div>
     </div>
@@ -117,11 +121,14 @@ const UserCourses = () => {
     isLoading: isLoading2,
     error: error2,
     refetch: refetch2,
-  } = useFetch(url2, {
-    headers: {
-      Authorization: "Bearer " + token,
-    },
-  });
+  } = useFetch(
+    url2
+    //    {
+    //   headers: {
+    //     Authorization: "Bearer " + token,
+    //   },
+    // }
+  );
 
   const categories = useMemo(() => data2?.data || [], [data2]);
 
@@ -139,18 +146,17 @@ const UserCourses = () => {
 
   const url = `${BASE_URI}/api/v1/courses/userDashboard/courses?category=${selectedCategory}`;
   const { data, error, refetch, isLoading } = useFetch(url, {
-    headers: {
-      Authorization: "Bearer " + token,
-    },
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
   });
 
   // console.log(data.data);
   // // const coursesData = data;
   const coursesData = useMemo(() => data?.data || [], [data]);
-console.log(coursesData)
+
+
   const handleNavigate = (id, status) => {
     if(!status){
-      navigate(`/userCourseView/${id}`);
+      navigate(`/userCourses/userCourseView/${id}}`);
     }
     else if(status === "Purchased"){
       navigate(`/userPurchasedCourses/${id}`)
@@ -159,6 +165,7 @@ console.log(coursesData)
       navigate(`/userCart`)
     }
     
+
   };
 
   const handleCart = async (id, setIsLoading) => {

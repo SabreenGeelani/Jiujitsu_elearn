@@ -39,7 +39,9 @@ const Card = ({
   category,
 }) => (
   <div className="card-bottom-courses" onClick={() => onClick(id)}>
+
     <img loading="lazy" src={ thumbnail|| cardImage} alt="Course image" />
+
     <div className="middle-sec-card-courses">
       <div className="addCourse-card-courses">
         <h6>{category}</h6>
@@ -63,7 +65,6 @@ const Card = ({
 const Courses = () => {
   const navigate = useNavigate();
   const [course, setcourse] = useState(true);
-  
 
   const url = `${BASE_URI}/api/v1/courses/expertCourses`;
   const token = localStorage.getItem("token");
@@ -86,11 +87,13 @@ const Courses = () => {
   const coursesData = useMemo(() => data?.data || [], [data]);
   // console.log(coursesData)
   const handleCardClick = (id) => {
-    navigate(`/courseView/${id}`);
+    navigate(`/courses/courseView/${id}`);
   };
+
   
 //  const discounted_price =  (coursesData?.price * coursesData?.discount) / 100;
 // console.log(discounted_price)
+
   const cards = coursesData.map((course, index) => (
     <Card
       key={index}
@@ -115,7 +118,7 @@ const Courses = () => {
             <div className="top-button">
               <h6>
                 <Link
-                  to="/courseCreation"
+                  to="/courses/courseCreation"
                   className="text-decoration-none text-white"
                 >
                   Add Course{" "}
@@ -146,7 +149,7 @@ const Courses = () => {
                   athletes around the world!
                 </h5>
                 <Link
-                  to="/courseCreation"
+                  to="courses/courseCreation"
                   className="text-decoration-none text-white"
                 >
                   <FontAwesomeIcon

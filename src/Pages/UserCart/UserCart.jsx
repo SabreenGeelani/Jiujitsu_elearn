@@ -1,4 +1,6 @@
+
 import React, { useEffect, useMemo, useState } from "react";
+
 import "./UserCart.css";
 import itemThumb from ".././../assets/usercartimage.jpeg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -13,10 +15,21 @@ import useFetch from "../../hooks/useFetch";
 import { SyncLoader, PulseLoader } from "react-spinners";
 import toast from "react-hot-toast";
 import axios from "axios";
+
+axios.defaults.withCredentials = true;
+
+import { loadStripe } from "@stripe/stripe-js";
+
+
+const stripePromise = loadStripe(
+  "pk_test_51M6nsQSDOobx5Z6rHgqPiLuidjpToZrZmAfdJOwiI27L2yy26DKRZXJ3hxmYcCpLoEzUfg3QK3ltWNCqb3Ll4lfk00drwlA3lS"
+);
+
 import { Link, useNavigate } from "react-router-dom";
 import Loader from "../../Components/Loader/Loader";
 import "ldrs/bouncy";
 import "ldrs/grid";
+
 
 const UserCart = () => {
   const [loadingItems, setLoadingItems] = useState({});
@@ -61,9 +74,11 @@ const UserCart = () => {
     }
   };
 
+
   const handleRemoveCart = async (id, e) => {
     e.stopPropagation();
     setremoveLoading((prev) => ({ ...prev, [id]: true }));
+
     try {
       const response = await axios.delete(`${BASE_URI}/api/v1/cart/${id}`, {
         headers: {
@@ -79,6 +94,31 @@ const UserCart = () => {
     }
   };
 
+
+  const checkoutHandler = async () => {
+    try {
+      const stripe = await stripePromise;
+      // Fetch the session from your backend
+      // const session = await axios(`http://localhost:3000/api/v1/payment`);
+      const session = await axios(`${BASE_URI}/api/v1/payment`, {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      });
+      // Redirect to Stripe Checkout
+      await stripe.redirectToCheckout({
+        sessionId: session.data.session.id,
+      });
+    } catch (e) {
+      toast.error("Something went wrong");
+    }
+  };
+
+  if (!token) {
+    return <Navigate to="/" />;
+  }
+
+  
   return (
     <>
       {isLoading ? (
@@ -282,6 +322,7 @@ const UserCart = () => {
               </div>
             </>
           )}
+
         </div>
       )}
     </>

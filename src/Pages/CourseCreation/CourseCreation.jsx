@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState, useCallback } from "react";
+import { useMemo, useRef, useState, useCallback, useEffect } from "react";
 import { RiGalleryUploadFill } from "react-icons/ri";
 import { useDropzone } from "react-dropzone";
 import "./CourseCreation.css";
@@ -10,6 +10,7 @@ import Modal from "../../Components/Modal/Modal";
 import { Link } from "react-router-dom";
 import ReactQuill from "react-quill";
 import DOMPurify from "dompurify";
+import { PulseLoader } from "react-spinners";
 
 export default function CourseCreation({ editCourse, courseeId }) {
   const [courseData, setCourseData] = useState({
@@ -21,13 +22,15 @@ export default function CourseCreation({ editCourse, courseeId }) {
     discount: "",
     thumbnail: null,
     tag_ids: [],
+    access: "",
   });
   const [isModal, setIsModal] = useState(false);
   const [courseId, setCourseId] = useState("");
-
+  const [thumbnailPreview, setThumbnailPreview] = useState(null);
   const editorRef = useRef(null);
   const token = localStorage.getItem("token");
-
+  const [showPopover, setShowPopover] = useState(false);
+  const [loading, setLoading] = useState(false);
   const tagsUrl = `${BASE_URI}/api/v1/tags`;
   const categoriesUrl = `${BASE_URI}/api/v1/category`;
 
@@ -46,7 +49,40 @@ export default function CourseCreation({ editCourse, courseeId }) {
     [categoriesData]
   );
 
+  useEffect(() => {
+    if (editCourse) {
+      axios
+        .get(`${BASE_URI}/api/v1/courses/${courseeId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          const courseDetails = response.data.data[0];
+          // console.log(response.data);
+          setCourseData({
+            title: courseDetails.title || "",
+            description: courseDetails.description || "",
+            category_id: courseDetails.category_id || "",
+            status: courseDetails.status || "",
+            price: courseDetails.price || "",
+            discount: courseDetails.discount || "",
+            thumbnail: courseDetails.thumbnail || null,
+            tag_ids: courseDetails.tag_ids || [],
+            access: courseDetails.access || "",
+          });
+          setThumbnailPreview(
+            courseDetails.thumbnail ? courseDetails.thumbnail : null
+          );
+        })
+        .catch(() => {
+          toast.error("Failed to load course details.");
+        });
+    }
+  }, [editCourse, courseeId, token]);
+
   const handleChange = (event) => {
+    setShowPopover(false);
     const { name, value } = event.target;
     if (name === "tag_ids") {
       setCourseData((prevData) => ({
@@ -105,8 +141,15 @@ export default function CourseCreation({ editCourse, courseeId }) {
     }));
   };
 
-  const closeModal = () => {
-    setIsModal(false);
+  const handleTagChange = (e) => {
+    const selectedOptions = [...e.target.selectedOptions].map(
+      (option) => option.value
+    );
+
+    setCourseData({
+      ...courseData,
+      tag_ids: selectedOptions,
+    });
   };
 
   const handleCancel = () => {
@@ -119,21 +162,13 @@ export default function CourseCreation({ editCourse, courseeId }) {
       discount: "",
       thumbnail: null,
       tag_ids: [],
+      access: "",
     });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(courseData);
-
-    // const formData = new FormData();
-    // Object.keys(courseData).forEach((key) => {
-    //   if (key === "tag_ids") {
-    //     formData.append(key, JSON.stringify(courseData[key]));
-    //   } else {
-    //     formData.append(key, courseData[key]);
-    //   }
-    // });
 
     axios
       .post(`${BASE_URI}/api/v1/courses`, courseData, {
@@ -152,6 +187,78 @@ export default function CourseCreation({ editCourse, courseeId }) {
         // console.log(error);
         toast.error(error.response.data.message);
       });
+  };
+
+  const handleSaveChanges = (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    axios
+      .patch(`${BASE_URI}/api/v1/courses/${courseeId}`, courseData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((response) => {
+        setLoading(false);
+        toast.success("Course updated successfully!");
+        setCourseId(response.data.data.course_id);
+        setIsModal(true);
+      })
+      .catch((error) => {
+        setLoading(false);
+        toast.error(
+          error.response ? error.response.data.message : "Something went wrong"
+        );
+      });
+  };
+
+  const handleCancelEdit = () => {
+    if (editCourse) {
+      axios
+        .get(`${BASE_URI}/api/v1/courses/${courseeId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          const courseDetails = response.data.data[0];
+          setCourseData({
+            title: courseDetails.title || "",
+            description: courseDetails.description || "",
+            category_id: courseDetails.category_id || "",
+            status: courseDetails.status || "",
+            price: courseDetails.price || "",
+            discount: courseDetails.discount || "",
+            thumbnail: courseDetails.thumbnail || null,
+            tag_ids: courseDetails.tag_ids || [],
+            access: courseDetails.access || "",
+          });
+          setThumbnailPreview(
+            courseDetails.thumbnail ? courseDetails.thumbnail : null
+          );
+        })
+        .catch(() => {
+          toast.error("Failed to reload course details.");
+        });
+    } else {
+      setCourseData({
+        title: "",
+        description: "",
+        category_id: "",
+        status: "",
+        price: "",
+        discount: "",
+        thumbnail: null,
+        tag_ids: [],
+        access: "",
+      });
+    }
+  };
+
+  const handleFocus = () => {
+    setShowPopover(true);
   };
 
   return (
@@ -177,6 +284,7 @@ export default function CourseCreation({ editCourse, courseeId }) {
               onChange={handleChange}
               placeholder="Enter Title"
               className="px-5 py-2-half-5 border-secondary-subtle border rounded-2 w-100 input-custom"
+              required
             />
           </div>
           <div className="mb-3">
@@ -185,7 +293,7 @@ export default function CourseCreation({ editCourse, courseeId }) {
                 htmlFor="text_content"
                 className="d-block mb-1 fs-5 fw-light"
               >
-                Lesson Description <span className="text-danger">*</span>
+                Course Description <span className="text-danger">*</span>
               </label>
               <div className="cursor-pointer">
                 <input
@@ -231,6 +339,7 @@ export default function CourseCreation({ editCourse, courseeId }) {
                   "align",
                 ]}
                 style={{ height: "13rem", overflowY: "auto" }}
+                placeholder="Write course description here..."
               />
             </div>
           </div>
@@ -243,6 +352,7 @@ export default function CourseCreation({ editCourse, courseeId }) {
               name="category_id"
               value={courseData.category_id}
               onChange={handleChange}
+              required
             >
               <option value="" disabled>
                 Select
@@ -263,6 +373,7 @@ export default function CourseCreation({ editCourse, courseeId }) {
               name="status"
               value={courseData.status}
               onChange={handleChange}
+              required
             >
               <option value="" disabled>
                 Select
@@ -279,14 +390,8 @@ export default function CourseCreation({ editCourse, courseeId }) {
               className="px-5 py-2-half-5 border-secondary-subtle border rounded-2 w-100"
               name="tag_ids"
               value={courseData.tag_ids}
-              onChange={(e) =>
-                setCourseData({
-                  ...courseData,
-                  tag_ids: [...e.target.selectedOptions].map(
-                    (option) => option.value
-                  ),
-                })
-              }
+              onChange={handleTagChange}
+              required
               multiple
             >
               <option
@@ -309,10 +414,29 @@ export default function CourseCreation({ editCourse, courseeId }) {
           </div>
 
           <div className="mb-3">
-            <label htmlFor="thumbnail" className="d-block mb-1 fs-5 fw-light">
-              Add Thumbnail <span className="text-danger">*</span>
+            <label htmlFor="access" className="d-block mb-1 fs-5 fw-light">
+              Access Time <span className="text-danger">*</span>
             </label>
-            <div {...getRootProps()} className="input-group">
+            <select
+              className="px-5 py-2-half-5 border-secondary-subtle border rounded-2 w-100"
+              name="access"
+              value={courseData.access}
+              onChange={handleChange}
+              required
+            >
+              <option value="" disabled>
+                Select
+              </option>
+              <option value="lifetime">Lifetime</option>
+              {/* <option value="inActive">In Active</option> */}
+            </select>
+          </div>
+
+          <div className="mb-3">
+            <label htmlFor="thumbnail" className="d-block mb-1 fs-5 fw-light">
+              Thumbnail <span className="text-danger">*</span>
+            </label>
+            <div {...getRootProps()} className="input-group mb-3">
               <input
                 type="text"
                 name="thumbnail"
@@ -323,6 +447,7 @@ export default function CourseCreation({ editCourse, courseeId }) {
                 }
                 className="form-control px-5 py-2-half-5 border-secondary-subtle border border-end-0 rounded-start-2 input-custom"
                 readOnly
+                required
               />
               <button
                 type="button"
@@ -335,26 +460,64 @@ export default function CourseCreation({ editCourse, courseeId }) {
                   style: { display: "none" },
                 })}
               />
+              {thumbnailPreview && (
+                <img
+                  src={thumbnailPreview}
+                  alt="Thumbnail Preview"
+                  className="mt-2"
+                  style={{ maxWidth: "200px", maxHeight: "200px" }}
+                />
+              )}
             </div>
+
             <div className="mb-5 d-flex align-item-center gap-4">
-              <div className="w-50">
+              <div className="w-50 position-relative">
                 <label htmlFor="price" className="d-block mb-1 fs-5 fw-light">
                   Price <span className="text-danger">*</span>
                 </label>
                 <div className="input-group">
                   <label htmlFor="price" className="input-group-text">
-                    ₹
+                    $
                   </label>
                   <input
                     type="text"
                     name="price"
                     value={courseData.price}
+                    onFocus={handleFocus}
                     onChange={handleChange}
                     placeholder="Enter Price"
                     className="form-control px-5 py-2-half-5 input-custom"
                     required
                   />
+                  <span
+                    style={{
+                      cursor: "pointer",
+                      marginLeft: "10px",
+                      position: "relative",
+                    }}
+                  >
+                    <i className="bi bi-info-circle"></i>
+                    {showPopover && (
+                      <div className="custom-popover">
+                        15% of this amount will be credited to Admin
+                      </div>
+                    )}
+                  </span>
                 </div>
+                <style jsx>{`
+                  .custom-popover {
+                    position: absolute;
+                    top: -40px;
+                    right: 114px;
+                    background-color: #333;
+                    color: #fff;
+                    padding: 5px 10px;
+                    border-radius: 4px;
+                    font-size: 12px;
+                    white-space: nowrap;
+                    z-index: 1000;
+                  }
+                `}</style>
               </div>
               <div className="w-50">
                 <label
@@ -381,35 +544,63 @@ export default function CourseCreation({ editCourse, courseeId }) {
             </div>
           </div>
 
-          <div className="d-flex justify-content-between align-items-center">
-            <button
-              type="submit"
-              className="signup-now py-2 px-3 fw-light mb-0 h-auto"
-            >
-              Submit
-            </button>
-            <button
-              type="button"
-              onClick={handleCancel}
-              className="signup-now py-2 px-3 fw-light mb-0 h-auto"
-            >
-              Cancel
-            </button>
-          </div>
+          {editCourse ? (
+            <div className="d-flex justify-content-between align-items-center">
+              <button
+                type="button"
+                className="signup-now py-2 px-3 fw-light mb-0 h-auto"
+                onClick={handleCancelEdit}
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="signup-now py-2 px-3 fw-light mb-0 h-auto"
+                onClick={handleSaveChanges}
+              >
+                {loading ? (
+                  <PulseLoader size={8} color="white" />
+                ) : (
+                  "Save Changes"
+                )}
+              </button>
+            </div>
+          ) : (
+            <div className="d-flex justify-content-between align-items-center">
+              <button
+                type="button"
+                className="signup-now py-2 px-3 fw-light mb-0 h-auto"
+                onClick={handleCancel}
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="signup-now py-2 px-3 fw-light mb-0 h-auto"
+              >
+                {loading ? (
+                  <PulseLoader size={8} color="white" />
+                ) : (
+                  "Add Course"
+                )}
+              </button>
+            </div>
+          )}
         </form>
       </main>
-      
-        <Modal
+
+
+      <Modal
         show={isModal}
-          onClose={closeModal}
-          btnName="Continue"
-          path={`/addLesson/${courseId}`}
-        >
-          <div className="p-4 text-center">
-            <h5>Your Course has been successfully created!</h5>
-          </div>
-        </Modal>
-   
+        // onClose={closeModal}
+        btnName="Continue"
+        path={`/courses/addLesson/${courseId}`}
+      >
+        <div className="p-4 text-center">
+          <h5>Your Course has been successfully created!</h5>
+        </div>
+      </Modal>
+
     </div>
   );
 }

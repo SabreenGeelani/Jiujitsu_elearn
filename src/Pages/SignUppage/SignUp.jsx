@@ -11,6 +11,7 @@ import "./SignUp.css";
 import axios from "axios";
 import { BASE_URI } from "../../Config/url";
 import toast from "react-hot-toast";
+import { PulseLoader } from "react-spinners";
 
 export const SignUp = () => {
   const navigate = useNavigate();
@@ -20,11 +21,13 @@ export const SignUp = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const signUpHandler = () => {
+    setIsLoading(true);
     axios({
       method: "POST",
-      url: `${BASE_URI}/auth/signup`,
+      url: `${BASE_URI}/api/v1/auth/signup`,
       data: {
         name: name,
         email: email,
@@ -35,10 +38,12 @@ export const SignUp = () => {
     }).then(
       () => {
         navigate("/verifyEmail");
+        setIsLoading(false);
       },
+
       (err) => {
-        toast.error(err?.message);
-        // console.log(err);
+        setIsLoading(false);
+        toast.error(err?.message ? err.message : "Something went wrong");
       }
     );
   };
@@ -69,19 +74,19 @@ export const SignUp = () => {
             </div>
           </div>
         </div>
-        <div className="signUp-form col-md-5 w-50">
-          <div className="signup-start">
-            <h2 className="mt-3">Signup</h2>
+        <div className="signUp-form col-md-5 w-50 p-4">
+          <div className="signup-start mb-4">
+            <h2 className="">Sign Up</h2>
             <p>Start your Inspiring journey now!</p>
           </div>
           <div className="signup-auth">
             <button type="button" className="bttns google-signup">
               <FcGoogle className="googleIcon" />
-              Signup with Google
+              Sign Up with Google
             </button>
             <button type="button" className="bttns">
               <FaApple className="appleIcon" />
-              Signup with Apple
+              Sign Up with Apple
             </button>
           </div>
           <div className="d-flex align-items-center py-4">
@@ -114,7 +119,7 @@ export const SignUp = () => {
               <input
                 type="text"
                 id="fullName"
-                className="form-control"
+                className="form-control py-2-half-5"
                 placeholder="Enter Full Name"
                 aria-label="FullName"
                 value={name}
@@ -134,7 +139,7 @@ export const SignUp = () => {
               <input
                 type="email"
                 id="email"
-                className="form-control"
+                className="form-control py-2-half-5"
                 placeholder="Enter Email"
                 aria-label="Email"
                 value={email}
@@ -154,7 +159,7 @@ export const SignUp = () => {
               <input
                 type={showPassword ? "text" : "password"}
                 id="password"
-                className="form-control border-end-0"
+                className="form-control border-end-0 py-2-half-5"
                 placeholder="Enter Password"
                 aria-label="Password"
                 value={password}
@@ -163,7 +168,7 @@ export const SignUp = () => {
               />
               <button
                 type="button"
-                className="input-group-text border-start-0"
+                className="input-group-text border-start-0 py-2-half-5"
                 onClick={togglePasswordVisibility}
               >
                 {showPassword ? (
@@ -188,7 +193,7 @@ export const SignUp = () => {
               <input
                 type={showConfirmPassword ? "text" : "password"}
                 id="Confirmpass"
-                className="form-control border-end-0"
+                className="form-control border-end-0 py-2-half-5"
                 placeholder="Enter Confirm Password"
                 aria-label="Confirm Password"
                 value={confirmPassword}
@@ -208,14 +213,14 @@ export const SignUp = () => {
               </button>
             </div>
           </div>
-          <p className="fs-small">
+          <p className="fs-small mb-4">
             Already have an account?
             <Link to="/" className="login-link text-black fw-bold">
               LOGIN
             </Link>
           </p>
           <button className="signup-now" onClick={signUpHandler}>
-            Signup Now!
+            {isLoading ? <PulseLoader size={8} color="white" /> : "Signup Now"}
           </button>
         </div>
       </div>

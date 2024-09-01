@@ -25,8 +25,8 @@ const UserCourseOverview = () => {
   const [openChapters, setOpenChapters] = useState({ 0: true });
   // const [isCart, setIsCart] = useState(false);
   const [selectedLesson, setSelectedLesson] = useState("");
-  const [video_url, setVideo_url]= useState("");
-  const [video_thumb, setVideo_thumb]= useState("");
+  const [video_url, setVideo_url] = useState("");
+  const [video_thumb, setVideo_thumb] = useState("");
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -60,27 +60,23 @@ const UserCourseOverview = () => {
 
   const url = `${BASE_URI}/api/v1/courses/courseOverviewWithoutPurchase/${id}`;
   const token = localStorage.getItem("token");
-  const { data, isLoading, error, refetch } = useFetch(url, {
-    headers: {
-      Authorization: "Bearer " + token,
-    },
+  const { data, error, refetch, isLoading } = useFetch(url, {
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
   });
-  
+
   const courseData = useMemo(() => data?.data || [], [data]);
 
-
-
-  useEffect(()=>{
-    setVideo_url(courseData?.courseChapters?.chapters[0]?.lessons[0]?.video_url);
+  useEffect(() => {
+    setVideo_url(
+      courseData?.courseChapters?.chapters[0]?.lessons[0]?.video_url
+    );
     setVideo_thumb(courseData?.course?.thumbnail);
-    
-    setSelectedLesson(courseData?.courseChapters?.chapters[0]?.lessons[0]?.lesson_id);
+
+    setSelectedLesson(
+      courseData?.courseChapters?.chapters[0]?.lessons[0]?.lesson_id
+    );
     console.log(courseData?.course?.thumbnail);
-  },[courseData]);
-
-
-
-
+  }, [courseData]);
 
   console.log(courseData);
   const chapters = useMemo(() => courseData?.courseChapters?.chapters || [], [courseData]);
@@ -116,6 +112,7 @@ const UserCourseOverview = () => {
 
 
 
+
   const handleVideoChange = useCallback((video_url,video_thumb, lesson_id)=>{
     setVideo_url(video_url)
     setVideo_thumb(video_thumb)
@@ -125,6 +122,7 @@ const UserCourseOverview = () => {
   
   
   
+
   return (
     <>
       {isLoading ? (
@@ -194,8 +192,22 @@ id="spinner-usercourseview"
                           </h6>
                         </summary>
                         {chapter?.lessons.map((lesson, idx) => (
-                          <div key={idx} onClick={()=> handleVideoChange(lesson?.video_url,lesson?.thumbnail,lesson?.lesson_id)} style={{cursor:"pointer" ,color: selectedLesson === lesson?.lesson_id && "red"}}>
-                            <h6 >
+                          <div
+                            key={idx}
+                            onClick={() =>
+                              handleVideoChange(
+                                lesson?.video_url,
+                                lesson?.thumbnail,
+                                lesson?.lesson_id
+                              )
+                            }
+                            style={{
+                              cursor: "pointer",
+                              color:
+                                selectedLesson === lesson?.lesson_id && "red",
+                            }}
+                          >
+                            <h6>
                               <FaYoutube color="black" />
                               Lesson {idx + 1}:{" "}
                               {lesson?.lessonTitle || "No lesson title"}
@@ -214,17 +226,17 @@ id="spinner-usercourseview"
               </div>
             </div>
             <div className="right-mid-userCourseview">
-            <video 
-      src={video_url} 
-      controls 
-      muted 
-      loop
-      poster={video_thumb}
-      preload="auto"
-      className="tumbnail-userCourseview"
-    >
-      Your browser does not support the video tag.
-    </video>
+              <video
+                src={video_url}
+                controls
+                muted
+                loop
+                poster={video_thumb}
+                preload="auto"
+                className="tumbnail-userCourseview"
+              >
+                Your browser does not support the video tag.
+              </video>
               {/* <img
                 src={courseData?.course?.thumbnail || thumbnail}
                 alt="thumbnail"
@@ -240,6 +252,7 @@ id="spinner-usercourseview"
                   </h5>
                 </span>
 
+
                 
                 <div onClick={(e)=> handleCart(id,e)}>
                     {isLoding ? (
@@ -252,7 +265,7 @@ id="spinner-usercourseview"
                       "Add to Cart"
                     )}
                   </div>
-                
+
               </div>
               <div className="details-right-mid-userCourseview">
                 <span>
@@ -344,6 +357,7 @@ id="spinner-usercourseview"
                 <span><h6>{courseData?.course?.name || "No author name available"}</h6></span>
               </div>
             </span>
+
             <div  className="cards-userCourseview">
               
               {courseData?.other_courses?.length > 0 ? (
@@ -398,6 +412,7 @@ id="spinner-usercourseview"
       {/* <div onClick={() => handleCart(course?.id)}>{loadingItems[course?.id] ? <PulseLoader size={8} color="white"/> :<h6> Add to Cart </h6>}</div> */}
       </div>
     </div>
+
                 ))
               ) : (
                 <p>No more courses available</p>
