@@ -17,7 +17,7 @@ import useFetch from "../../hooks/useFetch";
 import { BASE_URI } from "../../Config/url";
 import toast from "react-hot-toast";
 import { SyncLoader, PulseLoader } from "react-spinners";
-import 'ldrs/grid'
+import "ldrs/grid";
 import "ldrs/bouncy";
 const UserCourseOverview = () => {
   const [isLoding, setIsLoding] = useState(false);
@@ -30,33 +30,28 @@ const UserCourseOverview = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
-
-
-
-
-
   const handleLeftToggle = (chapterIndex) => {
     console.log(chapterIndex);
     setOpenChapters((prevOpenChapters) => ({
       ...prevOpenChapters,
       [chapterIndex]: !prevOpenChapters[chapterIndex],
-    }));}
+    }));
+  };
 
-     function formatTime(seconds) {
+  function formatTime(seconds) {
     if (seconds < 60) {
-        return `${seconds} sec`;
+      return `${seconds} sec`;
     } else if (seconds < 3600) {
-        const minutes = Math.floor(seconds / 60);
-        const remainingSeconds = seconds % 60;
-        return `${minutes} min ${remainingSeconds} sec`;
+      const minutes = Math.floor(seconds / 60);
+      const remainingSeconds = seconds % 60;
+      return `${minutes} min ${remainingSeconds} sec`;
     } else {
-        const hours = Math.floor(seconds / 3600);
-        const remainingMinutes = Math.floor((seconds % 3600) / 60);
-        const remainingSeconds = seconds % 60;
-        return `${hours} hr ${remainingMinutes} min ${remainingSeconds} sec`;
+      const hours = Math.floor(seconds / 3600);
+      const remainingMinutes = Math.floor((seconds % 3600) / 60);
+      const remainingSeconds = seconds % 60;
+      return `${hours} hr ${remainingMinutes} min ${remainingSeconds} sec`;
     }
-}
- 
+  }
 
   const url = `${BASE_URI}/api/v1/courses/courseOverviewWithoutPurchase/${id}`;
   const token = localStorage.getItem("token");
@@ -79,8 +74,10 @@ const UserCourseOverview = () => {
   }, [courseData]);
 
   console.log(courseData);
-  const chapters = useMemo(() => courseData?.courseChapters?.chapters || [], [courseData]);
-
+  const chapters = useMemo(
+    () => courseData?.courseChapters?.chapters || [],
+    [courseData]
+  );
 
   const handleCart = async (course_id, e) => {
     e.stopPropagation();
@@ -103,41 +100,35 @@ const UserCourseOverview = () => {
     } catch (err) {
       setIsLoding(false);
       setLoadingItems((prev) => ({ ...prev, [id]: false }));
-      
-        // setIsCart(true);
-        toast.error(`Error: ${err?.response?.data?.message}`);
-      
+
+      // setIsCart(true);
+      toast.error(`Error: ${err?.response?.data?.message}`);
     }
   };
 
-
-
-
-  const handleVideoChange = useCallback((video_url,video_thumb, lesson_id)=>{
-    setVideo_url(video_url)
-    setVideo_thumb(video_thumb)
+  const handleVideoChange = useCallback((video_url, video_thumb, lesson_id) => {
+    setVideo_url(video_url);
+    setVideo_thumb(video_thumb);
     setSelectedLesson(lesson_id);
     // refetch();
-  },[]);
-  
-  
-  
+  }, []);
 
   return (
     <>
       {isLoading ? (
-       
-        // Default values shown  
-<l-grid
-id="spinner-usercourseview"
-  size="60"
-  speed="1.5"
-  color="black" 
-></l-grid>
+        // Default values shown
+        <l-grid
+          id="spinner-usercourseview"
+          size="60"
+          speed="1.5"
+          color="black"
+        ></l-grid>
       ) : (
         <div className="wrapper-userCourseview">
           <div className="top-userCourseview">
-            <h3>{courseData?.course?.title || "No title available"}</h3>
+            <h3 className="text-capitalize">
+              {courseData?.course?.title || "No title available"}
+            </h3>
             <h6
               dangerouslySetInnerHTML={{
                 __html: courseData?.course?.description
@@ -177,15 +168,22 @@ id="spinner-usercourseview"
                   {courseData?.courseChapters?.chapters?.length > 0 ? (
                     chapters.map((chapter, chapterIndex) => (
                       <details
-        key={chapter?.chapter_id}
-        open={ chapterIndex === 0 && true || openChapters[chapterIndex]}
-        onToggle={() => handleLeftToggle(chapterIndex)}
-      >
-        <summary>
-          <FontAwesomeIcon
-            icon={faAngleDown}
-            className={openChapters[chapterIndex] ? "up-icon" : "down-icon"}
-          />
+                        key={chapter?.chapter_id}
+                        open={
+                          (chapterIndex === 0 && true) ||
+                          openChapters[chapterIndex]
+                        }
+                        onToggle={() => handleLeftToggle(chapterIndex)}
+                      >
+                        <summary>
+                          <FontAwesomeIcon
+                            icon={faAngleDown}
+                            className={
+                              openChapters[chapterIndex]
+                                ? "up-icon"
+                                : "down-icon"
+                            }
+                          />
                           <h6>
                             {chapter.chapter_no || "No chapter number"}.{" "}
                             {chapter.chapterTitle || "No chapter title"}
@@ -213,7 +211,8 @@ id="spinner-usercourseview"
                               {lesson?.lessonTitle || "No lesson title"}
                             </h6>
                             <h6>
-                              {formatTime(lesson?.duration) || "No duration available"}
+                              {formatTime(lesson?.duration) ||
+                                "No duration available"}
                             </h6>
                           </div>
                         ))}
@@ -252,20 +251,13 @@ id="spinner-usercourseview"
                   </h5>
                 </span>
 
-
-                
-                <div onClick={(e)=> handleCart(id,e)}>
-                    {isLoding ? (
-                      <l-bouncy
-                      size="35"
-                      speed="1.2"
-                      color="white"
-                    ></l-bouncy>
-                    ) : (
-                      "Add to Cart"
-                    )}
-                  </div>
-
+                <div onClick={(e) => handleCart(id, e)}>
+                  {isLoding ? (
+                    <l-bouncy size="35" speed="1.2" color="white"></l-bouncy>
+                  ) : (
+                    "Add to Cart"
+                  )}
+                </div>
               </div>
               <div className="details-right-mid-userCourseview">
                 <span>
@@ -314,7 +306,7 @@ id="spinner-usercourseview"
                         <div>
                           {review?.profile_picture ? (
                             <img
-                            loading="lazy"
+                              loading="lazy"
                               src={review?.profile_picture}
                               alt="profile image"
                             />
@@ -343,7 +335,7 @@ id="spinner-usercourseview"
                       </div>
                     ))
                   ) : (
-                    <p style={{marginLeft:"2vw"}}>No reviews available!</p>
+                    <p style={{ marginLeft: "2vw" }}>No reviews available!</p>
                   )}
                 </div>
               </div>
@@ -353,66 +345,89 @@ id="spinner-usercourseview"
             <span>
               <h3>More Courses by</h3>
               <div>
-               {/* <h6>{"No author name available"}</h6> */}
-                <span><h6>{courseData?.course?.name || "No author name available"}</h6></span>
+                {/* <h6>{"No author name available"}</h6> */}
+                <span>
+                  <h6>
+                    {courseData?.course?.name || "No author name available"}
+                  </h6>
+                </span>
               </div>
             </span>
 
-            <div  className="cards-userCourseview">
-              
+            <div className="cards-userCourseview">
               {courseData?.other_courses?.length > 0 ? (
                 courseData.other_courses.map((course, index) => (
-                  
-                  <div onClick={() =>
-                    course?.is_purchased ? navigate(`/userPurchasedCourses/${course?.id}`) : course?.is_in_cart ? navigate('/userCart') :
-                    navigate(`/userCourseView/${course?.id}`)
-                  } className="card-bottom-userCourseview" key={index}> 
-                  <span> <img src={course?.thumbnail || cardImage} alt="Course image" /></span>
-     
-      <div className="middle-sec-card-userCourseview">
-        <div className="addCourse-card-userCourseview">
-          <h6>{course?.category || "No title available"}</h6>
-        </div>
-        <div className="pricing-card-userCourseview">
-          <h5>{course?.tags || "No tags available"}</h5>
-          {/* <h5>$10.99</h5> */}
-        </div>
-      </div>
-      <p>{course?.name}, Developer at Raybit...</p>
-      <h5>{course?.title}</h5>
-      <h4
-      dangerouslySetInnerHTML={{
-                __html: course?.description
-                  ? course?.description
-                      .split(" ")
-                      .slice(0, 7)
-                      .join(" ") + "..."
-                  : "No description available",
-              }}
-      >
-      
-        </h4>
-      <div className="bottom-card-useruserCourseview">
-      <span>
-      <h5>${course?.price}</h5>
-      <h5>${course?.discounted_price}</h5>
-      </span>
-      <div onClick={(e) => course?.is_purchased ? navigate(`/userPurchasedCourses/${course?.id}`) : course?.is_in_cart ? navigate('/userCart') : handleCart(course?.id, e)}>
-                    {loadingItems === course?.id ? (
-                      <l-bouncy
-                      size="35"
-                      speed="1.2"
-                      color="white"
-                    ></l-bouncy>
-                    ) : (
-                      course?.is_purchased ? <h6>Purchased!</h6> : course?.is_in_cart ? <h6>In Cart!</h6> : 
-                      <h6>Add to Cart</h6>
-                    )}
-                  </div>
-      {/* <div onClick={() => handleCart(course?.id)}>{loadingItems[course?.id] ? <PulseLoader size={8} color="white"/> :<h6> Add to Cart </h6>}</div> */}
-      </div>
-    </div>
+                  <div
+                    onClick={() =>
+                      course?.is_purchased
+                        ? navigate(`/userPurchasedCourses/${course?.id}`)
+                        : course?.is_in_cart
+                        ? navigate("/userCart")
+                        : navigate(`/userCourseView/${course?.id}`)
+                    }
+                    className="card-bottom-userCourseview"
+                    key={index}
+                  >
+                    <span>
+                      {" "}
+                      <img
+                        src={course?.thumbnail || cardImage}
+                        alt="Course image"
+                      />
+                    </span>
 
+                    <div className="middle-sec-card-userCourseview">
+                      <div className="addCourse-card-userCourseview">
+                        <h6>{course?.category || "No title available"}</h6>
+                      </div>
+                      <div className="pricing-card-userCourseview">
+                        <h5>{course?.tags || "No tags available"}</h5>
+                        {/* <h5>$10.99</h5> */}
+                      </div>
+                    </div>
+                    <p>{course?.name}, Developer at Raybit...</p>
+                    <h5>{course?.title}</h5>
+                    <h4
+                      dangerouslySetInnerHTML={{
+                        __html: course?.description
+                          ? course?.description
+                              .split(" ")
+                              .slice(0, 7)
+                              .join(" ") + "..."
+                          : "No description available",
+                      }}
+                    ></h4>
+                    <div className="bottom-card-useruserCourseview">
+                      <span>
+                        <h5>${course?.price}</h5>
+                        <h5>${course?.discounted_price}</h5>
+                      </span>
+                      <div
+                        onClick={(e) =>
+                          course?.is_purchased
+                            ? navigate(`/userPurchasedCourses/${course?.id}`)
+                            : course?.is_in_cart
+                            ? navigate("/userCart")
+                            : handleCart(course?.id, e)
+                        }
+                      >
+                        {loadingItems === course?.id ? (
+                          <l-bouncy
+                            size="35"
+                            speed="1.2"
+                            color="white"
+                          ></l-bouncy>
+                        ) : course?.is_purchased ? (
+                          <h6>Purchased!</h6>
+                        ) : course?.is_in_cart ? (
+                          <h6>In Cart!</h6>
+                        ) : (
+                          <h6>Add to Cart</h6>
+                        )}
+                      </div>
+                      {/* <div onClick={() => handleCart(course?.id)}>{loadingItems[course?.id] ? <PulseLoader size={8} color="white"/> :<h6> Add to Cart </h6>}</div> */}
+                    </div>
+                  </div>
                 ))
               ) : (
                 <p>No more courses available</p>

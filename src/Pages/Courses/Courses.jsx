@@ -8,24 +8,15 @@ import useFetch from "../../hooks/useFetch";
 import { BASE_URI } from "../../Config/url";
 import { SyncLoader } from "react-spinners";
 
-
-
 const ShimmerCard = () => (
   <div className="card-bottom-courses shimmer-card-courses">
-  <div className="shimmer-content-courses short"></div>
-      {/* <div className="shimmer-content-courses long"></div> */}
-    
+    <div className="shimmer-content-courses short"></div>
+    {/* <div className="shimmer-content-courses long"></div> */}
+
     <div className="shimmer-content-courses medium"></div>
     <div className="shimmer-content-courses long"></div>
   </div>
 );
-
-
-
-
-
-
-
 
 const Card = ({
   id,
@@ -39,8 +30,7 @@ const Card = ({
   category,
 }) => (
   <div className="card-bottom-courses" onClick={() => onClick(id)}>
-
-    <img loading="lazy" src={ thumbnail|| cardImage} alt="Course image" />
+    <img loading="lazy" src={thumbnail || cardImage} alt="Course image" />
 
     <div className="middle-sec-card-courses">
       <div className="addCourse-card-courses">
@@ -49,7 +39,6 @@ const Card = ({
       <div className="pricing-card-courses">
         <h5>${price}</h5>
         <h5>${price - (price * discount) / 100}</h5>
-
       </div>
     </div>
     <p>{name}, Designer at Raybit...</p>
@@ -62,11 +51,11 @@ const Card = ({
   </div>
 );
 
-const Courses = () => {
+const Courses = ({ search, setEditCourse }) => {
   const navigate = useNavigate();
   const [course, setcourse] = useState(true);
 
-  const url = `${BASE_URI}/api/v1/courses/expertCourses`;
+  const url = `${BASE_URI}/api/v1/courses/expertCourses?search=${search}`;
   const token = localStorage.getItem("token");
   const { data, isLoading, error, refetch } = useFetch(url, {
     headers: {
@@ -90,9 +79,8 @@ const Courses = () => {
     navigate(`/courses/courseView/${id}`);
   };
 
-  
-//  const discounted_price =  (coursesData?.price * coursesData?.discount) / 100;
-// console.log(discounted_price)
+  //  const discounted_price =  (coursesData?.price * coursesData?.discount) / 100;
+  // console.log(discounted_price)
 
   const cards = coursesData.map((course, index) => (
     <Card
@@ -109,59 +97,56 @@ const Courses = () => {
     />
   ));
 
+  const handleAddCourse = () => {
+    navigate(`/courses/courseCreation`);
+    setEditCourse(false);
+  };
+
   return (
     <>
-      
-        <div className="wrapper-courses">
-          <div className="top-courses">
-            <h4>Courses</h4>
-            <div className="top-button">
-              <h6>
-                <Link
-                  to="/courses/courseCreation"
-                  className="text-decoration-none text-white"
-                >
-                  Add Course{" "}
-                </Link>
-              </h6>
-            </div>
+      <div className="wrapper-courses">
+        <div className="top-courses">
+          <h4>Courses</h4>
+          <div className="top-button">
+            <h6 onClick={handleAddCourse}>Add Course</h6>
           </div>
+        </div>
 
-          {error?.response?.data?.message !== "no courses found" ? (
-            <div className="bottom-courses">
-              {
-                isLoading ?  
-                Array.from({ length: 12 }).map((_, idx) => (<ShimmerCard key={idx}/> )) : cards
-              }
-              {/* {isLoading ? (
+        {error?.response?.data?.message !== "no courses found" ? (
+          <div className="bottom-courses">
+            {isLoading
+              ? Array.from({ length: 12 }).map((_, idx) => (
+                  <ShimmerCard key={idx} />
+                ))
+              : cards}
+            {/* {isLoading ? (
         Array.from({ length: 12 }).map((_, idx) => (
 
           <ShimmerCard key={idx}/> )) 
         ) :( {cards})
         } */}
-              </div>
-          ) : (
-            <div className="no-courses-courses">
-              <div>
-                <h1>No Course uploaded yet</h1>
-                <h5>
-                  Get started by uploading your first course and inspire
-                  athletes around the world!
-                </h5>
-                <Link
-                  to="courses/courseCreation"
-                  className="text-decoration-none text-white"
-                >
-                  <FontAwesomeIcon
-                    icon={faSquarePlus}
-                    className="add-icon-courses"
-                  />
-                </Link>
-              </div>
+          </div>
+        ) : (
+          <div className="no-courses-courses">
+            <div>
+              <h1>No Course uploaded yet</h1>
+              <h5>
+                Get started by uploading your first course and inspire athletes
+                around the world!
+              </h5>
+              <Link
+                to="courses/courseCreation"
+                className="text-decoration-none text-white"
+              >
+                <FontAwesomeIcon
+                  icon={faSquarePlus}
+                  className="add-icon-courses"
+                />
+              </Link>
             </div>
-          )}
-        </div>
-      
+          </div>
+        )}
+      </div>
     </>
   );
 };

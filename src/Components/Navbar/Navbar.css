@@ -78,8 +78,8 @@ input::placeholder {
   border-radius: 50%;
   position: relative;
   z-index: 1;
-  height: 3rem;
-  width: 3rem;
+  /* height: 3rem; */
+  /* width: 3rem; */
 }
 
 .completion-bar {

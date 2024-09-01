@@ -9,6 +9,7 @@ import MyLearning from "../Pages/MyLearning/MyLearning";
 import UserPurchasedCourse from "../Pages/UserPurchasedCourse/UserPurchasedCourse";
 
 import Checkout from "../Pages/Checkout/Checkout";
+import Logout from "../Pages/Logout/Logout";
 
 const UserRoutes = () => {
   return (
@@ -24,6 +25,7 @@ const UserRoutes = () => {
         path="/userPurchasedCourses/:id"
         element={<UserPurchasedCourse />}
       />
+      <Route path="/logout" element={<Logout />} />
     </Routes>
   );
 };
