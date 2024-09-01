@@ -10,7 +10,7 @@ import UserCourses from "../Pages/UserCourses/UserCourses";
 import UserCourseOverview from "../Pages/UserCourseOverview/UserCourseOverview";
 import UserCart from "../Pages/UserCart/UserCart";
 
-const AppRoutes = () => {
+const AppRoutes = ({ search }) => {
   const [role, setRole] = useState(null);
   const navigate = useNavigate();
 
@@ -30,12 +30,14 @@ const AppRoutes = () => {
       <Route path="/verifyEmail" element={<VerifyEmail />} />
 
       <Route path="/userCart" element={<UserCart />} />
-      <Route path="/userCourses" element={<UserCourses />} />
+      <Route path="/userCourses" element={<UserCourses />} search={search} />
       <Route
         path="/userCourses/userCourseView/:id"
         element={<UserCourseOverview />}
       />
-      {role === "expert" && <Route path="/*" element={<ExpertRoutes />} />}
+      {role === "expert" && (
+        <Route path="/*" element={<ExpertRoutes search={search} />} />
+      )}
       {role === "user" && <Route path="/*" element={<UserRoutes />} />}
     </Routes>
   );

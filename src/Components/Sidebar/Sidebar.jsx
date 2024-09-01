@@ -367,19 +367,30 @@ export const Sidebar = ({ collapsed, handleToggle }) => {
               {!collapsed && <span className="text">Settings</span>}
             </Link>
           </motion.div>
-          <motion.div
-            className="menu-item d-flex align-items-center p-3"
-            variants={sidebarAnimation}
+          <Link
+            to="/logout"
+            className={`menu-item d-flex align-items-center p-3 ${
+              location.pathname === "/logout"
+                ? "bg-gradient-custom rounded-start-3 shadow-bottom-lg"
+                : ""
+            }`}
           >
+            {/* <motion.div
+              className="menu-item d-flex align-items-center p-3"
+              variants={sidebarAnimation}
+            > */}
             <motion.div
               animate={controls}
               variants={linkAnimation}
-              className="me-4 primary-color"
+              className={`me-4 ${
+                location.pathname === "/logout" ? "text-white" : "primary-color"
+              }`}
             >
               <RiLogoutBoxRFill className="fs-5" />
+              {/* </motion.div> */}
+              {!collapsed && <span className="text ms-4">Logout</span>}
             </motion.div>
-            {!collapsed && <span className="text">Logout</span>}
-          </motion.div>
+          </Link>
         </>
       )}
     </div>

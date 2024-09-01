@@ -8,24 +8,15 @@ import useFetch from "../../hooks/useFetch";
 import { BASE_URI } from "../../Config/url";
 import { SyncLoader } from "react-spinners";
 
-
-
 const ShimmerCard = () => (
   <div className="card-bottom-courses shimmer-card-courses">
-  <div className="shimmer-content-courses short"></div>
-      {/* <div className="shimmer-content-courses long"></div> */}
-    
+    <div className="shimmer-content-courses short"></div>
+    {/* <div className="shimmer-content-courses long"></div> */}
+
     <div className="shimmer-content-courses medium"></div>
     <div className="shimmer-content-courses long"></div>
   </div>
 );
-
-
-
-
-
-
-
 
 const Card = ({
   id,
@@ -39,7 +30,9 @@ const Card = ({
   category,
 }) => (
   <div className="card-bottom-courses" onClick={() => onClick(id)}>
+
     <img loading="lazy" src={ thumbnail|| cardImage} alt="Course image" />
+
     <div className="middle-sec-card-courses">
       <div className="addCourse-card-courses">
         <h6 className="text-uppercase">{category}</h6>
@@ -47,7 +40,6 @@ const Card = ({
       <div className="pricing-card-courses">
         <h5>${price}</h5>
         <h5>${price - (price * discount) / 100}</h5>
-
       </div>
     </div>
     <p className="text-uppercase">{name}</p>
@@ -60,12 +52,12 @@ const Card = ({
   </div>
 );
 
-const Courses = () => {
+const Courses = ({ search, setEditCourse }) => {
   const navigate = useNavigate();
   const [course, setcourse] = useState(true);
   
 
-  const url = `${BASE_URI}/api/v1/courses/expertCourses`;
+  const url = `${BASE_URI}/api/v1/courses/expertCourses?search=${search}`;
   const token = localStorage.getItem("token");
   const { data, isLoading, error, refetch } = useFetch(url, {
     headers: {
@@ -88,9 +80,11 @@ const Courses = () => {
   const handleCardClick = (id) => {
     navigate(`/courses/courseView/${id}`);
   };
+<
   
 //  const discounted_price =  (coursesData?.price * coursesData?.discount) / 100;
 // console.log(discounted_price)
+
   const cards = coursesData.map((course, index) => (
     <Card
       key={index}
@@ -106,23 +100,21 @@ const Courses = () => {
     />
   ));
 
+  const handleAddCourse = () => {
+    navigate(`/courses/courseCreation`);
+    setEditCourse(false);
+  };
+
   return (
     <>
-      
-        <div className="wrapper-courses">
-          <div className="top-courses">
-            <h4>Courses</h4>
-            <div className="top-button">
-              <h6>
-                <Link
-                  to="/courses/courseCreation"
-                  className="text-decoration-none text-white"
-                >
-                  Add Course{" "}
-                </Link>
-              </h6>
-            </div>
+      <div className="wrapper-courses">
+        <div className="top-courses">
+          <h4>Courses</h4>
+          <div className="top-button">
+            <h6 onClick={handleAddCourse}>Add Course</h6>
           </div>
+        </div>
+
 
           {error?.response?.data?.message !== "no courses found" ? (
             <div className="bottom-courses">
@@ -150,10 +142,11 @@ const Courses = () => {
                   />
                 </Link>
               </div>
+
             </div>
-          )}
-        </div>
-      
+          </div>
+        )}
+      </div>
     </>
   );
 };

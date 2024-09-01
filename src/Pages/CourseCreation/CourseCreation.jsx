@@ -7,10 +7,11 @@ import useFetch from "../../hooks/useFetch";
 import axios from "axios";
 import toast from "react-hot-toast";
 import Modal from "../../Components/Modal/Modal";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ReactQuill from "react-quill";
 import DOMPurify from "dompurify";
 import { PulseLoader } from "react-spinners";
+import { MdDone } from "react-icons/md";
 
 export default function CourseCreation({ editCourse, courseeId }) {
   const [courseData, setCourseData] = useState({
@@ -31,6 +32,9 @@ export default function CourseCreation({ editCourse, courseeId }) {
   const token = localStorage.getItem("token");
   const [showPopover, setShowPopover] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [isDelete, setIsDelete] = useState(false);
+  const [finalDelete, setFinalDelete] = useState(false);
+  const [isLoadingDeleteCourse, setIsLoadingDeleteCourse] = useState(false);
   const tagsUrl = `${BASE_URI}/api/v1/tags`;
   const categoriesUrl = `${BASE_URI}/api/v1/category`;
 
@@ -39,6 +43,7 @@ export default function CourseCreation({ editCourse, courseeId }) {
       Authorization: "Bearer " + token,
     },
   };
+  const navigate = useNavigate();
 
   const { data } = useFetch(tagsUrl, fetchOptions);
   const tags = useMemo(() => data?.data || [], [data]);
@@ -168,7 +173,7 @@ export default function CourseCreation({ editCourse, courseeId }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(courseData);
+    // console.log(courseData);
 
     axios
       .post(`${BASE_URI}/api/v1/courses`, courseData, {
@@ -214,51 +219,43 @@ export default function CourseCreation({ editCourse, courseeId }) {
       });
   };
 
-  const handleCancelEdit = () => {
-    if (editCourse) {
-      axios
-        .get(`${BASE_URI}/api/v1/courses/${courseeId}`, {
+  const handleDeleteCourse = () => {
+    setIsLoadingDeleteCourse(true);
+    axios
+      .delete(
+        `${BASE_URI}/api/v1/courses/${courseeId}`,
+
+        {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: "Bearer " + token,
           },
-        })
-        .then((response) => {
-          const courseDetails = response.data.data[0];
-          setCourseData({
-            title: courseDetails.title || "",
-            description: courseDetails.description || "",
-            category_id: courseDetails.category_id || "",
-            status: courseDetails.status || "",
-            price: courseDetails.price || "",
-            discount: courseDetails.discount || "",
-            thumbnail: courseDetails.thumbnail || null,
-            tag_ids: courseDetails.tag_ids || [],
-            access: courseDetails.access || "",
-          });
-          setThumbnailPreview(
-            courseDetails.thumbnail ? courseDetails.thumbnail : null
-          );
-        })
-        .catch(() => {
-          toast.error("Failed to reload course details.");
-        });
-    } else {
-      setCourseData({
-        title: "",
-        description: "",
-        category_id: "",
-        status: "",
-        price: "",
-        discount: "",
-        thumbnail: null,
-        tag_ids: [],
-        access: "",
+        }
+      )
+      .then(() => {
+        setIsLoadingDeleteCourse(false);
+        toast.success("Course deleted successfully");
+
+        setFinalDelete(true);
+        setIsDelete(false);
+      })
+      .catch((err) => {
+        setIsLoadingDeleteCourse(false);
+        toast.error(
+          err.response ? err.response.data.message : "Something went wrong"
+        );
       });
-    }
   };
 
   const handleFocus = () => {
     setShowPopover(true);
+  };
+  const closeModal = () => {
+    setIsDelete(false);
+  };
+
+  const handleFinalDelete = () => {
+    setFinalDelete(false);
+    navigate("/courses");
   };
 
   return (
@@ -549,9 +546,11 @@ export default function CourseCreation({ editCourse, courseeId }) {
               <button
                 type="button"
                 className="signup-now py-2 px-3 fw-light mb-0 h-auto"
-                onClick={handleCancelEdit}
+                style={{ background: "#CC3737" }}
+                // onClick={handleCancelEdit}
+                onClick={() => setIsDelete(true)}
               >
-                Cancel
+                Delete
               </button>
               <button
                 type="submit"
@@ -589,7 +588,6 @@ export default function CourseCreation({ editCourse, courseeId }) {
         </form>
       </main>
 
-
       <Modal
         show={isModal}
         // onClose={closeModal}
@@ -601,6 +599,42 @@ export default function CourseCreation({ editCourse, courseeId }) {
         </div>
       </Modal>
 
+      <Modal onClose={closeModal} show={isDelete}>
+        <div className="p-3 text-center">
+          <h5 className="mb-4">Are you sure to delete the course?</h5>
+          <div className="d-flex align-items-center justify-content-center gap-5">
+            <button
+              className="signup-now py-2 px-3 fw-light mb-0 h-auto"
+              onClick={closeModal}
+            >
+              Cancel
+            </button>
+            <button
+              className="signup-now py-2 px-3 fw-light mb-0 h-auto"
+              onClick={handleDeleteCourse}
+            >
+              {isLoadingDeleteCourse ? (
+                <PulseLoader size={8} color="white" />
+              ) : (
+                " Continue"
+              )}
+            </button>
+          </div>
+        </div>
+      </Modal>
+
+      <Modal show={finalDelete}>
+        <div className="d-flex flex-column align-items-center gap-3 justify-content-center">
+          <MdDone className="fs-1" />
+          <h5>Lesson deleted successfully.</h5>
+          <button
+            className="signup-now px-3 fw-lightBold mb-0 h-auto py-2"
+            onClick={handleFinalDelete}
+          >
+            Continue
+          </button>
+        </div>
+      </Modal>
     </div>
   );
 }

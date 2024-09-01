@@ -6,14 +6,18 @@ import AddLesson from "../Pages/AddLesson/AddLesson";
 import ExpertWallet from "../Pages/ExpertWallet/ExpertWallet";
 import ExpertAnalytics from "../Pages/ExpertAnalytics/ExpertAnalytics";
 import { useState } from "react";
+import Logout from "../Pages/Logout/Logout";
 
-const ExpertRoutes = () => {
+const ExpertRoutes = ({ search }) => {
   const [editCourse, setEditCourse] = useState(false);
   const [courseId, setCourseId] = useState("");
 
   return (
     <Routes>
-      <Route path="/courses" element={<Courses />} />
+      <Route
+        path="/courses"
+        element={<Courses search={search} setEditCourse={setEditCourse} />}
+      />
       <Route
         path="/courses/courseView/:id"
         element={
@@ -34,6 +38,7 @@ const ExpertRoutes = () => {
       />
       <Route path="/expertWallet" element={<ExpertWallet />} />
       <Route path="/dashboard" element={<ExpertAnalytics />} />
+      <Route path="/logout" element={<Logout />} />
     </Routes>
   );
 };
