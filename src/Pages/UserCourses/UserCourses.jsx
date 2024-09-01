@@ -9,21 +9,21 @@ import toast from "react-hot-toast";
 import { PulseLoader, SyncLoader } from "react-spinners";
 import { Outlet } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSquarePlus } from "@fortawesome/free-solid-svg-icons";
-import "ldrs/grid";
+import {faSquarePlus } from "@fortawesome/free-solid-svg-icons";
+import 'ldrs/grid'
 import "ldrs/bouncy";
 
-const ShimmerCard = () => (
 
+const ShimmerCard = () => (
   <div className="card-bottom-userCourses shimmer-card-usercourses">
   <div className="shimmer-content-usercourses short"></div>
       <div className="shimmer-content-usercourses long"></div>
     
     <div className="shimmer-content-usercourses medium"></div>
     <div className="shimmer-content-usercourses long"></div>
-
   </div>
 );
+
 
 const Card = ({
   id,
@@ -50,7 +50,6 @@ const Card = ({
   };
 
   return (
-
     <div className="card-bottom-userCourses" onClick={() => 
     { if(purchase){
       onClick(id, "Purchased")
@@ -62,16 +61,10 @@ const Card = ({
         onClick(id)
       }
       }}>
-
       <span>
-        <img
-          loading="lazy"
-          src={thumbnail}
-          alt="Course image"
-          style={{ objectFit: "cover" }}
-        />
+        <img loading="lazy" src={thumbnail} alt="Course image" style={{ objectFit: "cover" }} />  
       </span>
-
+      
       <div className="middle-sec-card-userCourses">
         <div className="addCourse-card-userCourses">
           <h6 className="text-uppercase">{category}</h6>
@@ -93,7 +86,6 @@ const Card = ({
           <h5>{`$${price}`}</h5>
           <h5>{`$${(price * (1 - discount / 100)).toFixed(2)}`}</h5>
         </span>
-
         <div onClick={purchase ? () => handlePurchase(id) : carted ? () => handleCarted() : handleAddToCart}>
           { 
             purchase ? <h6>Purchased!</h6> : carted ? <h6>In Cart!</h6>: <h6>{isLoading ? (
@@ -104,18 +96,18 @@ const Card = ({
 ></l-bouncy>
             ) : ( "Add to Cart" )}</h6> 
           }
-
         </div>
       </div>
     </div>
   );
 };
 
-const UserCourses = ({ search }) => {
+
+const UserCourses = () => {
   // console.log("ok here");
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
-
+  
   const [initialCategory, setInitialCategory] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
 
@@ -126,7 +118,7 @@ const UserCourses = ({ search }) => {
     error: error2,
     refetch: refetch2,
   } = useFetch(url2, {
-    headers: token ? { Authorization: `Bearer ${token}` } : {},
+    // headers: token ? { Authorization: `Bearer ${token}` } : {},
   });
 
   const categories = useMemo(() => data2?.data || [], [data2]);
@@ -135,36 +127,45 @@ const UserCourses = ({ search }) => {
     if (categories.length > 0) {
       // setInitialCategory(categories[0].name);
       setSelectedCategory(categories[0].name);
-      refetch();
+      refetch()
     }
   }, [categories]);
 
   const handleCategoryClick = (category) => {
     setSelectedCategory(category);
   };
-
-  const url = `${BASE_URI}/api/v1/courses/userDashboard/courses?category=${selectedCategory}&search=${search}`;
+  console.log(token)
+  const url = `${BASE_URI}/api/v1/courses/userDashboard/courses?category=${selectedCategory}`;
   const { data, error, refetch, isLoading } = useFetch(url, {
-    headers: token ? { Authorization: `Bearer ${token}` } : {},
+    // headers: token ? { Authorization: `Bearer ${token}` } : {},
+    
   });
 
   // console.log(data.data);
   // // const coursesData = data;
   const coursesData = useMemo(() => data?.data || [], [data]);
-
-
+console.log(coursesData)
   const handleNavigate = (id, status) => {
-    if (!status) {
-      navigate(`/userCourses/userCourseView/${id}}`);
-    } else if (status === "Purchased") {
+    if(!status){
       navigate(`/userCourses/userCourseView/${id}`);
-    } else if (status === "carted") {
-      navigate(`/userCart`);
     }
-
+    else if(status === "Purchased"){
+      navigate(`/userPurchasedCourses/${id}`)
+    }
+    else if(status === "carted"){
+      navigate(`/userCart`)
+    }
+    
   };
 
   const handleCart = async (id, setIsLoading) => {
+    if(!token){
+      setIsLoading(false)
+      navigate(`/`)
+
+      return toast.error(`Error: Please Login First!`)
+    } 
+  
     try {
       const response = await axios.post(
         `${BASE_URI}/api/v1/cart`,
@@ -180,24 +181,26 @@ const UserCourses = ({ search }) => {
     } catch (err) {
       setIsLoading(false);
       toast.error(`Error: ${err?.response?.data?.message}`);
-    }
+    } 
   };
 
   const handlePurchase = (id) => {
-    navigate(`/userPurchasedCourses/${id}`);
-  };
+    navigate(`/userPurchasedCourses/${id}`)
+  }
   const handleCarted = () => {
-    navigate(`/userCart`);
-  };
+    navigate(`/userCart`)
+  }
   return (
     <>
-      {isLoading2 ? (
+      {isLoading2
+       ? (
+       
         <l-grid
-          id="spinner-usercourseview"
-          size="60"
-          speed="1.5"
-          color="black"
-        ></l-grid>
+id="spinner-usercourseview"
+  size="60"
+  speed="1.5"
+  color="black" 
+></l-grid>
       ) : (
         <div className="wrapper-userCourses w-100">
           <div className="top-userCourses">
@@ -209,8 +212,8 @@ const UserCourses = ({ search }) => {
                 key={category.id}
                 className={
                   selectedCategory === category.name
-                    ? "button-categories-userCourses text-capitalize"
-                    : "not-button-categories-userCourses text-capitalize"
+                    ? "button-categories-userCourses"
+                    : "not-button-categories-userCourses"
                 }
                 onClick={() => handleCategoryClick(category.name)}
               >
@@ -218,15 +221,14 @@ const UserCourses = ({ search }) => {
               </div>
             ))}
           </div>
-
-          <div className="bottom-userCourses">
-            {error?.response?.data?.message === "No courses found" ? (
-              <div className="no-courses-userCourses">
+          
+            <div className="bottom-userCourses">
+              {error?.response?.data?.message === "No courses found" ? (
+                <div className="no-courses-userCourses">
                 <div>
                   <h1>No Courses found with this category</h1>
                   <h5>
-                    select the different category and join the world of
-                    athletes!
+                    select the different category and join the world of athletes!
                   </h5>
                   {/* <Link
                     to="/userCourses"
@@ -239,32 +241,33 @@ const UserCourses = ({ search }) => {
                   </Link> */}
                 </div>
               </div>
-            ) : isLoading ? (
-              Array.from({ length: 12 }).map((_, idx) => (
-                <ShimmerCard key={idx} />
-              ))
-            ) : (
-              coursesData.map((course) => (
-                <Card
-                  key={course.id}
-                  id={course.id}
-                  category={course.category}
-                  description={course.description}
-                  expert={course.expert}
-                  price={course.price}
-                  discount={course.discount}
-                  tags={course.tags}
-                  thumbnail={course.thumbnail}
-                  onClick={handleNavigate}
-                  onAddToCart={handleCart}
-                  purchase={course.is_purchased}
-                  carted={course.in_cart}
-                  cartedFunc={handleCart}
-                  purchaseFunc={handlePurchase}
-                />
-              ))
-            )}
-          </div>
+              ) : (
+                isLoading ? 
+                Array.from({ length: 12 }).map((_, idx) => (
+                  <ShimmerCard key={idx} /> )) : 
+                coursesData.map((course) => (
+                  <Card
+                    key={course.id}
+                    id={course.id}
+                    category={course.category}
+                    description={course.description}
+                    expert={course.expert}
+                    price={course.price}
+                    discount={course.discount}
+                    tags={course.tags}
+                    thumbnail={course.thumbnail}
+                    onClick={handleNavigate}
+                    onAddToCart={handleCart}
+                    purchase={course.is_purchased}
+                    carted={course.in_cart}
+                    cartedFunc={handleCart}
+                    purchaseFunc={handlePurchase}
+                  />
+                ))
+              )}
+
+            </div>
+        
         </div>
       )}
       <Outlet />
