@@ -176,9 +176,9 @@ export const Sidebar = ({ collapsed, handleToggle }) => {
             </motion.div>
             <motion.div variants={sidebarAnimation}>
               <Link
-                to="/expertAnalytics"
+                to="/dashboard"
                 className={`menu-item d-flex align-items-center p-3 ${
-                  location.pathname === "/expertAnalytics"
+                  location.pathname === "/dashboard"
                     ? "bg-gradient-custom rounded-start-3 shadow-bottom-lg"
                     : ""
                 }`}
@@ -222,9 +222,9 @@ export const Sidebar = ({ collapsed, handleToggle }) => {
             </motion.div>
             <motion.div variants={sidebarAnimation}>
               <Link
-                to="/dashboardt"
+                to="/expertWallet"
                 className={`menu-item d-flex align-items-center p-3 ${
-                  location.pathname === "/dashboard"
+                  location.pathname === "/expertWallet"
                     ? "bg-gradient-custom rounded-start-3 shadow-bottom-lg"
                     : ""
                 }`}
@@ -233,7 +233,7 @@ export const Sidebar = ({ collapsed, handleToggle }) => {
                   animate={controls}
                   variants={linkAnimation}
                   className={`me-4 ${
-                    location.pathname === "/dashboard"
+                    location.pathname === "/expertWallet"
                       ? "text-white"
                       : "primary-color"
                   }`}
