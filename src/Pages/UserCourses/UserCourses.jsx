@@ -132,11 +132,11 @@ const UserCourses = ({ search }) => {
     error: error2,
     refetch: refetch2,
   } = useFetch(url2, {
-    // headers: token ? { Authorization: `Bearer ${token}` } : {},
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
   });
 
   const categories = useMemo(() => data2?.data || [], [data2]);
-
+  // console.log(data2);
   useEffect(() => {
     if (categories.length > 0) {
       // setInitialCategory(categories[0].name);
@@ -151,7 +151,10 @@ const UserCourses = ({ search }) => {
 
   const url = `${BASE_URI}/api/v1/courses/userDashboard/courses?category=${selectedCategory}&search=${search}`;
   const { data, error, refetch, isLoading } = useFetch(url, {
-    // headers: token ? { Authorization: `Bearer ${token}` } : {},
+
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+    
+
   });
 
   const coursesData = useMemo(() => data?.data || [], [data]);

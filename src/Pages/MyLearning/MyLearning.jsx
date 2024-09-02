@@ -11,10 +11,12 @@ import "./MyLearning.css";
 import cardImage from "../../assets/coursesCard.png";
 import useFetch from "../../hooks/useFetch";
 import { BASE_URI } from "../../Config/url";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { PulseLoader, SyncLoader } from "react-spinners";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSquarePlus } from "@fortawesome/free-solid-svg-icons";
 
 const Card = ({
   id,
@@ -141,7 +143,23 @@ id="myLearningLoader"
           
             <div className="bottom-myLearning">
               {error?.response?.data?.message === "No courses found" ? (
-                <h1>No courses found</h1>
+                <div className="no-courses-userCourses">
+                <div >
+                  <h1 style={{marginLeft:"41%"}}>No Courses Purchased Yet!</h1>
+                  <h5>
+                    Purchase a course and join the world of athletes!
+                  </h5>
+                  <Link
+                    to="/userCourses"
+                    className="text-decoration-none text-white"
+                  >
+                    <FontAwesomeIcon
+                      icon={faSquarePlus}
+                      className="add-icon-courses"
+                    />
+                  </Link>
+                </div>
+              </div>
               ) : (
                 coursesData?.course?.map((course) => (
                   <Card

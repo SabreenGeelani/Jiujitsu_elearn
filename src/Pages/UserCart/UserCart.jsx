@@ -250,7 +250,24 @@ const UserCart = () => {
               <div className="bottom-usercart">
                 <h5>You may also like:</h5>
                 <div className="cards-usercart">
-                  {cartItems?.expertCourses?.map((items, index) => (
+                  {cartItems?.expertCourses?.length === 0 ?  <div className="no-courses-userCourses">
+                <div>
+                  <h1 style={{marginLeft:"35%"}}>No More Courses Avalible</h1>
+                  <h5>
+                    More courses will be available soon ...
+                  </h5>
+                  {/* <Link
+                    to="/userCourses"
+                    className="text-decoration-none text-white"
+                  >
+                    <FontAwesomeIcon
+                      icon={faSquarePlus}
+                      className="add-icon-courses"
+                    />
+                  </Link> */}
+                </div>
+              </div> :
+                  cartItems?.expertCourses?.map((items, index) => (
                     <div
                       onClick={() => {
                         if (!items?.is_purchased) {
