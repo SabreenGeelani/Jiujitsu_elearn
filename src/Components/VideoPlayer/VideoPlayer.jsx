@@ -1,12 +1,21 @@
 const VideoPlayer = ({ videoUrl, videoType }) => {
   let content;
 
+  // Extract video ID from the full YouTube URL
+  const extractYouTubeId = (url) => {
+    const videoIdMatch = url.match(
+      /(?:https?:\/\/)?(?:www\.)?youtube\.com\/watch\?v=([^&]+)/
+    );
+    return videoIdMatch ? videoIdMatch[1] : url;
+  };
+
   if (videoType === "youtube") {
+    const videoId = extractYouTubeId(videoUrl);
     content = (
       <iframe
         width="560"
         height="315"
-        src={`https://www.youtube.com/embed/${videoUrl}`}
+        src={`https://www.youtube.com/embed/${videoId}`}
         title="YouTube video player"
         frameBorder="0"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -27,15 +36,10 @@ const VideoPlayer = ({ videoUrl, videoType }) => {
     );
   } else if (videoType === "local") {
     content = (
-      <iframe
-        width="560"
-        height="315"
-        src={videoUrl}
-        title="Vimeo video player"
-        frameBorder="0"
-        allow="autoplay; fullscreen; picture-in-picture"
-        allowFullScreen
-      ></iframe>
+      <video width="560" height="315" controls>
+        <source src={videoUrl} type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
     );
   } else {
     content = (

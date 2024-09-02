@@ -210,6 +210,7 @@ export default function CourseCreation({ editCourse, courseeId }) {
         toast.success("Course updated successfully!");
         setCourseId(response.data.data.course_id);
         setIsModal(true);
+        navigate("/courses");
       })
       .catch((error) => {
         setLoading(false);

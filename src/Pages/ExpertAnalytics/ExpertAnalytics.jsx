@@ -226,7 +226,7 @@ export default function ExpertAnalytics() {
         </div>
         <div className="col-md-3">
           <Card
-            title="Last month earnings"
+            title="This month earnings"
             icon={IoIosTimer}
             value={`$${data?.enrolls?.current_month_revenue}`}
             percentage="~6.32%"

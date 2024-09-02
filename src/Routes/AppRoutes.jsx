@@ -9,6 +9,7 @@ import ResetPassword from "../Pages/ResetPassword/ResetPassword";
 import UserCourses from "../Pages/UserCourses/UserCourses";
 import UserCourseOverview from "../Pages/UserCourseOverview/UserCourseOverview";
 import UserCart from "../Pages/UserCart/UserCart";
+import PurchaseHistory from "../Pages/PurchaseHistory/PurchaseHistory";
 
 const AppRoutes = ({ search }) => {
   const [role, setRole] = useState(null);
@@ -30,7 +31,9 @@ const AppRoutes = ({ search }) => {
       <Route path="/verifyEmail" element={<VerifyEmail />} />
 
       <Route path="/userCart" element={<UserCart />} />
-      <Route path="/userCourses" element={<UserCourses />} search={search} />
+      <Route path="/userCourses" element={<UserCourses search={search} />} />
+      <Route path="/purchaseHistory" element={<PurchaseHistory />} />
+
       <Route
         path="/userCourses/userCourseView/:id"
         element={<UserCourseOverview />}

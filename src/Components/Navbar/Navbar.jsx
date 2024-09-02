@@ -12,9 +12,11 @@ import { BASE_URI } from "../../Config/url";
 import toast from "react-hot-toast";
 import { FaUserCircle } from "react-icons/fa";
 import axios from "axios";
+import useFetch from "../../hooks/useFetch";
 
 export const Navbar = ({ collapsed, search, setSearch }) => {
   const searchInputRef = useRef(null);
+  const profileBarRef = useRef(null); // Reference for the profile-bar
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [user, setUser] = useState(() =>
     JSON.parse(localStorage.getItem("user"))
@@ -23,6 +25,16 @@ export const Navbar = ({ collapsed, search, setSearch }) => {
   const userType = localStorage.getItem("userType");
   const [experts, setExperts] = useState([]);
   const [profileCompletion, setProfileCompletion] = useState(null);
+
+  const profileUrl = `${BASE_URI}/api/v1/users/profile`;
+  const fetchOptions = {
+    headers: {
+      Authorization: "Bearer " + token,
+    },
+  };
+
+  const { data, refetch } = useFetch(profileUrl, fetchOptions);
+  const { name, profile_picture } = data?.data[0] || [];
 
   useEffect(() => {
     const handleStorageChange = () => {
@@ -76,9 +88,32 @@ export const Navbar = ({ collapsed, search, setSearch }) => {
   const handleIconClick = () => {
     searchInputRef.current.focus();
   };
+
   const handleProfileClick = () => {
     setIsProfileOpen(!isProfileOpen);
   };
+
+  const handleClickOutside = (event) => {
+    if (
+      profileBarRef.current &&
+      !profileBarRef.current.contains(event.target) &&
+      !event.target.closest(".profile-picture-container")
+    ) {
+      setIsProfileOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isProfileOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isProfileOpen]);
 
   return (
     <nav
@@ -126,9 +161,9 @@ export const Navbar = ({ collapsed, search, setSearch }) => {
                 height: "4rem",
               }}
             ></div>
-            {user?.profile_picture ? (
+            {profile_picture ? (
               <img
-                src={user?.profile_picture}
+                src={profile_picture}
                 alt="Profile"
                 className="profile-picture"
                 style={{ objectFit: "cover", height: "3rem", width: "3rem" }}
@@ -143,6 +178,7 @@ export const Navbar = ({ collapsed, search, setSearch }) => {
         </div>
       )}
       <div
+        ref={profileBarRef} // Add the ref to the profile-bar
         className={`profile-bar rounded-4 text-black px-4 py-4 ${
           isProfileOpen ? "open" : ""
         }`}
@@ -166,9 +202,9 @@ export const Navbar = ({ collapsed, search, setSearch }) => {
                 height: "6rem",
               }}
             ></div>
-            {user?.profile_picture ? (
+            {profile_picture ? (
               <img
-                src={user?.profile_picture}
+                src={profile_picture}
                 alt=""
                 className="profile-picture mb-4"
                 style={{ width: "5rem", height: "5rem", objectFit: "cover" }}
@@ -182,7 +218,7 @@ export const Navbar = ({ collapsed, search, setSearch }) => {
           </div>
 
           <h4 className="fw-lightBold mb-1 text-capitalize">
-            Good Morning {user?.name?.split(" ")[0]}
+            Good Morning {name?.split(" ")[0]}
           </h4>
           <p
             className="text-center lightgray-color fs-small mb-3"
