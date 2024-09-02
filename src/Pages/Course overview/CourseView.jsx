@@ -81,6 +81,7 @@ const CourseView = ({ setEditCourse, setCourseId }) => {
   };
 
 
+
   function formatTime(seconds) {
     if (seconds < 60) {
         return `${seconds} sec`;
@@ -330,7 +331,7 @@ id="spinner-usercourseview"
                     <div className="right-ratings-courseview">
                       <h6>Detailed Ratings</h6>
                       <div>
-                        <h6>{reviewData?.data?.ratingPercentages[1]}%</h6>
+                        <h6>{reviewData?.data?.ratingPercentages[5]}%</h6>
                         <span>
                           <FontAwesomeIcon icon={faStar} className="staricon" />
                           <FontAwesomeIcon icon={faStar} className="staricon" />
@@ -339,11 +340,11 @@ id="spinner-usercourseview"
                           <FontAwesomeIcon icon={faStar} className="staricon" />
                         </span>
                         <div>
-                          <div style={{width:`${reviewData?.data?.ratingPercentages[1]}%`}} className="fifty-rating-courseview"></div>
+                          <div style={{width:`${reviewData?.data?.ratingPercentages[5]}%`}} className="fifty-rating-courseview"></div>
                         </div>
                       </div>
                       <div>
-                        <h6>{reviewData?.data?.ratingPercentages[2]}%</h6>
+                        <h6>{reviewData?.data?.ratingPercentages[4]}%</h6>
                         <span>
                           <FontAwesomeIcon icon={faStar} className="staricon" />
                           <FontAwesomeIcon icon={faStar} className="staricon" />
@@ -351,7 +352,7 @@ id="spinner-usercourseview"
                           <FontAwesomeIcon icon={faStar} className="staricon" />
                         </span>
                         <div>
-                          <div style={{width:`${reviewData?.data?.ratingPercentages[2]}%`}} className="fourty-rating-courseview"></div>
+                          <div style={{width:`${reviewData?.data?.ratingPercentages[4]}%`}} className="fourty-rating-courseview"></div>
                         </div>
                       </div>
                       <div>
@@ -366,22 +367,22 @@ id="spinner-usercourseview"
                         </div>
                       </div>
                       <div>
-                        <h6>{reviewData?.data?.ratingPercentages[4]}%</h6>
+                        <h6>{reviewData?.data?.ratingPercentages[2]}%</h6>
                         <span>
                           <FontAwesomeIcon icon={faStar} className="staricon" />
                           <FontAwesomeIcon icon={faStar} className="staricon" />
                         </span>
                         <div>
-                          <div  style={{width:`${reviewData?.data?.ratingPercentages[4]}%`}} className="twenty-rating-courseview"></div>
+                          <div  style={{width:`${reviewData?.data?.ratingPercentages[2]}%`}} className="twenty-rating-courseview"></div>
                         </div>
                       </div>
                       <div>
-                        <h6>{reviewData?.data?.ratingPercentages[5]}%</h6>
+                        <h6>{reviewData?.data?.ratingPercentages[1]}%</h6>
                         <span>
                           <FontAwesomeIcon icon={faStar} className="staricon" />
                         </span>
                         <div>
-                          <div  style={{width:`${reviewData?.data?.ratingPercentages[5]}%`}} className="ten-rating-courseview"></div>
+                          <div  style={{width:`${reviewData?.data?.ratingPercentages[1]}%`}} className="ten-rating-courseview"></div>
                         </div>
                       </div>
                     </div>
