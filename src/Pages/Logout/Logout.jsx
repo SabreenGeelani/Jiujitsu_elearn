@@ -8,15 +8,20 @@ import { PulseLoader } from "react-spinners";
 const Logout = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+  const token = localStorage.getItem("token");
   const handleLogout = () => {
-    // console.log(localStorage.getItem("token"));
+    console.log(token);
     setIsLoading(true);
     axios
-      .post(`${BASE_URI}/api/v1/auth/logout`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      })
+      .post(
+        `${BASE_URI}/api/v1/auth/logout`,
+        {},
+        {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        }
+      )
       .then(() => {
         setIsLoading(false);
         localStorage.removeItem("token");
