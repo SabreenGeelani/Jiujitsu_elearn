@@ -9,6 +9,7 @@ const Logout = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const handleLogout = () => {
+    // console.log(localStorage.getItem("token"));
     setIsLoading(true);
     axios
       .post(`${BASE_URI}/api/v1/auth/logout`, {

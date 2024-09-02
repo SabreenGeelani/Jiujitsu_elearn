@@ -7,6 +7,7 @@ import ExpertWallet from "../Pages/ExpertWallet/ExpertWallet";
 import ExpertAnalytics from "../Pages/ExpertAnalytics/ExpertAnalytics";
 import { useState } from "react";
 import Logout from "../Pages/Logout/Logout";
+import NotFound from "../Pages/NotFound/NotFound";
 
 const ExpertRoutes = ({ search }) => {
   const [editCourse, setEditCourse] = useState(false);
@@ -39,6 +40,7 @@ const ExpertRoutes = ({ search }) => {
       <Route path="/expertWallet" element={<ExpertWallet />} />
       <Route path="/dashboard" element={<ExpertAnalytics />} />
       <Route path="/logout" element={<Logout />} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 };

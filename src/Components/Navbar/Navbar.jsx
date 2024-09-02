@@ -131,7 +131,7 @@ export const Navbar = ({ collapsed, search, setSearch }) => {
                 src={user?.profile_picture}
                 alt="Profile"
                 className="profile-picture"
-                style={{ objectFit: "cover" }}
+                style={{ objectFit: "cover", height: "3rem", width: "3rem" }}
               />
             ) : (
               <FaUserCircle

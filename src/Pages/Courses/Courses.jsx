@@ -30,8 +30,7 @@ const Card = ({
   category,
 }) => (
   <div className="card-bottom-courses" onClick={() => onClick(id)}>
-
-    <img loading="lazy" src={ thumbnail|| cardImage} alt="Course image" />
+    <img loading="lazy" src={thumbnail || cardImage} alt="Course image" />
 
     <div className="middle-sec-card-courses">
       <div className="addCourse-card-courses">
@@ -115,8 +114,10 @@ const Courses = ({ search, setEditCourse }) => {
             <div>
               <h1>No Course uploaded yet</h1>
               <h5>
+
                 Get started by uploading your first course and inspire
                 athletes around the world!
+
               </h5>
               <Link
                 to="/courses/courseCreation"

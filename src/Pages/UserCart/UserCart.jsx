@@ -11,7 +11,7 @@ import {
 import cardImage from "../../assets/coursesCard.png";
 import { BASE_URI } from "../../Config/url";
 import useFetch from "../../hooks/useFetch";
-import { SyncLoader, PulseLoader } from "react-spinners";
+// import { SyncLoader, PulseLoader } from "react-spinners";
 import toast from "react-hot-toast";
 import axios from "axios";
 
@@ -22,7 +22,7 @@ const stripePromise = loadStripe(
 );
 
 import { Link, useNavigate } from "react-router-dom";
-import Loader from "../../Components/Loader/Loader";
+// import Loader from "../../Components/Loader/Loader";
 import "ldrs/bouncy";
 import "ldrs/grid";
 
@@ -41,7 +41,7 @@ const UserCart = () => {
 
   const APIdata = useMemo(() => data?.data || [data], [data]);
   const cartItems = APIdata[0];
-  console.log((error && error) || (cartItems && cartItems));
+  // console.log((error && error) || (cartItems && cartItems));
 
   const handleCart = async (id, e) => {
     e.stopPropagation();
@@ -100,6 +100,7 @@ const UserCart = () => {
         sessionId: session.data.session.id,
       });
     } catch (e) {
+      console.log(e);
       toast.error("Something went wrong");
     }
   };
@@ -153,7 +154,9 @@ const UserCart = () => {
                       key={index}
                       className="mid-left-cards-usercart"
                       onClick={() =>
-                        navigate(`/userCourses/userCourseView/${item.course_id}`)
+                        navigate(
+                          `/userCourses/userCourseView/${item.course_id}`
+                        )
                       }
                     >
                       <div className="mid-left-left-usercart">
@@ -220,7 +223,9 @@ const UserCart = () => {
                       <h6>$15.99</h6>
                     </span>
                     <div>
-                      <p>Checkout</p>
+                      <p onClick={checkoutHandler} className="cursor-pointer">
+                        Checkout
+                      </p>
                       <p>
                         <FontAwesomeIcon icon={faArrowRight} />
                       </p>
@@ -265,12 +270,9 @@ const UserCart = () => {
                   cartItems?.expertCourses?.map((items, index) => (
                     <div
                       onClick={() => {
-
-                        if(!items?.is_purchased){
+                        if (!items?.is_purchased) {
                           navigate(`/userCourses/userCourseView/${items?.id}`);
-                        }
-                        else if(items?.is_purchased) {
-
+                        } else if (items?.is_purchased) {
                           navigate(`/userPurchasedCourses/${items?.id}`);
                         }
                       }}
