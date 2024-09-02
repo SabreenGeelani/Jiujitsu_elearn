@@ -10,7 +10,6 @@ const Logout = () => {
   const [isLoading, setIsLoading] = useState(false);
   const token = localStorage.getItem("token");
   const handleLogout = () => {
-    console.log(token);
     setIsLoading(true);
     axios
       .post(
