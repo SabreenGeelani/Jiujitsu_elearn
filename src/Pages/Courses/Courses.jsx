@@ -64,17 +64,9 @@ const Courses = ({ search, setEditCourse }) => {
   });
 
   console.log(data || error);
-  //  if(data.data === ){
-  //     setcourse(false)
-  //  }
-
-  //   if (error.response.data.message === "No courses found"){
-  //   return setcourse(false);
-  //  }
-  // console.log(error)
 
   const coursesData = useMemo(() => data?.data || [], [data]);
-  // console.log(coursesData)
+
   const handleCardClick = (id) => {
     navigate(`/courses/courseView/${id}`);
   };
@@ -122,8 +114,10 @@ const Courses = ({ search, setEditCourse }) => {
             <div>
               <h1>No Course uploaded yet</h1>
               <h5>
-                Get started by uploading your first course and inspire athletes
-                around the world!
+
+                Get started by uploading your first course and inspire
+                athletes around the world!
+
               </h5>
               <Link
                 to="/courses/courseCreation"

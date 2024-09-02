@@ -286,39 +286,65 @@ const UserCourseOverview = () => {
           <div className="bottom-userCourseview">
             <h3>Other Courses You Might Like</h3>
             <div className="cards-userCourseview">
-              {courseData?.otherCourses?.length > 0 ? (
-                courseData?.otherCourses.map((course, index) => (
-                  <div className="card-userCourseview" key={course?.id}>
-                    <img
-                      src={course?.thumbnail || cardImage}
-                      alt="course"
-                      className="image-card-userCourseview"
-                    />
-                    <div className="info-card-userCourseview">
-                      <h5>{course?.title || "No title available"}</h5>
-                      <p>
-                        {course?.description
-                          ? course.description
-                              .split(" ")
-                              .slice(0, 7)
-                              .join(" ") + "..."
-                          : "No description available"}
-                      </p>
-                      <div
-                        className="add-to-cart"
-                        onClick={(e) => handleCart(course.id, e)}
-                      >
-                        {isLoding && loadingItems === course.id ? (
-                          <PulseLoader size={8} color={"#fff"} />
-                        ) : course.is_purchased ? (
-                          "Go to Course"
-                        ) : course.is_in_cart ? (
-                          "Go to Cart"
-                        ) : (
-                          "Add to Cart"
-                        )}
-                      </div>
-                    </div>
+
+              {courseData?.other_courses?.length > 0 ? (
+                courseData.other_courses.map((course, index) => (
+
+                  
+                  <div onClick={() =>
+                    course?.is_purchased ? navigate(`/userPurchasedCourses/${course?.id}`) : course?.is_in_cart ? navigate('/userCart') :
+                    navigate(`/userCourses/userCourseView/${course?.id}`)
+                    
+                  } className="card-bottom-userCourseview" key={index}> 
+                  <span> <img src={course?.thumbnail || cardImage} alt="Course image" /></span>
+     
+      <div className="middle-sec-card-userCourseview">
+        <div className="addCourse-card-userCourseview">
+          <h6 className="text-uppercase">{course?.category || "No title available"}</h6>
+        </div>
+        <div className="pricing-card-userCourseview">
+          <h5>{course?.tags || "No tags available"}</h5>
+          {/* <h5>$10.99</h5> */}
+        </div>
+      </div>
+      <p className="text-uppercase">{course?.name}</p>
+      <h5 className="text-uppercase">{course?.title}</h5>
+      <h4
+      dangerouslySetInnerHTML={{
+                __html: course?.description
+                  ? course?.description
+                      .split(" ")
+                      .slice(0, 7)
+                      .join(" ") + "..."
+                  : "No description available",
+              }}
+      >
+      
+        </h4>
+      <div className="bottom-card-useruserCourseview">
+      <span>
+      <h5>${course?.price}</h5>
+      <h5>${course?.discounted_price}</h5>
+      </span>
+      <div onClick={(e) => course?.is_purchased ? navigate(`/userPurchasedCourses/${course?.id}`) : course?.is_in_cart ? navigate('/userCart') : handleCart(course?.id, e)}>
+                    {loadingItems === course?.id ? (
+                      <l-bouncy
+                      size="35"
+                      speed="1.2"
+                      color="white"
+                    ></l-bouncy>
+                    ) : (
+                      course?.is_purchased ? <h6>Purchased!</h6> : course?.is_in_cart ? <h6>In Cart!</h6> : 
+                      <h6>Add to Cart</h6>
+                    )}
+                  </div>
+      {/* <div onClick={() => handleCart(course?.id)}>{loadingItems[course?.id] ? <PulseLoader size={8} color="white"/> :<h6> Add to Cart </h6>}</div> */}
+      </div>
+    
+
+
+                    
+
                   </div>
                 ))
               ) : (
@@ -333,3 +359,4 @@ const UserCourseOverview = () => {
 };
 
 export default UserCourseOverview;
+
