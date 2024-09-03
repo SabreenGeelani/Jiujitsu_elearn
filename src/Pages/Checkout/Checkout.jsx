@@ -1,22 +1,7 @@
-import { useState } from "react";
-import { FaRegCreditCard } from "react-icons/fa";
-import { AiOutlineBank } from "react-icons/ai";
-import { CgPaypal } from "react-icons/cg";
-import { MdCheck, MdCheckCircle } from "react-icons/md";
+import { MdCheck } from "react-icons/md";
 import "./Checkout.css";
 
 function Checkout() {
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("");
-  const [paymentSuccessful, setPaymentSuccessful] = useState(false);
-
-  const handlePaymentMethodChange = (event) => {
-    setSelectedPaymentMethod(event.target.value);
-  };
-
-  const handlePaymentSubmit = () => {
-    setPaymentSuccessful(true);
-  };
-
   return (
     <div className="w-100">
       {/* {paymentSuccessful ? ( */}
