@@ -7,6 +7,17 @@ import { faSquarePlus } from "@fortawesome/free-solid-svg-icons";
 import useFetch from "../../hooks/useFetch";
 import { BASE_URI } from "../../Config/url";
 import { SyncLoader } from "react-spinners";
+
+const ShimmerCard = () => (
+  <div className="card-bottom-courses shimmer-card-courses">
+    <div className="shimmer-content-courses short"></div>
+    {/* <div className="shimmer-content-courses long"></div> */}
+
+    <div className="shimmer-content-courses medium"></div>
+    <div className="shimmer-content-courses long"></div>
+  </div>
+);
+
 const Card = ({
   id,
   onClick,
@@ -19,18 +30,19 @@ const Card = ({
   category,
 }) => (
   <div className="card-bottom-courses" onClick={() => onClick(id)}>
-    <img src={ thumbnail|| cardImage} alt="Course image" />
+    <img loading="lazy" src={thumbnail || cardImage} alt="Course image" />
+
     <div className="middle-sec-card-courses">
       <div className="addCourse-card-courses">
-        <h6>{category}</h6>
+        <h6 className="text-uppercase">{category}</h6>
       </div>
       <div className="pricing-card-courses">
         <h5>${price}</h5>
-        <h5>${discount}</h5>
+        <h5>${price - (price * discount) / 100}</h5>
       </div>
     </div>
-    <p>{name}, Designer at Raybit...</p>
-    <h5>{title}</h5>
+    <p className="text-uppercase">{name}</p>
+    <h5 className="text-uppercase">{title}</h5>
     <h4
       dangerouslySetInnerHTML={{
         __html: description?.split(" ").slice(0, 6).join(" ") + "...",
@@ -39,12 +51,11 @@ const Card = ({
   </div>
 );
 
-const Courses = () => {
+const Courses = ({ search, setEditCourse }) => {
   const navigate = useNavigate();
   const [course, setcourse] = useState(true);
-  
 
-  const url = `${BASE_URI}/api/v1/courses/expertCourses`;
+  const url = `${BASE_URI}/api/v1/courses/expertCourses?search=${search}`;
   const token = localStorage.getItem("token");
   const { data, isLoading, error, refetch } = useFetch(url, {
     headers: {
@@ -53,22 +64,12 @@ const Courses = () => {
   });
 
   console.log(data || error);
-  //  if(data.data === ){
-  //     setcourse(false)
-  //  }
-
-  //   if (error.response.data.message === "No courses found"){
-  //   return setcourse(false);
-  //  }
-  // console.log(error)
 
   const coursesData = useMemo(() => data?.data || [], [data]);
-  // console.log(coursesData)
+
   const handleCardClick = (id) => {
-    navigate(`/courseView/${id}`);
+    navigate(`/courses/courseView/${id}`);
   };
-  
- 
 
   const cards = coursesData.map((course, index) => (
     <Card
@@ -85,50 +86,52 @@ const Courses = () => {
     />
   ));
 
+  const handleAddCourse = () => {
+    navigate(`/courses/courseCreation`);
+    setEditCourse(false);
+  };
+
   return (
     <>
-      {isLoading ? (
-        <SyncLoader id="spinner-usercourseview" size={8} color="black" />
-      ) : (
-        <div className="wrapper-courses">
-          <div className="top-courses">
-            <h4>Courses</h4>
-            <div className="top-button">
-              <h6>
-                <Link
-                  to="/courseCreation"
-                  className="text-decoration-none text-white"
-                >
-                  Add Course{" "}
-                </Link>
-              </h6>
+      <div className="wrapper-courses">
+        <div className="top-courses">
+          <h4>Courses</h4>
+          <div className="top-button">
+            <h6 onClick={handleAddCourse}>Add Course</h6>
+          </div>
+        </div>
+
+        {error?.response?.data?.message !== "no courses found" ? (
+          <div className="bottom-courses">
+            {isLoading
+              ? Array.from({ length: 12 }).map((_, idx) => (
+                  <ShimmerCard key={idx} />
+                ))
+              : cards}
+          </div>
+        ) : (
+          <div className="no-courses-courses">
+            <div>
+              <h1>No Course uploaded yet</h1>
+              <h5>
+
+                Get started by uploading your first course and inspire
+                athletes around the world!
+
+              </h5>
+              <Link
+                to="/courses/courseCreation"
+                className="text-decoration-none text-white"
+              >
+                <FontAwesomeIcon
+                  icon={faSquarePlus}
+                  className="add-icon-courses"
+                />
+              </Link>
             </div>
           </div>
-
-          {error?.response?.data?.message !== "no courses found" ? (
-            <div className="bottom-courses">{cards}</div>
-          ) : (
-            <div className="no-courses-courses">
-              <div>
-                <h1>No Course uploaded yet</h1>
-                <h5>
-                  Get started by uploading your first course and inspire
-                  athletes around the world!
-                </h5>
-                <Link
-                  to="/courseCreation"
-                  className="text-decoration-none text-white"
-                >
-                  <FontAwesomeIcon
-                    icon={faSquarePlus}
-                    className="add-icon-courses"
-                  />
-                </Link>
-              </div>
-            </div>
-          )}
-        </div>
-      )}
+        )}
+      </div>
     </>
   );
 };

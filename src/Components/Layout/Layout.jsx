@@ -4,7 +4,7 @@ import { Sidebar } from "../Sidebar/Sidebar";
 
 import "./Layout.css";
 
-export const Layout = ({ children }) => {
+export const Layout = ({ children, search, setSearch }) => {
   const [collapsed, setCollapsed] = useState(false);
 
   const handleToggle = () => {
@@ -14,7 +14,7 @@ export const Layout = ({ children }) => {
   return (
     <>
       <div className="layout">
-        <Navbar collapsed={collapsed} />
+        <Navbar collapsed={collapsed} search={search} setSearch={setSearch} />
         <Sidebar collapsed={collapsed} handleToggle={handleToggle} />
         <main className={`content ${collapsed ? "collapsed" : ""}`}>
           {children}

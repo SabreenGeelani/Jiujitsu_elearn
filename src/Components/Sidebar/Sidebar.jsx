@@ -1,19 +1,21 @@
 import { Link, useLocation } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faHome,
-  faBook,
-  faEnvelope,
-  faLifeRing,
-  faCog,
-  faSignOutAlt,
-  faHistory,
-  faGraduationCap,
-} from "@fortawesome/free-solid-svg-icons";
 import { LiaBarsSolid } from "react-icons/lia";
+import {
+  RiHomeFill,
+  RiBookFill,
+  RiMessage2Fill,
+  RiLifebuoyFill,
+  RiLogoutBoxRFill,
+  RiHistoryFill,
+  RiGraduationCapFill,
+  RiWallet2Fill,
+  RiSettings4Fill,
+  RiHome4Fill,
+} from "react-icons/ri";
 import { motion, useAnimation } from "framer-motion";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Sidebar.css";
+import { MdAssignmentInd, MdDashboard } from "react-icons/md";
 
 // Animation variants
 const sidebarAnimation = {
@@ -47,13 +49,13 @@ const containerVariants = {
 
 export const Sidebar = ({ collapsed, handleToggle }) => {
   const role = localStorage.getItem("userType");
+  const token = localStorage.getItem("token");
   const location = useLocation();
   const controls = useAnimation();
 
-  const handleClick = async () => {
-    await controls.start("clicked");
-    controls.start("normal");
-  };
+  // Check if the current route is any of the course-related routes
+  const isCourseRoute = location.pathname.startsWith("/courses");
+  const isUserCourseRoute = location.pathname.startsWith("/userCourses");
 
   return (
     <div
@@ -79,114 +81,53 @@ export const Sidebar = ({ collapsed, handleToggle }) => {
         initial="hidden"
         animate="visible"
       >
-        <motion.div variants={sidebarAnimation}>
-          <Link
-            to="/"
-            onClick={handleClick}
-            className={`menu-item d-flex align-items-center p-3 ${
-              location.pathname === "/"
-                ? "bg-gradient-custom rounded-start-3 shadow-bottom-lg"
-                : ""
-            }`}
-          >
-            <motion.div
-              animate={controls}
-              variants={linkAnimation}
-              className={`me-4 ${
-                location.pathname === "/" ? "text-white" : "primary-color"
-              }`}
-            >
-              <FontAwesomeIcon icon={faHome} />
-            </motion.div>
-            {!collapsed && <span className="text">Home</span>}
-          </Link>
-        </motion.div>
-
-        {!localStorage.getItem("token") && (
-          <motion.div variants={sidebarAnimation}>
-            <Link
-              to="/support"
-              onClick={handleClick}
-              className={`menu-item d-flex align-items-center p-3 ${
-                location.pathname === "/support"
-                  ? "bg-gradient-custom rounded-start-3 shadow-bottom-lg"
-                  : ""
-              }`}
-            >
-              <motion.div
-                animate={controls}
-                variants={linkAnimation}
-                className={`me-4 ${
-                  location.pathname === "/support"
-                    ? "text-white"
-                    : "primary-color"
+        {!token && (
+          <>
+            <motion.div variants={sidebarAnimation}>
+              <Link
+                to="/userCourses"
+                className={`menu-item d-flex align-items-center p-3 ${
+                  isUserCourseRoute
+                    ? "bg-gradient-custom rounded-start-3 shadow-bottom-lg"
+                    : ""
                 }`}
               >
-                <FontAwesomeIcon icon={faLifeRing} />
-              </motion.div>
-              {!collapsed && <span className="text">Support</span>}
-            </Link>
-          </motion.div>
-        )}
-
-        {role === "expert" && (
-          <>
-            {localStorage.getItem("token") && (
-              <div>
-                <motion.div variants={sidebarAnimation}>
-                  <Link
-                    to="/courses"
-                    onClick={handleClick}
-                    className={`menu-item d-flex align-items-center p-3 ${
-                      location.pathname === "/courses"
-                        ? "bg-gradient-custom rounded-start-3 shadow-bottom-lg"
-                        : ""
-                    }`}
-                  >
-                    <motion.div
-                      animate={controls}
-                      variants={linkAnimation}
-                      className={`me-4 ${
-                        location.pathname === "/courses"
-                          ? "text-white"
-                          : "primary-color"
-                      }`}
-                    >
-                      <FontAwesomeIcon icon={faBook} />
-                    </motion.div>
-                    {!collapsed && <span className="text">Courses</span>}
-                  </Link>
+                <motion.div
+                  animate={controls}
+                  variants={linkAnimation}
+                  className={`me-4 ${
+                    isUserCourseRoute ? "text-white" : "primary-color"
+                  }`}
+                >
+                  <RiHome4Fill className="fs-5" />
                 </motion.div>
-                <motion.div variants={sidebarAnimation}>
-                  <Link
-                    to="/messages"
-                    onClick={handleClick}
-                    className={`menu-item d-flex align-items-center p-3 ${
-                      location.pathname === "/messages"
-                        ? "bg-gradient-custom rounded-start-3 shadow-bottom-lg"
-                        : ""
-                    }`}
-                  >
-                    <motion.div
-                      animate={controls}
-                      variants={linkAnimation}
-                      className={`me-4 ${
-                        location.pathname === "/messages"
-                          ? "text-white"
-                          : "primary-color"
-                      }`}
-                    >
-                      <FontAwesomeIcon icon={faEnvelope} />
-                    </motion.div>
-                    {!collapsed && <span className="text">Messages</span>}
-                  </Link>
+                {!collapsed && <span className="text">Home</span>}
+              </Link>
+            </motion.div>
+            <motion.div variants={sidebarAnimation}>
+              <Link
+                to="/"
+                className={`menu-item d-flex align-items-center p-3 ${
+                  location.pathname === "/"
+                    ? "bg-gradient-custom rounded-start-3 shadow-bottom-lg"
+                    : ""
+                }`}
+              >
+                <motion.div
+                  animate={controls}
+                  variants={linkAnimation}
+                  className={`me-4 ${
+                    location.pathname === "/" ? "text-white" : "primary-color"
+                  }`}
+                >
+                  <MdAssignmentInd className="fs-5" />
                 </motion.div>
-              </div>
-            )}
+                {!collapsed && <span className="text">Login/Signup</span>}
+              </Link>
+            </motion.div>
             <motion.div variants={sidebarAnimation}>
               <Link
                 to="/support"
-                onClick={handleClick}
                 className={`menu-item d-flex align-items-center p-3 ${
                   location.pathname === "/support"
                     ? "bg-gradient-custom rounded-start-3 shadow-bottom-lg"
@@ -202,46 +143,21 @@ export const Sidebar = ({ collapsed, handleToggle }) => {
                       : "primary-color"
                   }`}
                 >
-                  <FontAwesomeIcon icon={faLifeRing} />
+                  <RiLifebuoyFill className="fs-5" />
                 </motion.div>
                 {!collapsed && <span className="text">Support</span>}
-              </Link>
-            </motion.div>
-            <motion.div variants={sidebarAnimation}>
-              <Link
-                to="/expertWallet"
-                onClick={handleClick}
-                className={`menu-item d-flex align-items-center p-3 ${
-                  location.pathname === "/expertWallet"
-                    ? "bg-gradient-custom rounded-start-3 shadow-bottom-lg"
-                    : ""
-                }`}
-              >
-                <motion.div
-                  animate={controls}
-                  variants={linkAnimation}
-                  className={`me-4 ${
-                    location.pathname === "/expertWallet"
-                      ? "text-white"
-                      : "primary-color"
-                  }`}
-                >
-                  <FontAwesomeIcon icon={faLifeRing} />
-                </motion.div>
-                {!collapsed && <span className="text">Wallet</span>}
               </Link>
             </motion.div>
           </>
         )}
 
-        {role === "user" && (
+        {token && role === "expert" && (
           <>
             <motion.div variants={sidebarAnimation}>
               <Link
-                to="/userCourses"
-                onClick={handleClick}
+                to="/courses"
                 className={`menu-item d-flex align-items-center p-3 ${
-                  location.pathname === "/userCourses"
+                  isCourseRoute
                     ? "bg-gradient-custom rounded-start-3 shadow-bottom-lg"
                     : ""
                 }`}
@@ -250,22 +166,19 @@ export const Sidebar = ({ collapsed, handleToggle }) => {
                   animate={controls}
                   variants={linkAnimation}
                   className={`me-4 ${
-                    location.pathname === "/userCourses"
-                      ? "text-white"
-                      : "primary-color"
+                    isCourseRoute ? "text-white" : "primary-color"
                   }`}
                 >
-                  <FontAwesomeIcon icon={faBook} />
+                  <RiHome4Fill className="fs-5" />
                 </motion.div>
                 {!collapsed && <span className="text">Courses</span>}
               </Link>
             </motion.div>
             <motion.div variants={sidebarAnimation}>
               <Link
-                to="/myLearning"
-                onClick={handleClick}
+                to="/dashboard"
                 className={`menu-item d-flex align-items-center p-3 ${
-                  location.pathname === "/myLearning"
+                  location.pathname === "/dashboard"
                     ? "bg-gradient-custom rounded-start-3 shadow-bottom-lg"
                     : ""
                 }`}
@@ -274,20 +187,19 @@ export const Sidebar = ({ collapsed, handleToggle }) => {
                   animate={controls}
                   variants={linkAnimation}
                   className={`me-4 ${
-                    location.pathname === "/myLearning"
+                    location.pathname === "/dashboard"
                       ? "text-white"
                       : "primary-color"
                   }`}
                 >
-                  <FontAwesomeIcon icon={faGraduationCap} />
+                  <MdDashboard className="fs-5" />
                 </motion.div>
-                {!collapsed && <span className="text">My Learning</span>}
+                {!collapsed && <span className="text">Dashboard</span>}
               </Link>
             </motion.div>
             <motion.div variants={sidebarAnimation}>
               <Link
                 to="/messages"
-                onClick={handleClick}
                 className={`menu-item d-flex align-items-center p-3 ${
                   location.pathname === "/messages"
                     ? "bg-gradient-custom rounded-start-3 shadow-bottom-lg"
@@ -303,15 +215,109 @@ export const Sidebar = ({ collapsed, handleToggle }) => {
                       : "primary-color"
                   }`}
                 >
-                  <FontAwesomeIcon icon={faEnvelope} />
+                  <RiMessage2Fill className="fs-5" />
                 </motion.div>
                 {!collapsed && <span className="text">Messages</span>}
               </Link>
             </motion.div>
             <motion.div variants={sidebarAnimation}>
               <Link
+                to="/expertWallet"
+                className={`menu-item d-flex align-items-center p-3 ${
+                  location.pathname === "/expertWallet"
+                    ? "bg-gradient-custom rounded-start-3 shadow-bottom-lg"
+                    : ""
+                }`}
+              >
+                <motion.div
+                  animate={controls}
+                  variants={linkAnimation}
+                  className={`me-4 ${
+                    location.pathname === "/expertWallet"
+                      ? "text-white"
+                      : "primary-color"
+                  }`}
+                >
+                  <RiWallet2Fill className="fs-5" />
+                </motion.div>
+                {!collapsed && <span className="text">Wallet</span>}
+              </Link>
+            </motion.div>
+          </>
+        )}
+
+        {token && role === "user" && (
+          <>
+            <motion.div variants={sidebarAnimation}>
+              <Link
+                to="/userCourses"
+                className={`menu-item d-flex align-items-center p-3 ${
+                  isUserCourseRoute
+                    ? "bg-gradient-custom rounded-start-3 shadow-bottom-lg"
+                    : ""
+                }`}
+              >
+                <motion.div
+                  animate={controls}
+                  variants={linkAnimation}
+                  className={`me-4 ${
+                    isUserCourseRoute ? "text-white" : "primary-color"
+                  }`}
+                >
+                  <RiHome4Fill className="fs-5" />
+                </motion.div>
+                {!collapsed && <span className="text">Home</span>}
+              </Link>
+            </motion.div>
+            <motion.div variants={sidebarAnimation}>
+              <Link
+                to="/myLearning"
+                className={`menu-item d-flex align-items-center p-3 ${
+                  location.pathname === "/myLearning"
+                    ? "bg-gradient-custom rounded-start-3 shadow-bottom-lg"
+                    : ""
+                }`}
+              >
+                <motion.div
+                  animate={controls}
+                  variants={linkAnimation}
+                  className={`me-4 ${
+                    location.pathname === "/myLearning"
+                      ? "text-white"
+                      : "primary-color"
+                  }`}
+                >
+                  <RiBookFill className="fs-5" />
+                </motion.div>
+                {!collapsed && <span className="text">My Learning</span>}
+              </Link>
+            </motion.div>
+            <motion.div variants={sidebarAnimation}>
+              <Link
+                to="/myCertificates"
+                className={`menu-item d-flex align-items-center p-3 ${
+                  location.pathname === "/myCertificates"
+                    ? "bg-gradient-custom rounded-start-3 shadow-bottom-lg"
+                    : ""
+                }`}
+              >
+                <motion.div
+                  animate={controls}
+                  variants={linkAnimation}
+                  className={`me-4 ${
+                    location.pathname === "/myCertificates"
+                      ? "text-white"
+                      : "primary-color"
+                  }`}
+                >
+                  <RiGraduationCapFill className="fs-5" />
+                </motion.div>
+                {!collapsed && <span className="text">Certificates</span>}
+              </Link>
+            </motion.div>
+            <motion.div variants={sidebarAnimation}>
+              <Link
                 to="/purchaseHistory"
-                onClick={handleClick}
                 className={`menu-item d-flex align-items-center p-3 ${
                   location.pathname === "/purchaseHistory"
                     ? "bg-gradient-custom rounded-start-3 shadow-bottom-lg"
@@ -327,78 +333,52 @@ export const Sidebar = ({ collapsed, handleToggle }) => {
                       : "primary-color"
                   }`}
                 >
-                  <FontAwesomeIcon icon={faHistory} />
+                  <RiHistoryFill className="fs-5" />
                 </motion.div>
                 {!collapsed && <span className="text">Purchase History</span>}
-              </Link>
-            </motion.div>
-            <motion.div variants={sidebarAnimation}>
-              <Link
-                to="/support"
-                onClick={handleClick}
-                className={`menu-item d-flex align-items-center p-3 ${
-                  location.pathname === "/support"
-                    ? "bg-gradient-custom rounded-start-3 shadow-bottom-lg"
-                    : ""
-                }`}
-              >
-                <motion.div
-                  animate={controls}
-                  variants={linkAnimation}
-                  className={`me-4 ${
-                    location.pathname === "/support"
-                      ? "text-white"
-                      : "primary-color"
-                  }`}
-                >
-                  <FontAwesomeIcon icon={faLifeRing} />
-                </motion.div>
-                {!collapsed && <span className="text">Support</span>}
               </Link>
             </motion.div>
           </>
         )}
       </motion.div>
-      <motion.div
-        className="menu menu-bottom mt-3"
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-      >
-        <motion.div variants={sidebarAnimation}>
-          <Link
-            to="/settings"
-            onClick={handleClick}
-            className={`menu-item d-flex align-items-center p-3 ${
-              location.pathname === "/settings"
-                ? "bg-gradient-custom rounded-start-3 shadow-bottom-lg"
-                : ""
-            }`}
-          >
-            <motion.div
-              animate={controls}
-              variants={linkAnimation}
-              className={`me-4 ${
+
+      {token && (
+        <>
+          <motion.div variants={sidebarAnimation}>
+            <Link
+              to="/settings"
+              className={`menu-item d-flex align-items-center p-3 ${
                 location.pathname === "/settings"
-                  ? "text-white"
-                  : "primary-color"
+                  ? "bg-gradient-custom rounded-start-3 shadow-bottom-lg"
+                  : ""
               }`}
             >
-              <FontAwesomeIcon icon={faCog} />
-            </motion.div>
-            {!collapsed && <span className="text">Settings</span>}
-          </Link>
-        </motion.div>
-        <motion.div variants={sidebarAnimation}>
+              <motion.div
+                animate={controls}
+                variants={linkAnimation}
+                className={`me-4 ${
+                  location.pathname === "/settings"
+                    ? "text-white"
+                    : "primary-color"
+                }`}
+              >
+                <RiSettings4Fill className="fs-5" />
+              </motion.div>
+              {!collapsed && <span className="text">Settings</span>}
+            </Link>
+          </motion.div>
           <Link
             to="/logout"
-            onClick={handleClick}
             className={`menu-item d-flex align-items-center p-3 ${
               location.pathname === "/logout"
                 ? "bg-gradient-custom rounded-start-3 shadow-bottom-lg"
                 : ""
             }`}
           >
+            {/* <motion.div
+              className="menu-item d-flex align-items-center p-3"
+              variants={sidebarAnimation}
+            > */}
             <motion.div
               animate={controls}
               variants={linkAnimation}
@@ -406,12 +386,13 @@ export const Sidebar = ({ collapsed, handleToggle }) => {
                 location.pathname === "/logout" ? "text-white" : "primary-color"
               }`}
             >
-              <FontAwesomeIcon icon={faSignOutAlt} />
+              <RiLogoutBoxRFill className="fs-5" />
+              {/* </motion.div> */}
+              {!collapsed && <span className="text ms-4">Logout</span>}
             </motion.div>
-            {!collapsed && <span className="text">Logout</span>}
           </Link>
-        </motion.div>
-      </motion.div>
+        </>
+      )}
     </div>
   );
 };

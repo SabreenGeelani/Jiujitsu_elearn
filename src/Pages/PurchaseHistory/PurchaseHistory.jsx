@@ -1,46 +1,39 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { BASE_URI } from "../../Config/url";
+import useFetch from "../../hooks/useFetch";
+import formatDate from "../../utils/formatDate";
 
 const PurchaseHistory = () => {
   const [activeTab, setActiveTab] = useState("courses");
 
-  const courses = [
-    {
-      courseName: "React Basics",
-      date: "26/07/2024",
-      price: "$50",
-      paymentType: "Credit Card",
+  const token = localStorage.getItem("token");
+  const historyUrl = `${BASE_URI}/api/v1/users/orderHistory`;
+
+  const fetchOptions = {
+    headers: {
+      Authorization: "Bearer " + token,
     },
-    {
-      courseName: "Advanced React",
-      date: "26/07/2024",
-      price: "$100",
-      paymentType: "PayPal",
-    },
-    {
-      courseName: "Flutter",
-      date: "26/07/2024",
-      price: "$300",
-      paymentType: "MasterCard",
-    },
-    {
-      courseName: "PHP",
-      date: "26/07/2024",
-      price: "$30",
-      paymentType: "UPI",
-    },
-    {
-      courseName: "Node.js Basics",
-      date: "26/07/2024",
-      price: "$70.7",
-      paymentType: "PayPal",
-    },
-    {
-      courseName: "UI/UX",
-      date: "26/07/2024",
-      price: "$30.9",
-      paymentType: "UPI",
-    },
-  ];
+  };
+
+  const { data } = useFetch(historyUrl, fetchOptions);
+  const orders = useMemo(() => data?.data?.orders || [], [data]);
+
+  const handlePrint = (order) => {
+    const printContent = `
+      <div>
+        <h3>Order Receipt</h3>
+        <p><strong>Course Name:</strong> ${order.title}</p>
+        <p><strong>Date:</strong> ${formatDate(order.payment_date)}</p>
+        <p><strong>Transaction ID:</strong> ${order.transaction_id}</p>
+        <p><strong>Price:</strong> ${order.discounted_price}</p>
+        <p><strong>Payment Type:</strong> ${order.payment_type}</p>
+      </div>
+    `;
+    const newWindow = window.open("", "_blank", "width=600,height=400");
+    newWindow.document.write(printContent);
+    newWindow.document.close();
+    newWindow.print();
+  };
 
   return (
     <div className="w-100">
@@ -77,6 +70,9 @@ const PurchaseHistory = () => {
                       Date
                     </th>
                     <th scope="col" className="text-center">
+                      Transaction ID
+                    </th>
+                    <th scope="col" className="text-center">
                       Price
                     </th>
                     <th scope="col" className="text-center">
@@ -88,23 +84,29 @@ const PurchaseHistory = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {courses.map((course, index) => (
+                  {orders.map((order, index) => (
                     <tr key={index}>
-                      <td className="align-middle fs-small py-3">
-                        {course.courseName}
+                      <td className="align-middle fs-small py-3 text-capitalize">
+                        {order.title}
                       </td>
                       <td className="text-center align-middle fs-small">
-                        {course.date}
+                        {formatDate(order.payment_date)}
                       </td>
                       <td className="text-center align-middle fs-small">
-                        {course.price}
+                        {order.transaction_id}
                       </td>
                       <td className="text-center align-middle fs-small">
-                        {course.paymentType}
+                        ${order.discounted_price}
+                      </td>
+                      <td className="text-center align-middle fs-small text-capitalize">
+                        {order.payment_type}
                       </td>
                       <td className="text-center align-middle">
                         <div className="d-flex align-items-center justify-content-center">
-                          <button className="signup-now py-1 px-3 fw-lightBold fs-small mb-0 h-auto">
+                          <button
+                            className="signup-now py-1 px-3 fw-lightBold fs-small mb-0 h-auto"
+                            onClick={() => handlePrint(order)}
+                          >
                             Print
                           </button>
                         </div>
@@ -123,7 +125,7 @@ const PurchaseHistory = () => {
               >
                 <h3>You don’t have any refunds </h3>
                 <h5 className="fw-light">
-                  Any refunds will be processes to the original mode of payment
+                  Any refunds will be processed to the original mode of payment
                 </h5>
               </div>
             </div>

@@ -15,7 +15,10 @@ import "react-quill/dist/quill.snow.css";
 import { TbDragDrop } from "react-icons/tb";
 import Modal from "../../Components/Modal/Modal";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
-
+import VideoPlayer from "../../Components/VideoPlayer/VideoPlayer";
+import formatTime from "../../utils/formatTime";
+import { ShimmerPostDetails } from "react-shimmer-effects";
+import { PulseLoader } from "react-spinners";
 export default function AddLesson({ setEditCourse, setCourseId }) {
   const [isAddChapter, setIsAddChapter] = useState(false);
   const { id } = useParams();
@@ -26,6 +29,7 @@ export default function AddLesson({ setEditCourse, setCourseId }) {
   const [isDeleteChapter, setIsDeleteChapter] = useState(false);
   const [finalDelete, setFinalDelete] = useState(false);
   const [finalDeleteChapter, setFinalDeleteChapter] = useState(false);
+  const [selectedLesson, setSelectedLesson] = useState(null);
   const [newLesson, setNewLesson] = useState({
     chapter_id: "",
     title: "",
@@ -44,6 +48,10 @@ export default function AddLesson({ setEditCourse, setCourseId }) {
   const [editingChapterId, setEditingChapterId] = useState(null);
   const [chapterTitle, setChapterTitle] = useState("");
   const [chapterToDelete, setChapterToDelete] = useState(null);
+  const [isLoadingAddLesson, setIsLoadingAddLesson] = useState(false);
+  const [isLoadingDeleteLesson, setIsLoadingDeleteLesson] = useState(false);
+
+  const [isLoadingAddChapter, setIsLoadingAddChapter] = useState(false);
 
   const editorRef = useRef(null);
   const inputRef = useRef(null);
@@ -62,7 +70,11 @@ export default function AddLesson({ setEditCourse, setCourseId }) {
   // console.log(data);
   const { title } = data?.data[0] || "";
 
-  const { data: chaptersData, refetch } = useFetch(chaptersUrl, fetchOptions);
+  const {
+    data: chaptersData,
+    refetch,
+    isLoading,
+  } = useFetch(chaptersUrl, fetchOptions);
   const { data: chapters } = chaptersData || [];
 
   useEffect(() => {
@@ -73,6 +85,7 @@ export default function AddLesson({ setEditCourse, setCourseId }) {
 
   const handleAddChapter = (e) => {
     e.preventDefault();
+    setIsLoadingAddChapter(true);
     axios
       .post(`${BASE_URI}/api/v1/chapters`, newChapterData, {
         headers: {
@@ -81,12 +94,14 @@ export default function AddLesson({ setEditCourse, setCourseId }) {
         },
       })
       .then((resp) => {
+        setIsLoadingAddChapter(false);
         toast.success(resp.data.message);
         setNewChapterData({ title: "", course_id: id });
         refetch();
         setIsAddChapter(false);
       })
       .catch((err) => {
+        setIsLoadingAddChapter(false);
         toast.error(err.response ? err.response.data.message : err.message);
       });
   };
@@ -119,8 +134,9 @@ export default function AddLesson({ setEditCourse, setCourseId }) {
         } else if (fileType === "video") {
           setNewLesson((prevData) => ({
             ...prevData,
-            video_type: file,
+            video_url: file,
           }));
+          setFilePreview(URL.createObjectURL(file));
         } else {
           console.log("Unsupported file type:", fileType);
         }
@@ -181,6 +197,10 @@ export default function AddLesson({ setEditCourse, setCourseId }) {
 
   const handleLessonSubmit = (e) => {
     e.preventDefault();
+    setIsLoadingAddLesson(true);
+    if (newLesson.duration) {
+      newLesson.duration = newLesson.duration * 60;
+    }
 
     const url = editLesson
       ? `${BASE_URI}/api/v1/lessons/${editLesson}`
@@ -197,6 +217,7 @@ export default function AddLesson({ setEditCourse, setCourseId }) {
       },
     })
       .then((resp) => {
+        setIsLoadingAddLesson(false);
         setNewLesson({
           chapter_id: "",
           title: "",
@@ -214,13 +235,13 @@ export default function AddLesson({ setEditCourse, setCourseId }) {
         refetch();
       })
       .catch((err) => {
-        console.log(err);
-        toast.error(err.response?.data?.message || "An error occurred");
+        setIsLoadingAddLesson(false);
+        toast.error(err.response?.data?.message || "Something went wrong");
       });
   };
 
   const handleDeleteLesson = () => {
-    // console.log(editLesson);
+    setIsLoadingDeleteLesson(true);
     axios
       .delete(
         `${BASE_URI}/api/v1/lessons/${editLesson}`,
@@ -232,6 +253,7 @@ export default function AddLesson({ setEditCourse, setCourseId }) {
         }
       )
       .then((resp) => {
+        setIsLoadingDeleteLesson(false);
         toast.success(resp.data.message);
         setEditLesson(null);
         setNewLesson({
@@ -250,8 +272,10 @@ export default function AddLesson({ setEditCourse, setCourseId }) {
         setIsDelete(false);
       })
       .catch((err) => {
-        console.log(err);
-        toast.error(err.response.data.message);
+        setIsLoadingDeleteLesson(false);
+        toast.error(
+          err.response ? err.response.data.message : "Something went wrong"
+        );
       });
   };
 
@@ -292,8 +316,11 @@ export default function AddLesson({ setEditCourse, setCourseId }) {
         refetch();
         setIsDeleteChapter(false);
         setFinalDeleteChapter(true);
+        if (chapters.length === 1) {
+          setIsAddChapter(false);
+        }
       })
-      .catch((err) => {
+      .catch(() => {
         toast.error("Error deleting chapter!");
       });
   };
@@ -345,36 +372,46 @@ export default function AddLesson({ setEditCourse, setCourseId }) {
     const destinationLesson = destinationChapter.lessons[destination.index];
     const destinationLessonSequence = destinationLesson?.sequence;
 
-    console.log("Dragged Lesson Sequence:", draggedLessonSequence);
-    console.log("Destination Lesson Sequence:", destinationLessonSequence);
+    // console.log("Dragged Lesson Sequence:", draggedLessonSequence);
+    // console.log("Destination Lesson Sequence:", destinationLessonSequence);
 
     const payload = {
-      course_id: "11",
+      course_id: id,
       swapSequence: draggedLessonSequence,
       swapWithSequence: destinationLessonSequence,
+      chapter_id_from: Number(sourceChapterId),
+      chapter_id_to: Number(destinationChapterId),
     };
+    console.log("Payload:", payload);
 
     try {
-      await axios
-        .patch(`${BASE_URI}/api/v1/lessons/changeSeq`, payload, {
-          headers: {
-            Authorization: "Bearer " + token,
-          },
-        })
-        .then((resp) => {
-          console.log(resp.data);
-        });
-      console.log("Sequence updated successfully");
+      await axios.patch(`${BASE_URI}/api/v1/lessons/changeSeq`, payload, {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      });
+      // console.log(resp.data);
+      toast.success("Sequence updated successfully");
+      refetch();
     } catch (error) {
-      console.error("Error updating sequence:", error);
+      toast.error("Error updating sequence");
     }
   };
 
   const handleEditCourse = () => {
     setEditCourse(true);
     setCourseId(id);
-    navigate("/courseCreation");
+    navigate("/courses/courseCreation");
   };
+
+  const handleYouTubeClick = (lesson) => {
+    // console.log(lesson);
+    setSelectedLesson(lesson);
+  };
+
+  if (isLoading) {
+    return <ShimmerPostDetails card cta variant="SIMPLE" />;
+  }
 
   return (
     <div className="w-100">
@@ -398,16 +435,18 @@ export default function AddLesson({ setEditCourse, setCourseId }) {
             Start adding Chapters to your course
           </p>
 
-          {isAddChapter || chapters?.length !== 0 || (
+
+          {!isAddChapter && chapters?.length === undefined && (
+
             <button
               className="signup-now px-4 py-1-and-08rem fs-5 mt-5"
               onClick={() => setIsAddChapter(true)}
             >
-              {" "}
               <MdAddBox className="fs-1 me-2" />
               Add Chapter
             </button>
           )}
+
           <DragDropContext onDragEnd={onDragEnd}>
             <div className="w-100">
               {chapters?.length > 0 &&
@@ -434,8 +473,8 @@ export default function AddLesson({ setEditCourse, setCourseId }) {
                             />
                             <div className="d-flex justify-content-end gap-3 mb-3">
                               <button
-                                className="signup-now py-2 px-3 fw-light mb-0 h-auto text-black border border-2"
-                                style={{ background: "transparent" }}
+                                className="signup-now py-2 px-3 fw-light mb-0 h-auto"
+                                // style={{ background: "transparent" }}
                                 onClick={() => setEditingChapterId(null)}
                               >
                                 Cancel
@@ -446,7 +485,11 @@ export default function AddLesson({ setEditCourse, setCourseId }) {
                                   saveChanges(chapter.id, chapter.sequence)
                                 }
                               >
-                                Save Changes
+                                {isLoadingAddChapter ? (
+                                  <PulseLoader size={8} color="white" />
+                                ) : (
+                                  "Save Changes"
+                                )}
                               </button>
                             </div>
                           </div>
@@ -476,35 +519,49 @@ export default function AddLesson({ setEditCourse, setCourseId }) {
                           </div>
                         )}
 
-                        {chapter.lessons.map((lesson, i) => (
+                        {chapter.lessons.map((lesson) => (
                           <Draggable
                             key={lesson.id}
                             draggableId={String(lesson.id)}
-                            index={i}
+                            index={index}
                           >
                             {(provided) => (
                               <div
                                 ref={provided.innerRef}
                                 {...provided.draggableProps}
                                 {...provided.dragHandleProps}
-                                className="p-3 rounded-2 border border-secondary-subtle d-flex align-items-center justify-content-between my-3"
+                                className="p-3 rounded-2 border border-secondary-subtle my-3"
                                 onClick={() =>
                                   handleAddLessonClick(chapter.id, lesson)
                                 }
-                                // draggable
                               >
-                                <div className="d-flex align-items-center gap-3">
-                                  <FaYoutube className="primary-color fs-5" />
-                                  <p className="primary-color mb-0 text-capitalize">
-                                    {i + 1}. {lesson.title}
-                                  </p>
+                                <div className="d-flex align-items-center justify-content-between">
+                                  <div className="d-flex align-items-center gap-3">
+                                    <FaYoutube
+                                      className="primary-color fs-5 cursor-pointer"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleYouTubeClick(lesson);
+                                      }}
+                                    />
+                                    <p className="primary-color mb-0 text-capitalize">
+                                      {index + 1}. {lesson.title}
+                                    </p>
+                                  </div>
+                                  <div className="d-flex gap-5">
+                                    <p className="mb-0 fs-5">
+                                      {formatTime(lesson.duration)}
+                                    </p>
+                                    <TbDragDrop className="fs-3" />
+                                  </div>
                                 </div>
-                                <div className="d-flex gap-5">
-                                  <p className="mb-0  fs-5">
-                                    {lesson.duration}m
-                                  </p>
-                                  <TbDragDrop className="fs-3" />
-                                </div>
+                                {selectedLesson &&
+                                  selectedLesson.id === lesson.id && (
+                                    <VideoPlayer
+                                      videoUrl={selectedLesson.video_url}
+                                      videoType={selectedLesson.video_type}
+                                    />
+                                  )}
                               </div>
                             )}
                           </Draggable>
@@ -587,6 +644,7 @@ export default function AddLesson({ setEditCourse, setCourseId }) {
                                     "align",
                                   ]}
                                   style={{ height: "13rem", overflowY: "auto" }}
+                                  placeholder="Write lesson description here..."
                                 />
                               </div>
                             </div>
@@ -610,47 +668,50 @@ export default function AddLesson({ setEditCourse, setCourseId }) {
                                   value="youtube"
                                   className="border-top border-bottom py-2"
                                 >
-                                  youtube
+                                  YouTube
                                 </option>
                                 <option
-                                  value="chrome"
+                                  value="vimeo"
                                   className="border-bottom py-2"
                                 >
-                                  chrome
+                                  Vimeo
                                 </option>
                                 <option
-                                  value="upload"
+                                  value="local"
                                   className="border-bottom py-2"
                                 >
                                   Upload from device
                                 </option>
                               </select>
-                              {newLesson.video_type === "upload" && (
+                              {newLesson.video_type === "local" && (
                                 <div className="mt-3 w-25">
                                   <div
                                     {...getRootProps()}
-                                    className="d-flex flex-column align-items-center justify-content-center  border-dotted rounded-2 py-3"
+                                    className="d-flex flex-column align-items-center justify-content-center border-dotted rounded-2 py-3"
                                   >
-                                    {filePreview && (
-                                      <div className="mt-3">
-                                        <video
-                                          src={filePreview}
-                                          alt="Preview"
-                                          className="w-100 h-100"
-                                          style={{
-                                            // maxHeight: "150px",
-                                            objectFit: "cover",
-                                          }}
-                                        />
-                                      </div>
-                                    )}
-                                    <input {...getInputProps()} />
+                                    <input
+                                      {...getInputProps()}
+                                      // onChange={handleVideoUpload}
+                                    />
                                     <IoCloudUploadOutline className="fs-1" />
                                     <p className="mt-2">Drag or drop here</p>
                                   </div>
+                                  {filePreview && (
+                                    <div className="mt-3">
+                                      <video
+                                        src={filePreview}
+                                        alt="Preview"
+                                        className="w-100 h-100"
+                                        style={{
+                                          objectFit: "cover",
+                                        }}
+                                      />
+                                    </div>
+                                  )}
                                 </div>
                               )}
                             </div>
+
                             <div className="mb-3">
                               <label
                                 htmlFor="video_url"
@@ -666,6 +727,7 @@ export default function AddLesson({ setEditCourse, setCourseId }) {
                                 className="px-5 py-2-half-5 border-secondary-subtle border rounded-2 w-100 input-custom"
                                 value={newLesson.video_url}
                                 onChange={handleChange}
+                                readOnly={newLesson.video_type === "local"}
                               />
                             </div>
                             <div className="mb-3">
@@ -706,7 +768,7 @@ export default function AddLesson({ setEditCourse, setCourseId }) {
                                 htmlFor="duration"
                                 className="d-block mb-1 fs-5 fw-light text-start"
                               >
-                                Lesson Duration{" "}
+                                Lesson Duration <small>(minutes)</small>
                                 <span className="text-danger">*</span>
                               </label>
                               <input
@@ -727,13 +789,21 @@ export default function AddLesson({ setEditCourse, setCourseId }) {
                                     style={{ background: "#CC3737" }}
                                     onClick={() => setIsDelete(true)}
                                   >
-                                    Delete
+                                    {isLoadingDeleteLesson ? (
+                                      <PulseLoader size={8} color="white" />
+                                    ) : (
+                                      "Delete"
+                                    )}
                                   </button>
                                   <button
                                     type="submit"
                                     className="signup-now py-2 px-4 mt-4"
                                   >
-                                    Save Changes
+                                    {isLoadingAddLesson ? (
+                                      <PulseLoader size={8} color="white" />
+                                    ) : (
+                                      "Save Changes"
+                                    )}
                                   </button>
                                 </div>
                               ) : (
@@ -749,7 +819,11 @@ export default function AddLesson({ setEditCourse, setCourseId }) {
                                     type="submit"
                                     className="signup-now py-2 px-3 fw-light mb-0 h-auto"
                                   >
-                                    Add Lesson
+                                    {isLoadingAddLesson ? (
+                                      <PulseLoader size={8} color="white" />
+                                    ) : (
+                                      "Add Lesson"
+                                    )}
                                   </button>
                                 </div>
                               )}
@@ -797,7 +871,11 @@ export default function AddLesson({ setEditCourse, setCourseId }) {
                   className=" signup-now py-2 px-3 fw-lightBold mb-0 h-auto"
                   onClick={handleAddChapter}
                 >
-                  Add Chapter
+                  {isLoadingAddChapter ? (
+                    <PulseLoader size={8} color="white" />
+                  ) : (
+                    "Add Chapter"
+                  )}
                 </button>
               </div>
             </div>

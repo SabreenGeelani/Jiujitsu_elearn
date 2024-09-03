@@ -11,10 +11,12 @@ import "./MyLearning.css";
 import cardImage from "../../assets/coursesCard.png";
 import useFetch from "../../hooks/useFetch";
 import { BASE_URI } from "../../Config/url";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { PulseLoader, SyncLoader } from "react-spinners";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSquarePlus } from "@fortawesome/free-solid-svg-icons";
 
 const Card = ({
   id,
@@ -46,11 +48,17 @@ const Card = ({
       </div>
       <p>{expert}</p>
       <h4 style={{fontSize:15}}>{title}</h4>
-      <h4>
-        {description
-          ? description.split(" ").slice(0, 10).join(" ")
-          : "No description found"}
-        ...
+      <h4
+      dangerouslySetInnerHTML={{
+          
+        __html: description?.split(" ").slice(0, 6).join(" ") + "..."
+        
+      }}
+      >
+       
+          
+          
+   
       </h4>
       <div className="bottom-card-usermyLearning">
         <span><span style={{width:`${completed}%`}}></span></span>
@@ -94,7 +102,13 @@ const MyLearning = () => {
   return (
     <>
       {isLoading ? (
-            <SyncLoader id="myLearningLoader" size={8} color="black" />
+           
+            <l-grid
+id="myLearningLoader"
+  size="60"
+  speed="1.5"
+  color="black" 
+></l-grid>
           ) : (
         <div className="wrapper-myLearning">
           <header className="bg-gradient-custom-div p-3 pb-0 rounded-bottom-3.5 custom-box ">
@@ -129,7 +143,23 @@ const MyLearning = () => {
           
             <div className="bottom-myLearning">
               {error?.response?.data?.message === "No courses found" ? (
-                <h1>No courses found</h1>
+                <div className="no-courses-userCourses">
+                <div >
+                  <h1 style={{marginLeft:"41%"}}>No Courses Purchased Yet!</h1>
+                  <h5>
+                    Purchase a course and join the world of athletes!
+                  </h5>
+                  <Link
+                    to="/userCourses"
+                    className="text-decoration-none text-white"
+                  >
+                    <FontAwesomeIcon
+                      icon={faSquarePlus}
+                      className="add-icon-courses"
+                    />
+                  </Link>
+                </div>
+              </div>
               ) : (
                 coursesData?.course?.map((course) => (
                   <Card

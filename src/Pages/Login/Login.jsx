@@ -1,50 +1,88 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import learnImg from "../../assets/learnImg.avif";
 import { MdOutlineEmail } from "react-icons/md";
 import { IoKeyOutline } from "react-icons/io5";
 import { FcGoogle } from "react-icons/fc";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation, Navigate } from "react-router-dom";
 import { FaApple, FaEye, FaEyeSlash } from "react-icons/fa";
 import axios from "axios";
 import { BASE_URI } from "../../Config/url";
 import { PulseLoader } from "react-spinners";
 import toast from "react-hot-toast";
+
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
-  const [isLoding, setIsLoding] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState({
     email: "",
     password: "",
   });
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const response = params.get("response");
+    // console.log(response);
+    if (response) {
+      try {
+        const parsedResponse = JSON.parse(decodeURIComponent(response));
+
+        if (parsedResponse.token && parsedResponse.user) {
+          localStorage.setItem("token", parsedResponse.token);
+          localStorage.setItem("userType", parsedResponse.user.user_type);
+          localStorage.setItem("user", JSON.stringify(parsedResponse.user));
+
+          toast.success("Logged In Successfully!");
+
+          if (parsedResponse.user.user_type === "expert") {
+            navigate("/courses");
+          } else if (parsedResponse.user.user_type === "user") {
+            navigate("/userCourses");
+          }
+        }
+      } catch (error) {
+        console.error("Failed to parse response", error);
+        toast.error("Failed to process login response.");
+      }
+    }
+  }, [location, navigate]);
+
+  // localStorage.removeItem("token");
+  // localStorage.removeItem("user");
+  // localStorage.removeItem("userType");
   const handleCheckboxChange = (event) => {
     setRememberMe(event.target.checked);
-    {
-      rememberMe
-        ? localStorage.setItem("rememberMee", "rememberMee")
-        : localStorage.removeItem("rememberMee");
+    if (event.target.checked) {
+      localStorage.setItem("rememberMee", "rememberMee");
+    } else {
+      localStorage.removeItem("rememberMee");
     }
   };
-  const handleForgotPasswordClick = () => {
-    console.log("Forgot Password clicked");
-  };
+
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
+
   const handleChange = (e) => {
     setData({ ...data, [e.target.name]: e.target.value });
   };
+
+  const handleGoogleLogin = () => {
+    window.location.href = `${BASE_URI}/api/v1/auth/google`;
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    setIsLoding(true);
+    setIsLoading(true);
     axios
       .post(`${BASE_URI}/api/v1/auth/login`, data)
       .then((resp) => {
-        console.log(resp.data.Data);
         localStorage.setItem("user", JSON.stringify(resp.data.Data));
         localStorage.setItem("userType", resp.data.Data.user_type);
         localStorage.setItem("token", resp.data.token);
+
         setData({
           email: "",
           password: "",
@@ -55,14 +93,15 @@ export default function Login() {
         } else if (resp.data.Data.user_type === "user") {
           navigate("/userCourses");
         }
-        setIsLoding(false);
+        setIsLoading(false);
       })
       .catch((err) => {
         console.log(err?.response?.data?.message);
-        setIsLoding(false);
+        setIsLoading(false);
         toast.error(`Error: ${err?.response?.data?.message}`);
       });
   };
+
   if (localStorage.getItem("rememberMe")) {
     if (localStorage.getItem("userType") === "expert") {
       return <Navigate to="/courses" />;
@@ -95,7 +134,7 @@ export default function Login() {
       <div className="row w-100 h-100">
         <div className="signup-image w-50">
           <img src={learnImg} alt="Image" className="img-fluid" />
-          <div className="signUp-text ">
+          <div className="signUp-text">
             <h3 className="expertise mb-0">Share Your Expertise.</h3>
             <h3 className="expertise mb-4">
               Inspire Athletes. Transform Lives.
@@ -119,11 +158,18 @@ export default function Login() {
               className="bttns google-signup"
               onClick={handleGoogleLogin}
             >
+            <button
+              type="button"
+              className="bttns google-signup"
+              onClick={handleGoogleLogin}
+            >
               <FcGoogle className="googleIcon" />
+              Sign In with Google
               Sign In with Google
             </button>
             <button type="button" className="bttns">
               <FaApple className="appleIcon" />
+              Sign In with Apple
               Sign In with Apple
             </button>
           </div>
@@ -136,7 +182,7 @@ export default function Login() {
                 width: "50%",
               }}
             ></p>{" "}
-            <span className=" fs-small px-2">OR</span>
+            <span className="fs-small px-2">OR</span>
             <p
               style={{
                 height: "1px",
@@ -159,7 +205,7 @@ export default function Login() {
                   type="email"
                   id="email"
                   name="email"
-                  className="form-control"
+                  className="form-control py-2-half-5"
                   placeholder="Enter Email"
                   aria-label="Email"
                   value={data.email}
@@ -180,7 +226,7 @@ export default function Login() {
                   type={showPassword ? "text" : "password"}
                   id="password"
                   name="password"
-                  className="form-control border-end-0"
+                  className="form-control border-end-0 py-2-half-5"
                   placeholder="Enter Password"
                   aria-label="Password"
                   value={data.password}
@@ -216,16 +262,16 @@ export default function Login() {
                   Remember Me
                 </label>
               </div>
-              <a
-                href="#!"
-                onClick={handleForgotPasswordClick}
+              <Link
+                to="/passwordRecovery"
+                // onClick={handleForgotPasswordClick}
                 className="accent-color"
               >
                 Forgot Password?
-              </a>
+              </Link>
             </div>
             <button className="signup-now w-100">
-              {isLoding ? <PulseLoader size={8} color="white" /> : "Sign In"}
+              {isLoading ? <PulseLoader size={8} color="white" /> : "Sign In"}
             </button>
           </form>
           <div className="text-center">
@@ -241,3 +287,4 @@ export default function Login() {
     </div>
   );
 }
+
