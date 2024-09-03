@@ -13,11 +13,9 @@
     "@fortawesome/fontawesome-svg-core": "^6.6.0",
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
     "@fortawesome/react-fontawesome": "^0.2.2",
-<<<<<<< HEAD
-    "@stripe/stripe-js": "^4.3.0",
-=======
+
     "@stripe/stripe-js": "^4.4.0",
->>>>>>> d2341c1c68f663a1397cb1331955e32d1b3319d2
+
     "axios": "^1.7.2",
     "bootstrap": "^5.3.3",
     "chart.js": "^4.4.4",
