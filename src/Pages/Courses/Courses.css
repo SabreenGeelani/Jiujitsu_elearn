@@ -1,3 +1,8 @@
+
+.wrapper-courses{
+  width: 100%;
+}
+
 .top-courses {
   height: 10vh;
   /* background-color: black; */
@@ -6,7 +11,7 @@
   margin-top: 5vh;
   justify-content: space-between;
   align-items: center;
-  padding: 0 3vw 0 3.5vw;
+  padding: 0 3vw 0 1.5vw;
 }
 .top-courses h4 {
   font-weight: 700;
@@ -26,7 +31,7 @@
   font-weight: 400;
 }
 .bottom-courses {
-  padding: 0 2vw 0 2vw;
+  padding: 0 2vw 0 1.5vw;
   margin-top: 2vh;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -34,7 +39,7 @@
   margin-bottom: 4vh;
 }
 .card-bottom-courses {
-  height: 40vh;
+  /* height: ; */
   width: 17vw;
   background-color: white;
   border-radius: 0.5vw;
@@ -48,12 +53,12 @@
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 .card-bottom-courses img {
-  height: 55%;
+  height: 25vh;
   width: 100%;
   border-radius: 0.5vw;
 }
 .middle-sec-card-courses {
-  height: 10%;
+  height: 5vh;
   display: flex;
   justify-content: space-between;
   margin-top: 3%;
@@ -86,13 +91,16 @@
 .card-bottom-courses p {
   font-size: 0.9vw;
   font-weight: 300;
+  margin-top: 0.5vh;
 }
 .card-bottom-courses h5 {
   font-size: 1.2vw;
+  height: 3.5vh;
 }
 .card-bottom-courses h4 {
   font-size: 1vw;
   font-weight: 400;
+  height: 7vh;
 }
 .no-courses-courses {
   height: 40vh;
@@ -125,4 +133,51 @@
 }
 .no-courses-courses div h1 {
   font-weight: 400;
+}
+
+
+/* Shimmer effect */
+@keyframes shimmer {
+  0% {
+    background-position: -100% 0;
+  }
+  100% {
+    background-position: 100% 0;
+  }
+}
+
+.shimmer-card-courses {
+  background-color: #f0f0f0;
+  background-image: linear-gradient(
+    90deg,
+    #f0f0f0 0px,
+    #e0e0e0 40px,
+    #f0f0f0 80px
+  );
+  background-size: 200% 100%;
+  animation: shimmer 3s infinite;
+  border-radius: 8px;
+  padding: 16px;
+  width: 17vw;
+  height: 47.5vh;
+  padding-top: 25vh;
+}
+
+.shimmer-content-courses {
+  background-color: #e0e0e0;
+  height: 20px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+}
+
+.shimmer-content.short-courses {
+  width: 40%;
+}
+
+.shimmer-content-courses.medium {
+  width: 80%;
+}
+
+.shimmer-content-courses.long {
+  width: 100%;
 }

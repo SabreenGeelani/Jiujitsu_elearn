@@ -23,7 +23,7 @@
   /* justify-content: space-around; */
   align-items: center;
   width: calc(100% - 250px);
-  height: calc(100% - 60px);
+  /* height: calc(100% - 60px); */
 }
 
 .content.collapsed {

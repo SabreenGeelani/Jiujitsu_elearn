@@ -5,6 +5,7 @@ import { BASE_URI } from "../../Config/url";
 import useFetch from "../../hooks/useFetch";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { PulseLoader } from "react-spinners";
 
 export default function Settings() {
   const [activeTab, setActiveTab] = useState("accountSecurity");
@@ -20,6 +21,7 @@ export default function Settings() {
   });
   const [profilePicture, setProfilePicture] = useState("");
   const [isReadOnly, setIsReadOnly] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [userData, setUserData] = useState({
     users: {
       name: "",
@@ -60,52 +62,46 @@ export default function Settings() {
       });
   };
 
-  const handleUpdateProfilePicture = () => {
-    // console.log(profilePicture);
-    axios
-      .patch(
-        `${BASE_URI}/api/v1/users/profile?profile_picture`,
-        {
-          profile_picture: profilePicture,
-        },
+  const handleUpdateProfilePicture = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    const formData = new FormData();
+    formData.append(
+      "profile_picture",
+      profilePicture ? profilePicture : profile_picture
+    );
+    formData.append("name", userData.users.name);
+
+    try {
+      const response = await axios.patch(
+        `${BASE_URI}/api/v1/users/profile`,
+        formData,
         {
           headers: {
-            Authorization: "Bearer " + token,
+            Authorization: `Bearer ${token}`,
             "Content-Type": "multipart/form-data",
           },
         }
-      )
-      .then((resp) => {
-        // console.log(resp.data);
-        toast.success(
-          resp.data.message ? resp.data.message : "Profile picture updated"
-        );
-        setProfilePicture("");
-        setImage(null);
-        refetch();
-      })
-      .catch((err) => {
-        toast.error(err?.response?.data?.message);
-      });
-  };
+      );
+      setIsLoading(false);
+      toast.success(
+        response.data.message
+          ? response.data.message
+          : "Profile updated successfully"
+      );
 
-  const handleEditProfile = () => {
-    axios
-      .patch(`${BASE_URI}/api/v1/users`, userData, fetchOptions)
-      .then((resp) => {
-        console.log(resp.data);
-        toast.success(resp.data.message);
-        setUserData({
-          users: {
-            name: name,
-          },
-        });
-        setIsReadOnly(true);
-        refetch();
-      })
-      .catch((err) => {
-        toast.error(err?.response?.data?.message);
-      });
+      setProfilePicture("");
+      setImage(null);
+      setIsReadOnly(true);
+
+      refetch();
+    } catch (err) {
+      setIsLoading(false);
+      toast.error(
+        err?.response?.data?.message ||
+          "An error occurred while updating the profile"
+      );
+    }
   };
 
   const handleImageChange = (e) => {
@@ -392,7 +388,7 @@ export default function Settings() {
                     <div className="input-group-append">
                       <span
                         className="input-group-text h-100 rounded-start-0 px-4 bg-light-custom cursor-pointer fw-light"
-                        onClick={handleUpdateProfilePicture}
+                        // onClick={handleUpdateProfilePicture}
                       >
                         Upload Image
                       </span>
@@ -400,10 +396,11 @@ export default function Settings() {
                   </div>
                 </div>
                 <button
-                  className="signup-now py-1 px-4 fw-lightBold mb-0 h-auto"
-                  onClick={handleEditProfile}
+                  type="submit"
+                  className="signup-now py-2 px-4 fw-lightBold mb-0 h-auto"
+                  onClick={handleUpdateProfilePicture}
                 >
-                  Save
+                  {isLoading ? <PulseLoader size={8} color="white" /> : "Save"}
                 </button>
               </form>
             </div>
