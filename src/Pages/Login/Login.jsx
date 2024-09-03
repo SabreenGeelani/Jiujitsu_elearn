@@ -109,28 +109,9 @@ export default function Login() {
       return <Navigate to="/userCourses" />;
     }
   }
-  const handleGoogleLogin = () => {
-    axios
-      .get(`${BASE_URI}/api/v1/auth/google`, { withCredentials: true })
-      .then((resp) => {
-        console.log(resp.data);
-        // if (resp.status === 302) {
-        //   // Handle the redirect manually if necessary
-        //   const redirectUrl = resp.request.responseURL;
-        //   window.location.href = redirectUrl;
-        // } else if (resp.data && resp.data.data && resp.data.data.redirect_url) {
-        //   // If your backend returns the redirect URL in the response body
-        //   window.location.href = resp.data.data.redirect_url;
-        // } else {
-        //   toast.error("Failed to initiate Google login.");
-        // }
-      })
-      .catch((err) => {
-        toast.error("An error occurred while trying to log in with Google.");
-      });
-  };
+
   return (
-    <div className="container-fluid signin-container ">
+    <div className="container-fluid signin-container">
       <div className="row w-100 h-100">
         <div className="signup-image w-50">
           <img src={learnImg} alt="Image" className="img-fluid" />
@@ -158,18 +139,11 @@ export default function Login() {
               className="bttns google-signup"
               onClick={handleGoogleLogin}
             >
-            <button
-              type="button"
-              className="bttns google-signup"
-              onClick={handleGoogleLogin}
-            >
               <FcGoogle className="googleIcon" />
-              Sign In with Google
               Sign In with Google
             </button>
             <button type="button" className="bttns">
               <FaApple className="appleIcon" />
-              Sign In with Apple
               Sign In with Apple
             </button>
           </div>
@@ -287,4 +261,3 @@ export default function Login() {
     </div>
   );
 }
-
